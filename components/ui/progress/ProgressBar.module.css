@@ -1,0 +1,93 @@
+/* Base Styles */
+.progressBar {
+  width: 100%;
+  background-color: var(--neutral-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.dark .progressBar {
+  background-color: var(--neutral-800);
+}
+
+.container {
+  width: 100%;
+}
+
+.labelContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--neutral-700);
+}
+
+.dark .label {
+  color: var(--neutral-300);
+}
+
+.value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--neutral-600);
+}
+
+.dark .value {
+  color: var(--neutral-400);
+}
+
+/* Progress Indicator */
+.indicator {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Sizes */
+.sm { height: 4px; }
+.md { height: 8px; }
+.lg { height: 12px; }
+.xl { height: 16px; }
+
+/* Variants */
+.default .indicator { background-color: var(--primary-600); }
+.success .indicator { background-color: var(--success-600); }
+.warning .indicator { background-color: var(--warning-500); }
+.danger .indicator { background-color: var(--danger-600); }
+
+.gradient .indicator {
+  background: linear-gradient(90deg, var(--primary-500), var(--primary-700));
+}
+
+/* Indeterminate Animation */
+@keyframes indeterminate {
+  0% { left: -35%; width: 35%; }
+  60% { left: 100%; width: 50%; }
+  100% { left: 100%; width: 50%; }
+}
+
+@keyframes indeterminateShort {
+  0% { left: -200%; width: 200%; }
+  60% { left: 107%; width: 200%; }
+  100% { left: 107%; width: 200%; }
+}
+
+.indeterminate .indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: auto;
+  will-change: left, width;
+  animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+
+/* A second bar for smoother indeterminate effect typically used in Material Design, 
+   but for simplicity sticking to one or adding pseudo element if needed.
+   Here we keep it simple for now. 
+*/

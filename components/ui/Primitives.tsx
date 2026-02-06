@@ -3,7 +3,6 @@ import React from 'react';
 import { BaseProps, ComponentVariant, ComponentSize, TextProps, HeadingProps, BadgeProps, ButtonProps, AvatarProps, BoxProps, FlexProps, IconProps } from '../../types';
 
 // Note: ButtonProps interface is now defined in types.ts
-
 export const Button: React.FC<ButtonProps> = ({
   children,
   className = '',
@@ -380,3 +379,5 @@ export const Icon: React.FC<IconProps> = ({
     </svg>
   );
 };
+
+export * from './icon-button/IconButton';

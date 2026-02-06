@@ -26,6 +26,13 @@ export interface ButtonProps extends BaseProps {
   isLoading?: boolean;
 }
 
+export interface IconButtonProps extends Omit<ButtonProps, 'leftIcon' | 'rightIcon' | 'icon' | 'children' | 'variant'> {
+  icon: ReactNode;
+  'aria-label': string;
+  tooltip?: string;
+  variant?: ComponentVariant | 'solid' | 'surface';
+}
+
 export interface BaseProps {
   children?: ReactNode;
   className?: string;
@@ -126,11 +133,13 @@ export interface SkeletonProps extends BaseProps {
 }
 
 export interface ProgressBarProps extends BaseProps {
-  value: number;
+  value?: number;
   max?: number;
-  variant?: 'default' | 'success' | 'warning' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: 'default' | 'success' | 'warning' | 'danger' | 'gradient';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   showLabel?: boolean;
+  indeterminate?: boolean;
+  label?: string;
 }
 
 // Forms
@@ -236,6 +245,38 @@ export interface ToastProps extends BaseProps {
   description?: string;
   duration?: number;
   onClose: () => void;
+}
+
+// List (Composite)
+export interface ListProps extends BaseProps {
+  variant?: "default" | "compact";
+  orientation?: "vertical" | "horizontal";
+  component?: any;
+}
+
+export interface ListItemProps extends BaseProps {
+  variant?: "default" | "compact";
+  onClick?: () => void;
+  disabled?: boolean;
+  selected?: boolean;
+  href?: string;
+  component?: any;
+}
+
+export interface ListItemIconProps extends BaseProps {
+  position?: "start" | "end";
+}
+
+export interface ListItemTextProps extends BaseProps {
+  primary: ReactNode;
+  secondary?: ReactNode;
+  primaryTypographyProps?: TextProps;
+  secondaryTypographyProps?: TextProps;
+}
+
+export interface ListDividerProps extends BaseProps {
+  component?: any;
+  inset?: boolean;
 }
 
 // Navigation

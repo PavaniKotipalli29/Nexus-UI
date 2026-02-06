@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heading, Text, Badge, Button, SplitButton, HamburgerButton, Avatar, Box, Flex, Icon } from '../components/ui/Primitives';
+import { Heading, Text, Badge, Button, IconButton, SplitButton, HamburgerButton, Avatar, Box, Flex, Icon } from '../components/ui/Primitives';
 import { Card, Stack, Container } from '../components/ui/Layout';
 import { Input, Checkbox, Switch, Textarea, Select, Radio, Slider } from '../components/ui/Forms';
 import { Spinner, Skeleton, ProgressBar } from '../components/ui/Feedback';
@@ -7,6 +7,9 @@ import { ColorPalette, TypographyScale, SpacingScale, DesignTokens, MotionTokens
 import { 
   Modal, Drawer, Tooltip, Popover, Tabs, Accordion, Dropdown, Table, Pagination, Alert, Toast, NotificationBanner, EmptyState 
 } from '../components/ui/Composite';
+import {
+  List, ListItem, ListItemIcon, ListItemText, ListDivider
+} from '../components/ui/list/List';
 import { 
   FormWrapper, LoginForm, SignupForm, ForgotPasswordForm, ResetPasswordForm, OTPVerification, PasswordStrengthMeter, FileUpload, DatePicker, TimePicker, SearchInput, Label, FormField, ErrorMessage 
 } from '../components/ui/Forms';
@@ -559,6 +562,39 @@ const docs: Record<string, ComponentDoc> = {
         { name: 'color', type: 'string', default: 'currentColor', desc: 'Icon color.' },
         { name: 'strokeWidth', type: 'number', default: '2', desc: 'Stroke width.' },
       ]
+  },
+  'icon-button': {
+    id: 'icon-button',
+    name: 'Icon Button',
+    category: 'Primitives',
+    description: 'Button with only an icon.',
+    examples: [{
+      title: 'Variants',
+      render: () => <Flex gap={4}><IconButton aria-label="Search" icon={<Icon><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></Icon>} /><IconButton variant="ghost" aria-label="Edit" icon={<Icon><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></Icon>} /><IconButton variant="outline" aria-label="Delete" icon={<Icon><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></Icon>} /></Flex>,
+      code: `<IconButton aria-label="Search" icon={<Icon ... />} />`
+    }, {
+      title: 'Sizes',
+      render: () => <Flex gap={4} align="center"><IconButton size="sm" aria-label="Small" icon={<Icon size="sm"><path d="M12 4v16m8-8H4"/></Icon>} /><IconButton size="md" aria-label="Medium" icon={<Icon size="md"><path d="M12 4v16m8-8H4"/></Icon>} /><IconButton size="lg" aria-label="Large" icon={<Icon size="lg"><path d="M12 4v16m8-8H4"/></Icon>} /></Flex>,
+      code: `<IconButton size="sm" ... />`
+    }, {
+      title: 'Loading',
+      render: () => <IconButton isLoading aria-label="Loading" icon={<Icon><path d="M12 4v16m8-8H4"/></Icon>} />,
+      code: `<IconButton isLoading ... />`
+    }],
+    props: [
+      { name: 'icon', type: 'ReactNode', default: '-', desc: 'Icon element.' },
+      { name: 'aria-label', type: 'string', default: '-', desc: 'Accessible label.' },
+      { name: 'variant', type: 'solid | ghost | outline | surface', default: 'solid', desc: 'Visual style.' },
+      { name: 'size', type: 'sm | md | lg', default: 'md', desc: 'Button size.' },
+      { name: 'tooltip', type: 'string', default: '-', desc: 'Tooltip text.' },
+      { name: 'isLoading', type: 'boolean', default: 'false', desc: 'Loading state.' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disabled state.' }
+    ],
+    accessibilityNotes: `
+### Accessibility
+- **Labeling**: Always provide an \`aria-label\` since there is no visible text.
+- **Focus**: Fully keyboard accessible with visible focus states.
+    `
   },
   avatar: {
     id: 'avatar',
@@ -1174,6 +1210,102 @@ const docs: Record<string, ComponentDoc> = {
       { name: 'onClose', type: '() => void', default: '-', desc: 'Dismiss handler.' }
     ]
   },
+  // List
+  'list': {
+    id: 'list',
+    name: 'List',
+    category: 'Composite',
+    description: 'Lists are continuous, vertical indexes of text or images.',
+    examples: [
+        {
+            title: 'Basic List',
+            render: () => (
+                <Card padding="none">
+                    <List>
+                        <ListItem>
+                            <ListItemText primary="Inbox" secondary="You have 3 unread messages" />
+                        </ListItem>
+                        <ListDivider />
+                        <ListItem>
+                            <ListItemText primary="Drafts" secondary="Saved 2 hours ago" />
+                        </ListItem>
+                        <ListDivider />
+                        <ListItem>
+                            <ListItemText primary="Sent" />
+                        </ListItem>
+                    </List>
+                </Card>
+            ),
+            code: `<List>\n  <ListItem>\n    <ListItemText primary="Inbox" secondary="3 unread" />\n  </ListItem>\n  <ListDivider />\n  <ListItem>\n    <ListItemText primary="Drafts" />\n  </ListItem>\n</List>`
+        },
+        {
+            title: 'Interactive with Icons',
+            render: () => (
+                <Card padding="none" className="max-w-sm">
+                    <List>
+                        <ListItem onClick={() => alert('Wifi clicked')}>
+                            <ListItemIcon>
+                                <Icon size="md"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01" /></Icon>
+                            </ListItemIcon>
+                            <ListItemText primary="Wi-Fi" secondary="Connected" />
+                        </ListItem>
+                        <ListItem disabled onClick={() => alert('Bluetooth clicked')}>
+                            <ListItemIcon>
+                                <Icon size="md"><path d="M9.172 16.172a4 4 0 015.656 0M9 10a5 5 0 017 0m-7-5a1 1 0 012 0 1 1 0 012 0m-4 5h4" /></Icon>
+                            </ListItemIcon>
+                            <ListItemText primary="Bluetooth" secondary="Off" />
+                        </ListItem>
+                        <ListItem href="#settings">
+                            <ListItemIcon>
+                                <Icon size="md"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></Icon>
+                            </ListItemIcon>
+                            <ListItemText primary="Settings" />
+                            <ListItemIcon position="end">
+                                <Icon size="sm"><path d="M9 5l7 7-7 7" /></Icon>
+                            </ListItemIcon>
+                        </ListItem>
+                    </List>
+                </Card>
+            ),
+            code: `<List>\n  <ListItem onClick={...}>\n    <ListItemIcon><Icon ... /></ListItemIcon>\n    <ListItemText primary="Wi-Fi" />\n  </ListItem>\n  <ListItem href="#settings">\n    <ListItemIcon><Icon ... /></ListItemIcon>\n    <ListItemText primary="Settings" />\n    <ListItemIcon position="end"><Icon ... /></ListItemIcon>\n  </ListItem>\n</List>`
+        },
+        {
+            title: 'Selected State & Compact',
+            render: () => (
+                <Card padding="none" className="max-w-sm">
+                    <List variant="compact">
+                        <ListItem selected onClick={() => {}}>
+                            <ListItemIcon><Box className="w-2 h-2 rounded-full bg-primary-500" /></ListItemIcon>
+                            <ListItemText primary="Selected Item" />
+                        </ListItem>
+                        <ListItem onClick={() => {}}>
+                            <ListItemIcon><Box className="w-2 h-2 rounded-full bg-neutral-300" /></ListItemIcon>
+                            <ListItemText primary="Normal Item" />
+                        </ListItem>
+                    </List>
+                </Card>
+            ),
+            code: `<List variant="compact">\n  <ListItem selected>\n    <ListItemText primary="Selected Item" />\n  </ListItem>\n  <ListItem>\n    <ListItemText primary="Normal Item" />\n  </ListItem>\n</List>`
+        }
+    ],
+    props: [
+        { name: 'variant', type: 'default | compact', default: 'default', desc: 'Spacing variant.' },
+        { name: 'orientation', type: 'vertical | horizontal', default: 'vertical', desc: 'Layout direction.' },
+        { name: 'onClick', type: 'function', default: '-', desc: 'Click handler for items.' },
+        { name: 'selected', type: 'boolean', default: 'false', desc: 'Selected state for items.' },
+        { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disabled state for items.' },
+        { name: 'href', type: 'string', default: '-', desc: 'URL for link items.' },
+    ],
+    usageGuidelines: `
+### When to use
+- **Menus**: For navigation menus or settings.
+- **Data**: To display simple data sets.
+
+### Accessibility
+- Use \`List\` for semantics (\`<ul>\`).
+- Interactive items automatically get \`role="button"\` or \`role="link"\`.
+    `
+  },
   'notification-banner': {
     id: 'notification-banner',
     name: 'Notification Banner',
@@ -1399,6 +1531,7 @@ const docs: Record<string, ComponentDoc> = {
       { name: 'className', type: 'string', default: '-', desc: 'Additional CSS classes.' }
     ]
   },
+
   'copy-to-clipboard': {
     id: 'copy-to-clipboard',
     name: 'Copy To Clipboard',

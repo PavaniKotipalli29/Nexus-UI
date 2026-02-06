@@ -57,43 +57,4 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   );
 };
 
-export const ProgressBar: React.FC<ProgressBarProps> = ({
-  value,
-  max = 100,
-  variant = 'default',
-  size = 'md',
-  showLabel = false,
-  className = ''
-}) => {
-  const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
-  
-  const variants = {
-    default: 'bg-primary-600',
-    success: 'bg-green-600',
-    warning: 'bg-yellow-500',
-    danger: 'bg-red-600'
-  };
-
-  const sizes = {
-    sm: 'h-1',
-    md: 'h-2.5',
-    lg: 'h-4'
-  };
-
-  return (
-    <div className={`w-full ${className}`}>
-      {showLabel && (
-        <div className="flex justify-between mb-1">
-          <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Progress</span>
-          <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">{Math.round(percentage)}%</span>
-        </div>
-      )}
-      <div className={`w-full bg-neutral-200 rounded-full dark:bg-neutral-700 overflow-hidden ${sizes[size]}`}>
-        <div 
-          className={`h-full rounded-full transition-all duration-300 ${variants[variant]}`} 
-          style={{ width: `${percentage}%` }}
-        ></div>
-      </div>
-    </div>
-  );
-};
+export * from './progress/ProgressBar';

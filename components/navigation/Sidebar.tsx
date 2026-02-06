@@ -88,6 +88,7 @@ const navGroups = [
           { name: 'Toast', id: 'toast' },
           { name: 'Notification Banner', id: 'notification-banner' },
           { name: 'Empty State', id: 'empty-state' },
+          { name: 'List', id: 'list' },
         ]
       },
       {
