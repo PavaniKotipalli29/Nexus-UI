@@ -4,9 +4,11 @@ import { Navbar } from './components/navigation/Navbar';
 import { Sidebar } from './components/navigation/Sidebar';
 import { LandingPage } from './pages/LandingPage';
 import { WhyNexusPage } from './pages/WhyNexusPage';
+import { AboutPage } from './pages/AboutPage';
+import { ContactPage } from './pages/ContactPage';
 import { ComponentPage } from './pages/ComponentPage';
 import { DashboardPage } from './pages/patterns/DashboardPage';
-import { LoginPage } from './pages/patterns/LoginPage';
+
 
 // Simple Hash-based Router
 const App: React.FC = () => {
@@ -43,6 +45,16 @@ const App: React.FC = () => {
       return <WhyNexusPage />;
     }
 
+    if (currentPath === '#/about') {
+      return <AboutPage />;
+    }
+
+    if (currentPath === '#/contact') {
+      return <ContactPage />;
+    }
+
+
+
     if (currentPath.startsWith('#/docs')) {
       const componentName = currentPath.split('/').pop() || '';
       return (
@@ -61,9 +73,7 @@ const App: React.FC = () => {
       return <DashboardPage />;
     }
 
-    if (currentPath === '#/patterns/login') {
-      return <LoginPage />;
-    }
+
 
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh]">
