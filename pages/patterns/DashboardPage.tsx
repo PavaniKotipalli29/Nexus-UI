@@ -53,10 +53,10 @@ export const DashboardPage: React.FC = () => {
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
               {[
-                { label: 'Total Components', value: '24', change: '+12%', status: 'success' },
-                { label: 'Foundations', value: '3', change: 'Finished', status: 'success' },
-                { label: 'Avg Bundlesize', value: '12.4kb', change: '-5.2%', status: 'success' },
-                { label: 'Version', value: 'v1.0.0-a', change: 'Alpha', status: 'primary' },
+                { label: 'Total Components', value: '45+', change: 'Estimated', status: 'primary' },
+                { label: 'Foundations', value: 'Complete', change: 'Stable', status: 'success' },
+                { label: 'Last Updated', value: 'Feb 6, 2026', change: 'Today', status: 'neutral' },
+                { label: 'Version', value: 'v0.0.0', change: 'Alpha', status: 'warning' },
               ].map((stat, i) => (
                 <Card key={i} padding="sm">
                   <Text size="sm" color="muted" className="mb-1">{stat.label}</Text>
@@ -73,7 +73,7 @@ export const DashboardPage: React.FC = () => {
               <div className="lg:col-span-2 space-y-8">
                 <Card>
                   <div className="flex justify-between items-center mb-6">
-                    <Heading level={4}>Development Feed</Heading>
+                    <Heading level={4}>Development Feed <span className="text-sm font-normal text-neutral-400 ml-2">(Demo Data)</span></Heading>
                     <Button variant="ghost" size="sm">View History</Button>
                   </div>
                   <div className="space-y-6">
@@ -99,7 +99,7 @@ export const DashboardPage: React.FC = () => {
               </div>
               <div>
                 <Card className="h-full">
-                  <Heading level={4} className="mb-6">Library Health</Heading>
+                  <Heading level={4} className="mb-6">Library Health <span className="text-sm font-normal text-neutral-400 ml-2">(Demo Data)</span></Heading>
                   <div className="space-y-4">
                     {[
                       { name: 'Primitives', progress: 95 },

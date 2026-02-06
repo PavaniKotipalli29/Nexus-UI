@@ -27,6 +27,8 @@ interface ComponentDoc {
   description: string;
   examples: { title: string, render: () => React.ReactNode, code: string }[];
   props: { name: string, type: string, default: string, desc: string }[];
+  usageGuidelines?: string;
+  accessibilityNotes?: string;
 }
 
 const docs: Record<string, ComponentDoc> = {
@@ -218,8 +220,28 @@ const docs: Record<string, ComponentDoc> = {
       { name: 'isIconButton', type: 'boolean', default: 'false', desc: 'Optimized for icon-only usage.' },
       { name: 'fullWidth', type: 'boolean', default: 'false', desc: 'Stretch to full width.' },
       { name: 'isActive', type: 'boolean', default: 'false', desc: 'Active state.' },
-      { name: 'isRound', type: 'boolean', default: 'false', desc: 'Rounded pill shape.' },
-    ]
+    ],
+    usageGuidelines: `
+### When to use
+- **Primary**: Main call-to-action. Use only one per page/section.
+- **Secondary**: Alternative actions (e.g., "Cancel", "Back").
+- **Ghost**: Low priority actions or inside toolbars/menus.
+- **Danger**: Destructive actions like "Delete" or "Remove".
+
+### Common Mistakes
+- Don't use multiple Primary buttons in the same view.
+- Don't use vague labels like "Click here". Use action verbs like "Save" or "Submit".
+    `,
+    accessibilityNotes: `
+### Keyboard Interaction
+- **Enter** or **Space**: Activates the button.
+- **Tab**: Moves focus to the button.
+
+### ARIA & Focus
+- Uses native \`<button>\` element for maximum compatibility.
+- Interactive elements must have a visible focus style.
+- If using an icon-only button, ensure \`aria-label\` provides a text description.
+    `
   },
   text: {
     id: 'text',
@@ -379,7 +401,20 @@ const docs: Record<string, ComponentDoc> = {
       { name: 'size', type: 'sm | md | lg', default: 'md', desc: 'Size of badge.' },
       { name: 'isRound', type: 'boolean', default: 'false', desc: 'Use pill shape.' },
       { name: 'icon', type: 'ReactNode', default: '-', desc: 'Icon element.' },
-    ]
+    ],
+    usageGuidelines: `
+### When to use
+- **Status**: To show state (e.g., Active, Pending).
+- **Counts**: To show notification counts.
+
+### Common Mistakes
+- Don't use for interactive elements (use Button).
+    `,
+    accessibilityNotes: `
+### ARIA
+- Badges are generally decorative or status indicators.
+- If status changes, ensure it's announced via \`aria-live\`.
+    `
   },
   box: {
       id: 'box',
@@ -458,7 +493,19 @@ const docs: Record<string, ComponentDoc> = {
       { name: 'padding', type: 'none | sm | md | lg', default: 'md', desc: 'Inner spacing.' },
       { name: 'interactive', type: 'boolean', default: 'false', desc: 'Hover effects.' },
       { name: 'children', type: 'ReactNode', default: '-', desc: 'Card content.' }
-    ]
+    ],
+    usageGuidelines: `
+### When to use
+- **Grouping**: To group related content.
+- **Dashboard**: For widgets or stats.
+
+### Common Mistakes
+- Don't nest cards too deeply.
+    `,
+    accessibilityNotes: `
+### ARIA
+- Use headings inside the card to outline content.
+    `
   },
   stack: {
     id: 'stack',
@@ -589,7 +636,25 @@ const docs: Record<string, ComponentDoc> = {
         { name: 'helperText', type: 'string', default: '-', desc: 'Helper text.' },
         { name: 'placeholder', type: 'string', default: '-', desc: 'Placeholder text.' },
         { name: 'type', type: 'string', default: 'text', desc: 'Input type.' }
-    ]
+    ],
+    usageGuidelines: `
+### When to use
+- **Text Fields**: For short, single-line data (names, emails).
+- **Search**: For filtering or finding content.
+
+### Common Mistakes
+- Don't use for long text (use Textarea).
+- Don't forget labels (use \`aria-label\` if visual label is hidden).
+    `,
+    accessibilityNotes: `
+### Keyboard Interaction
+- **Tab**: Focuses the input.
+- **Enter**: Submits the form (if within a \`<form>\`).
+
+### ARIA & Focus
+- Associates \`<label>\` with \`<input>\` via \`htmlFor\` and \`id\`.
+- Displays error messages via \`aria-describedby\`.
+    `
   },
   textarea: {
       id: 'textarea',
@@ -980,7 +1045,29 @@ const docs: Record<string, ComponentDoc> = {
         { name: 'items', type: '{id, label, content}[]', default: '[]', desc: 'Tab definitions.' },
         { name: 'defaultTab', type: 'string', default: '-', desc: 'Initially active tab ID.' },
         { name: 'variant', type: 'line | enclosed | pills', default: 'line', desc: 'Visual style.' }
-    ]
+    ],
+    usageGuidelines: `
+### When to use
+- **Categorization**: Organizing content into different categories.
+- **Context Switching**: Switching between different views of the same context.
+
+### Common Mistakes
+- Don't use for navigation between different pages (use Links or Menu).
+- Don't use too many tabs (scrolling tabs can be hard to use).
+    `,
+    accessibilityNotes: `
+### Keyboard Interaction
+- **Arrow Keys**: Moves focus between tabs.
+- **Enter/Space**: Activates the selected tab.
+- **Home/End**: Moves to the first/last tab.
+
+### ARIA
+- Use \`role="tablist"\` for the container.
+- Use \`role="tab"\` for each tab.
+- Use \`role="tabpanel"\` for the content.
+- Use \`aria-selected\` to indicate the active tab.
+- Use \`aria-controls\` to link tabs to their panels.
+    `
   },
   'accordion': {
     id: 'accordion',
@@ -1500,6 +1587,42 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
           </table>
         </div>
       </section>
+
+      {(doc.usageGuidelines || doc.accessibilityNotes) && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {doc.usageGuidelines && (
+            <section className="space-y-6">
+              <Heading level={2} className="border-b border-neutral-200 dark:border-neutral-800 pb-4">Usage Guidelines</Heading>
+              <Card>
+                <div className="prose dark:prose-invert max-w-none text-sm space-y-4">
+                  {doc.usageGuidelines.split('\n').map((line, i) => {
+                    if (line.startsWith('- ')) return <li key={i} className="ml-4">{line.substring(2)}</li>;
+                    if (line.startsWith('### ')) return <Heading level={4} key={i} className="mt-4 mb-2">{line.substring(4)}</Heading>;
+                    if (line.trim() === '') return <br key={i} />;
+                    return <Text key={i}>{line}</Text>;
+                  })}
+                </div>
+              </Card>
+            </section>
+          )}
+
+          {doc.accessibilityNotes && (
+            <section className="space-y-6">
+              <Heading level={2} className="border-b border-neutral-200 dark:border-neutral-800 pb-4">Accessibility</Heading>
+              <Card>
+                 <div className="prose dark:prose-invert max-w-none text-sm space-y-4">
+                  {doc.accessibilityNotes.split('\n').map((line, i) => {
+                    if (line.startsWith('- ')) return <li key={i} className="ml-4">{line.substring(2)}</li>;
+                    if (line.startsWith('### ')) return <Heading level={4} key={i} className="mt-4 mb-2">{line.substring(4)}</Heading>;
+                    if (line.trim() === '') return <br key={i} />;
+                    return <Text key={i}>{line}</Text>;
+                  })}
+                </div>
+              </Card>
+            </section>
+          )}
+        </div>
+      )}
     </div>
   );
 };

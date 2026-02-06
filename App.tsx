@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/navigation/Navbar';
 import { Sidebar } from './components/navigation/Sidebar';
 import { LandingPage } from './pages/LandingPage';
+import { WhyNexusPage } from './pages/WhyNexusPage';
 import { ComponentPage } from './pages/ComponentPage';
 import { DashboardPage } from './pages/patterns/DashboardPage';
 import { LoginPage } from './pages/patterns/LoginPage';
@@ -36,6 +37,10 @@ const App: React.FC = () => {
   const renderContent = () => {
     if (currentPath === '#/' || currentPath === '') {
       return <LandingPage />;
+    }
+
+    if (currentPath === '#/why-nexus') {
+      return <WhyNexusPage />;
     }
 
     if (currentPath.startsWith('#/docs')) {

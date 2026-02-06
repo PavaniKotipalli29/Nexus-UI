@@ -12,10 +12,10 @@ export const LandingPage: React.FC = () => {
           <div className="text-center max-w-4xl mx-auto">
             <Badge variant="primary" className="mb-6 px-4 py-1.5 text-sm">v1.0.0 is now live!</Badge>
             <Heading level={1} className="mb-6">
-              Build beautiful products <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-violet-600">at light speed</span>
+              Build Scalable Systems, <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-violet-600">Not Just Pages</span>
             </Heading>
             <Text size="lg" color="muted" className="mb-10 max-w-2xl mx-auto leading-relaxed">
-              Nexus UI is a meticulously crafted component library and design system for React. Built for builders who care about aesthetics, accessibility, and performance.
+              A strictly typed, accessibility-first React component library. No Tailwind dependencies, no Bootstrap bloat—just pure CSS Modules and robust TypeScript patterns for serious engineering teams.
             </Text>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button size="lg" onClick={() => window.location.hash = '#/docs/button'}>Get Started</Button>

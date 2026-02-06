@@ -20,10 +20,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleDarkMode, isDarkMode }) 
               </div>
               <span className="text-xl font-bold tracking-tight">Nexus<span className="text-primary-600">UI</span></span>
             </a>
-            <div className="hidden md:flex items-center space-x-6">
-              <a href="#/docs/button" className="text-sm font-medium text-neutral-600 hover:text-primary-600 dark:text-neutral-400 dark:hover:text-primary-400 transition-colors">Documentation</a>
-              <a href="#/patterns/dashboard" className="text-sm font-medium text-neutral-600 hover:text-primary-600 dark:text-neutral-400 dark:hover:text-primary-400 transition-colors">Examples</a>
-              <a href="https://github.com" target="_blank" className="text-sm font-medium text-neutral-600 hover:text-primary-600 dark:text-neutral-400 dark:hover:text-primary-400 transition-colors">Github</a>
+            <div className="hidden md:flex items-center space-x-1">
+              <a href="#/" className="px-3 py-2 text-sm font-medium text-neutral-600 hover:text-primary-600 dark:text-neutral-300 dark:hover:text-white rounded-md transition-colors">Home</a>
+              <a href="#/why-nexus" className="px-3 py-2 text-sm font-medium text-neutral-600 hover:text-primary-600 dark:text-neutral-300 dark:hover:text-white rounded-md transition-colors">Philosophy</a>
+              <a href="#/docs/button" className="px-3 py-2 text-sm font-medium text-neutral-600 hover:text-primary-600 dark:text-neutral-300 dark:hover:text-white rounded-md transition-colors">Components</a>
+              <a href="#/patterns/dashboard" className="px-3 py-2 text-sm font-medium text-neutral-600 hover:text-primary-600 dark:text-neutral-300 dark:hover:text-white rounded-md transition-colors">Patterns</a>
             </div>
           </div>
           <div className="flex items-center space-x-4">
