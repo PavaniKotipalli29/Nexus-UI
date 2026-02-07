@@ -1,161 +1,50 @@
 import React, { useState } from 'react';
-import { Heading, Text, Badge, Button, IconButton, SplitButton, HamburgerButton, Avatar, Box, Flex, Icon } from '../components/ui/Primitives';
+import { Heading, Text, Badge, Button, IconButton, Avatar, Box, Flex, Icon, SplitButton, HamburgerButton } from '../components/ui/Primitives';
 import { Card, Stack, Container } from '../components/ui/Layout';
-import { Input, Checkbox, Switch, Textarea, Select, Radio, Slider } from '../components/ui/Forms';
-import { Spinner, Skeleton, ProgressBar } from '../components/ui/Feedback';
+import { Input, Checkbox, Switch, Textarea, Select, Radio, Slider, FormWrapper, LoginForm, SignupForm, DatePicker, TimePicker, SearchInput, FileUpload, OTPVerification, Label } from '../components/ui/Forms';
+import { Spinner, Skeleton } from '../components/ui/Feedback';
+import { ProgressBar } from '../components/ui/progress/ProgressBar';
 import { ColorPalette, TypographyScale, SpacingScale, DesignTokens, MotionTokens, CSSReset, ThemeProviderInfo } from '../components/ui/Foundations';
-import { 
-  Modal, Drawer, Tooltip, Popover, Tabs, Accordion, Dropdown, Table, Pagination, Alert, Toast, NotificationBanner, EmptyState 
-} from '../components/ui/Composite';
-import {
-  List, ListItem, ListItemIcon, ListItemText, ListDivider
-} from '../components/ui/list/List';
-import { 
-  FormWrapper, LoginForm, SignupForm, ForgotPasswordForm, ResetPasswordForm, OTPVerification, PasswordStrengthMeter, FileUpload, DatePicker, TimePicker, SearchInput, Label, FormField, ErrorMessage 
-} from '../components/ui/Forms';
-import { 
-  Breadcrumbs, Stepper, CommandPalette 
-} from '../components/ui/Navigation';
-import { 
-  AuthLayout, DashboardLayout, HeroSection, FeatureGrid, PricingSection, Footer, Page404, ErrorPage 
-} from '../components/ui/Patterns';
-import { 
-  ThemeToggle, CopyToClipboard, CodeBlock, Portal, ResponsiveVisibility, VisuallyHidden, FocusTrap 
-} from '../components/ui/Utilities';
+import { Modal, Drawer, Tooltip, Popover, Tabs, Accordion, Dropdown, Table, Pagination, Alert, Toast, NotificationBanner, EmptyState } from '../components/ui/Composite';
+import { List, ListItem, ListItemIcon, ListItemText, ListDivider } from '../components/ui/list/List';
+import { Breadcrumbs, Stepper, CommandPalette } from '../components/ui/Navigation';
+import { AuthLayout, DashboardLayout, HeroSection, FeatureGrid, PricingSection, Footer, Page404, ErrorPage } from '../components/ui/Patterns';
+import { ThemeToggle, CopyToClipboard, CodeBlock, Portal, ResponsiveVisibility, VisuallyHidden, FocusTrap } from '../components/ui/Utilities';
+import { Sidebar } from '../components/navigation/Sidebar';
+import { Navbar } from '../components/navigation/Navbar';
+
+// Import full source codes
+import { SOURCES } from '../data/ComponentSources';
 
 interface ComponentDoc {
   id: string;
   name: string;
-  category: string;
+  category: '1D Components' | '2D Components' | '3D Components' | 'Foundations';
+  subCategory?: string;
   description: string;
-  examples: { title: string, render: () => React.ReactNode, code: string }[];
-  props: { name: string, type: string, default: string, desc: string }[];
+  implementationSource?: string;
+  cssSource?: string;
+  examples: {
+    title: string;
+    description?: string;
+    render: () => React.ReactNode;
+    usageCode: string;
+  }[];
+  props: { name: string; type: string; default: string; desc: string }[];
 }
 
-const docs: Record<string, ComponentDoc> = {
-  // Foundations
-  colors: {
-    id: 'colors',
-    name: 'Colors',
-    category: 'Foundations',
-    description: 'The color system is designed to be accessible and provide a consistent visual language. Use these colors via Tailwind classes (e.g., bg-primary-600, text-neutral-500).',
-    examples: [{ 
-      title: 'Color Palette', 
-      render: () => <ColorPalette />, 
-      code: `import React from 'react';\nimport { ColorPalette } from '../components/ui/Foundations';\n\nconst Example = () => (\n  <div className="space-y-8">\n    <ColorPalette />\n    \n    {/* Manual usage */}\n    <div className="flex gap-4 mt-6">\n      <div className="px-4 py-2 bg-primary-600 text-white rounded">Primary 600</div>\n      <div className="px-4 py-2 bg-neutral-200 text-neutral-900 rounded">Neutral 200</div>\n    </div>\n  </div>\n);\n\nexport default Example;` 
-    }],
-    props: [
-      { name: 'className', type: 'string', default: '-', desc: 'Additional CSS classes.' },
-      { name: 'title', type: 'string', default: '-', desc: 'Optional header title.' },
-      { name: 'description', type: 'string', default: '-', desc: 'Optional description text.' }
-    ]
-  },
-  'typography-scale': {
-    id: 'typography-scale',
-    name: 'Typography Scale',
-    category: 'Foundations',
-    description: 'Our typography system is optimized for readability. Use standard Tailwind text utilities.',
-    examples: [{ 
-      title: 'Scale', 
-      render: () => <TypographyScale />, 
-      code: `import React from 'react';\nimport { TypographyScale } from '../components/ui/Foundations';\n\nconst TypographyExample = () => (\n  <div className="space-y-4">\n    <TypographyScale \n      title="Font Scale" \n      description="Standard typography rhythm for Nexus UI." \n    />\n    \n    {/* Manual usage */}\n    <h1 className="text-4xl lg:text-5xl font-extrabold mt-8">Heading 1</h1>\n    <p className="text-base font-normal text-neutral-600">Body text with base size.</p>\n  </div>\n);\n\nexport default TypographyExample;` 
-    }],
-    props: [
-      { name: 'className', type: 'string', default: '-', desc: 'Additional CSS classes.' },
-      { name: 'title', type: 'string', default: '-', desc: 'Optional section heading.' },
-      { name: 'description', type: 'string', default: '-', desc: 'Optional descriptive text.' }
-    ]
-  },
-  spacing: {
-    id: 'spacing',
-    name: 'Spacing',
-    category: 'Foundations',
-    description: 'A consistent spacing scale helps create a visual rhythm. Based on the 4px grid.',
-    examples: [{ 
-      title: 'Scale', 
-      render: () => <SpacingScale />, 
-      code: `import React from 'react';\nimport { SpacingScale } from '../components/ui/Foundations';\n\nconst Example = () => (\n  <div className="space-y-4">\n    <SpacingScale />\n    \n    {/* Utility classes examples */}\n    <div className="flex flex-col gap-4 mt-8">\n      <div className="p-4 bg-primary-50 border border-primary-200">Padding 4 (16px)</div>\n      <div className="m-2 bg-neutral-50 border border-neutral-200">Margin 2 (8px)</div>\n      <div className="w-12 h-12 bg-primary-500 rounded">48px Box</div>\n    </div>\n  </div>\n);\n\nexport default Example;` 
-    }],
-    props: [
-      { name: 'className', type: 'string', default: '-', desc: 'Additional CSS classes.' },
-      { name: 'title', type: 'string', default: '-', desc: 'Optional header title.' },
-      { name: 'description', type: 'string', default: '-', desc: 'Optional descriptive text.' }
-    ]
-  },
-  'design-tokens': {
-    id: 'design-tokens',
-    name: 'Design Tokens',
-    category: 'Foundations',
-    description: 'Core design values for border radius and shadow depth.',
-    examples: [{ 
-      title: 'Border & Shadows', 
-      render: () => <DesignTokens />, 
-      code: `import React from 'react';\nimport { DesignTokens } from '../components/ui/Foundations';\n\nconst TokensExample = () => (\n  <div className="p-8 space-y-12">\n    <DesignTokens />\n    \n    {/* Direct usage */}\n    <div className="grid grid-cols-2 gap-8 mt-12">\n      <div className="p-6 bg-white rounded-xl shadow-xl flex items-center justify-center font-bold">XL Radius + XL Shadow</div>\n      <div className="p-6 bg-white rounded-md shadow-md flex items-center justify-center font-bold">MD Radius + MD Shadow</div>\n    </div>\n  </div>\n);\n\nexport default TokensExample;` 
-    }],
-    props: [
-      { name: 'className', type: 'string', default: '-', desc: 'Additional CSS classes.' },
-      { name: 'title', type: 'string', default: '-', desc: 'Optional section title.' },
-      { name: 'description', type: 'string', default: '-', desc: 'Optional descriptive text.' }
-    ]
-  },
-  motion: {
-    id: 'motion',
-    name: 'Motion Tokens',
-    category: 'Foundations',
-    description: 'Standardized animation durations and easing curves.',
-    examples: [{ 
-      title: 'Scale', 
-      render: () => <MotionTokens />, 
-      code: `import React from 'react';\nimport { MotionTokens } from '../components/ui/Foundations';\n\nconst MotionExample = () => (\n  <div className="space-y-12">\n    <MotionTokens />\n    \n    {/* Application example */}\n    <div className="p-8 bg-neutral-50 dark:bg-neutral-900 rounded-xl flex items-center justify-center">\n       <div className="w-24 h-24 bg-primary-500 rounded-lg transition-all duration-300 ease-in-out hover:scale-110 hover:rotate-3 shadow-lg flex items-center justify-center text-white font-bold cursor-pointer">\n         Hover me\n       </div>\n    </div>\n  </div>\n);\n\nexport default MotionExample;` 
-    }],
-    props: [
-      { name: 'className', type: 'string', default: '-', desc: 'Additional CSS classes.' },
-      { name: 'title', type: 'string', default: '-', desc: 'Optional section title.' },
-      { name: 'description', type: 'string', default: '-', desc: 'Optional descriptive text.' }
-    ]
-  },
-  'css-reset': {
-    id: 'css-reset',
-    name: 'CSS Reset',
-    category: 'Foundations',
-    description: 'Global stylesheet to normalize browser defaults across all platforms.',
-    examples: [{ 
-      title: 'Features & Styles', 
-      render: () => <CSSReset />, 
-      code: `import React from 'react';\nimport { CSSReset } from '../components/ui/Foundations';\n\n// Typically included in your main index.css or App.tsx\nconst AppWrapper = ({ children }) => (\n  <div className="nexus-ui-app">\n    <CSSReset />\n    {children}\n  </div>\n);\n\n/* In index.css: */\n@tailwind base;\n@tailwind components;\n@tailwind utilities;\n\n@layer base {\n  html {\n    @apply antialiased scroll-smooth;\n    text-rendering: optimizeLegibility;\n  }\n}` 
-    }],
-    props: [
-      { name: 'className', type: 'string', default: '-', desc: 'Additional CSS classes.' },
-      { name: 'title', type: 'string', default: '-', desc: 'Optional section heading.' },
-      { name: 'description', type: 'string', default: '-', desc: 'Optional descriptive text.' }
-    ]
-  },
-  'theme-provider': {
-    id: 'theme-provider',
-    name: 'Theme Provider',
-    category: 'Foundations',
-    description: 'The foundation for dark mode and styling theme management.',
-    examples: [{ 
-      title: 'Context Usage', 
-      render: () => <ThemeProviderInfo />, 
-      code: `import React from 'react';\nimport { ThemeProvider, useTheme } from '../context/ThemeContext';\n\n// 1. Root configuration\nexport const NexusRoot = ({ children }) => (\n  <ThemeProvider \n    defaultTheme="system" \n    storageKey="nexus-ui-theme"\n  >\n    {children}\n  </ThemeProvider>\n);\n\n// 2. Toggling theme in a component\nconst ThemeSwitcher = () => {\n  const { theme, setTheme } = useTheme();\n  \n  return (\n    <div className="flex bg-neutral-100 p-2 rounded-lg">\n      <button \n        className={\`px-3 py-1 rounded \${theme === "light" ? "bg-white shadow" : ""}\`}\n        onClick={() => setTheme("light")}\n      >\n        Light\n      </button>\n      <button \n        className={\`px-3 py-1 rounded \${theme === "dark" ? "bg-white shadow" : ""}\`}\n        onClick={() => setTheme("dark")}\n      >\n        Dark\n      </button>\n    </div>\n  );\n};` 
-    }],
-    props: [
-       { name: 'className', type: 'string', default: '-', desc: 'Additional CSS classes.' },
-       { name: 'title', type: 'string', default: '-', desc: 'Optional section heading.' },
-       { name: 'description', type: 'string', default: '-', desc: 'Optional descriptive text.' },
-       { name: 'defaultTheme', type: 'light | dark | system', default: 'system', desc: 'Default theme on first load.' },
-       { name: 'storageKey', type: 'string', default: 'theme', desc: 'Key to store theme in localStorage.' },
-       { name: 'attribute', type: 'string', default: 'class', desc: 'HTML attribute to toggle (class or data-theme).' }
-    ]
-  },
+// Helper to simulate a Divider
+const Divider = () => <hr className="my-4 border-neutral-200 dark:border-neutral-800" />;
 
-  // Primitives
+const docs: Record<string, ComponentDoc> = {
+  // --- 1D Components ---
   button: {
     id: 'button',
     name: 'Button',
-    category: 'Primitives',
-    description: 'Buttons allow users to take actions with a single tap. They come in various styles and states.',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'Buttons allow users to take actions, and make choices, with a single tap.',
+    implementationSource: SOURCES.primitives,
     examples: [
       {
         title: 'Variants',
@@ -166,1535 +55,887 @@ const docs: Record<string, ComponentDoc> = {
             <Button variant="outline">Outline</Button>
             <Button variant="ghost">Ghost</Button>
             <Button variant="danger">Danger</Button>
-            <Button variant="link">Link</Button>
           </Flex>
         ),
-        code: `<Flex gap={4}>\n  <Button variant="primary">Primary</Button>\n  <Button variant="secondary">Secondary</Button>\n  <Button variant="outline">Outline</Button>\n  <Button variant="ghost">Ghost</Button>\n  <Button variant="danger">Danger</Button>\n  <Button variant="link">Link</Button>\n</Flex>`
-      },
-      {
-        title: 'Sizes',
-        render: () => (
-          <Flex gap={4} align="center">
-            <Button size="sm">Small</Button>
-            <Button size="md">Medium</Button>
-            <Button size="lg">Large</Button>
-          </Flex>
-        ),
-        code: `<Flex gap={4} align="center">\n  <Button size="sm">Small</Button>\n  <Button size="md">Medium</Button>\n  <Button size="lg">Large</Button>\n</Flex>`
-      },
-      {
-         title: 'States',
-         render: () => (
-           <Flex gap={4}>
-             <Button isLoading>Loading</Button>
-             <Button disabled>Disabled</Button>
-             <Button variant="outline" isLoading>Processing</Button>
-           </Flex>
-         ),
-         code: `<Flex gap={4}>\n  <Button isLoading>Loading</Button>\n  <Button disabled>Disabled</Button>\n  <Button variant="outline" isLoading>Processing</Button>\n</Flex>`
-      },
-      {
-        title: 'With Icons (Bookmark & More)',
-        render: () => (
-          <Flex gap={4}>
-            <Button icon={<Icon size="sm"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></Icon>}>
-              Bookmark
-            </Button>
-            <Button rightIcon={<Icon size="sm"><path d="M14 5l7 7m0 0l-7 7m7-7H3"/></Icon>}>
-              Next Step
-            </Button>
-            <Button variant="outline" isIconButton aria-label="Bookmark">
-               <Icon size="md"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></Icon>
-            </Button>
-          </Flex>
-        ),
-        code: `<Flex gap={4}>\n  <Button icon={<Icon><path d="..."/></Icon>}>Bookmark</Button>\n  <Button rightIcon={<Icon><path d="..."/></Icon>}>Next Step</Button>\n  <Button isIconButton><Icon><path d="..."/></Icon></Button>\n</Flex>`
+        usageCode: `<Button variant="primary">Primary</Button>
+<Button variant="secondary">Secondary</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="danger">Danger</Button>`
       }
     ],
     props: [
-      { name: 'variant', type: 'primary | secondary | outline | ghost | danger | link', default: 'primary', desc: 'Visual style.' },
+      { name: 'variant', type: 'primary | secondary | outline | ghost | danger', default: 'primary', desc: 'Visual style of the button.' },
       { name: 'size', type: 'sm | md | lg', default: 'md', desc: 'Size of the button.' },
       { name: 'isLoading', type: 'boolean', default: 'false', desc: 'Show loading spinner.' },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disable interaction.' },
-      { name: 'icon', type: 'ReactNode', default: '-', desc: 'Left icon element.' },
-      { name: 'rightIcon', type: 'ReactNode', default: '-', desc: 'Right icon element.' },
-      { name: 'isIconButton', type: 'boolean', default: 'false', desc: 'Optimized for icon-only usage.' },
-      { name: 'fullWidth', type: 'boolean', default: 'false', desc: 'Stretch to full width.' },
-      { name: 'isActive', type: 'boolean', default: 'false', desc: 'Active state.' },
-    ],
+      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disable interaction.' }
+    ]
   },
   text: {
     id: 'text',
     name: 'Text',
-    category: 'Primitives',
+    category: '1D Components',
+    subCategory: 'Atomic',
     description: 'Text is the fundamental component for displaying body copy and small descriptions.',
+    implementationSource: SOURCES.primitives,
     examples: [
       {
         title: 'Sizes',
         render: () => (
-          <Stack spacing={4}>
-            <Text size="3xl">3XL Text (Display)</Text>
-            <Text size="2xl">2XL Text (Display)</Text>
-            <Text size="xl">Extra Large Text</Text>
-            <Text size="lg">Large Text</Text>
-            <Text size="base">Base Text (Default)</Text>
-            <Text size="sm">Small Text</Text>
-            <Text size="xs">Extra Small Text</Text>
+          <Stack spacing={2}>
+             <Text size="sm">Small text</Text>
+             <Text size="base">Base text</Text>
+             <Text size="lg">Large text</Text>
+             <Text size="xl">Extra Large text</Text>
           </Stack>
         ),
-        code: `<Stack spacing={4}>\n  <Text size="3xl">3XL Text</Text>\n  <Text size="2xl">2XL Text</Text>\n  <Text size="xl">XL Text</Text>\n  <Text size="lg">LG Text</Text>\n  <Text size="base">Base Text</Text>\n  <Text size="sm">SM Text</Text>\n  <Text size="xs">XS Text</Text>\n</Stack>`
-      },
-      {
-        title: 'Weights',
-        render: () => (
-          <Stack spacing={4}>
-            <Text weight="black">Black Weight</Text>
-            <Text weight="bold">Bold Weight</Text>
-            <Text weight="semibold">Semibold Weight</Text>
-            <Text weight="medium">Medium Weight</Text>
-            <Text weight="normal">Normal Weight</Text>
-          </Stack>
-        ),
-        code: `<Stack spacing={4}>\n  <Text weight="black">Black</Text>\n  <Text weight="bold">Bold</Text>\n  <Text weight="semibold">Semibold</Text>\n  <Text weight="medium">Medium</Text>\n  <Text weight="normal">Normal</Text>\n</Stack>`
-      },
-      {
-        title: 'Alignment',
-        render: () => (
-          <Stack spacing={4} className="max-w-md bg-neutral-100 dark:bg-neutral-800 p-4 rounded">
-            <Text align="left">Left aligned text (default)</Text>
-            <Text align="center">Center aligned text</Text>
-            <Text align="right">Right aligned text</Text>
-          </Stack>
-        ),
-        code: `<Stack spacing={4}>\n  <Text align="left">Left aligned</Text>\n  <Text align="center">Center aligned</Text>\n  <Text align="right">Right aligned</Text>\n</Stack>`
-      },
-      {
-        title: 'Colors',
-        render: () => (
-          <Stack spacing={4}>
-            <Text color="default">Default Color</Text>
-            <Text color="muted">Muted Color</Text>
-            <Text color="primary">Primary Color</Text>
-            <Text color="success">Success Color</Text>
-            <Text color="error">Error Color</Text>
-            <Box bg="black" padding={2} rounded="md"><Text color="white">White Color</Text></Box>
-          </Stack>
-        ),
-        code: `<Stack spacing={4}>\n  <Text color="default">Default</Text>\n  <Text color="muted">Muted</Text>\n  <Text color="primary">Primary</Text>\n  <Text color="success">Success</Text>\n  <Text color="error">Error</Text>\n  <Text color="white">White</Text>\n</Stack>`
+        usageCode: `<Text size="sm">Small text</Text>
+<Text size="base">Base text</Text>
+<Text size="lg">Large text</Text>
+<Text size="xl">Extra Large text</Text>`
       }
     ],
     props: [
-      { name: 'size', type: 'xs | sm | base | lg | xl | 2xl | 3xl', default: 'base', desc: 'The font size.' },
-      { name: 'weight', type: 'normal | medium | semibold | bold | black', default: 'normal', desc: 'The font weight.' },
-      { name: 'align', type: 'left | center | right | justify', default: 'left', desc: 'The text alignment.' },
-      { name: 'color', type: 'default | muted | primary | error | success | warning | white', default: 'default', desc: 'The text color.' },
-    ],
+      { name: 'size', type: 'xs | sm | base | lg | xl | 2xl | 3xl', default: 'base', desc: 'Font size.' },
+      { name: 'weight', type: 'normal | medium | semibold | bold', default: 'normal', desc: 'Font weight.' },
+      { name: 'align', type: 'left | center | right', default: 'left', desc: 'Text alignment.' }
+    ]
   },
-  heading: {
-      id: 'heading',
-      name: 'Heading',
-      category: 'Primitives',
-      description: 'Headings create hierarchy and separation in content.',
-      examples: [
-          {
-              title: 'Levels',
-              render: () => (
-                  <Stack spacing={4}>
-                      <Heading level={1}>Heading Level 1</Heading>
-                      <Heading level={2}>Heading Level 2</Heading>
-                      <Heading level={3}>Heading Level 3</Heading>
-                      <Heading level={4}>Heading Level 4</Heading>
-                      <Heading level={5}>Heading Level 5</Heading>
-                      <Heading level={6}>Heading Level 6</Heading>
-                  </Stack>
-              ),
-              code: `<Stack spacing={4}>\n  <Heading level={1}>H1</Heading>\n  <Heading level={2}>H2</Heading>\n  <Heading level={3}>H3</Heading>\n  <Heading level={4}>H4</Heading>\n  <Heading level={5}>H5</Heading>\n  <Heading level={6}>H6</Heading>\n</Stack>`
-          },
-          {
-              title: 'Alignment & Weight',
-              render: () => (
-                 <Stack spacing={4}>
-                   <Heading level={3} align="center">Center Aligned</Heading>
-                   <Heading level={3} align="right">Right Aligned</Heading>
-                   <Heading level={3} weight="normal">Normal Weight Heading</Heading>
-                   <Heading level={3} weight="black">Black Weight Heading</Heading>
-                 </Stack>
-              ),
-              code: `<Stack spacing={4}>\n  <Heading level={3} align="center">Center</Heading>\n  <Heading level={3} align="right">Right</Heading>\n  <Heading level={3} weight="normal">Weight</Heading>\n  <Heading level={3} weight="black">Black</Heading>\n</Stack>`
-          }
-      ],
-      props: [
-        { name: 'level', type: '1-6', default: '1', desc: 'Heading level.' },
-        { name: 'align', type: 'left | center | right', default: 'left', desc: 'Text alignment.' },
-        { name: 'weight', type: 'normal...black', default: 'bold', desc: 'Font weight.' },
-      ]
+  icon: {
+    id: 'icon',
+    name: 'Icon',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'SVG icons with support for outline and solid variants.',
+    implementationSource: SOURCES.primitives,
+    examples: [
+      {
+        title: 'Usage',
+        render: () => (
+          <Flex gap={4}>
+            <Icon size="md"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></Icon>
+            <Icon size="md" color="primary.600"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></Icon>
+          </Flex>
+        ),
+        usageCode: `<Icon size="md"><path d="..."/></Icon>
+<Icon size="md" color="primary.600"><path d="..."/></Icon>`
+      }
+    ],
+    props: [
+      { name: 'size', type: 'xs | sm | md | lg | xl', default: 'md', desc: 'Size of the icon.' },
+      { name: 'color', type: 'string', default: 'currentColor', desc: 'Icon color.' }
+    ]
   },
   badge: {
     id: 'badge',
     name: 'Badge',
-    category: 'Primitives',
+    category: '1D Components',
+    subCategory: 'Atomic',
     description: 'Badges highlight the state or status of an object.',
+    implementationSource: SOURCES.primitives,
     examples: [
-      {
-        title: 'Variants',
-        render: () => (
-          <Flex gap={4} wrap="wrap">
-            <Badge variant="default">Default</Badge>
-            <Badge variant="primary">Primary</Badge>
-            <Badge variant="secondary">Secondary</Badge>
-            <Badge variant="outline">Outline</Badge>
-            <Badge variant="ghost">Ghost</Badge>
-            <Badge variant="success">Success</Badge>
-            <Badge variant="warning">Warning</Badge>
-            <Badge variant="danger">Error</Badge>
-            <Badge variant="info">Info</Badge>
-          </Flex>
-        ),
-        code: `<Flex gap={4}>\n  <Badge variant="default">Default</Badge>\n  <Badge variant="primary">Primary</Badge>\n  <Badge variant="secondary">Secondary</Badge>\n  <Badge variant="outline">Outline</Badge>\n  <Badge variant="ghost">Ghost</Badge>\n  <Badge variant="success">Success</Badge>\n  <Badge variant="warning">Warning</Badge>\n  <Badge variant="danger">Error</Badge>\n  <Badge variant="info">Info</Badge>\n</Flex>`
-      },
-      {
-        title: 'Sizes & Shapes',
-        render: () => (
-          <Flex gap={4} align="center">
-            <Badge size="sm">Small</Badge>
-            <Badge size="md">Medium</Badge>
-            <Badge size="lg">Large</Badge>
-            <Badge isRound>Pill Shape</Badge>
-            <Badge isRound size="lg" variant="primary">Large Pill</Badge>
-          </Flex>
-        ),
-        code: `<Flex gap={4}>\n  <Badge size="sm">Small</Badge>\n  <Badge size="md">Medium</Badge>\n  <Badge size="lg">Large</Badge>\n  <Badge isRound>Pill</Badge>\n  <Badge isRound size="lg" variant="primary">Large Pill</Badge>\n</Flex>`
-      },
-      {
-         title: 'With Icon',
+       {
+         title: 'Variants',
          render: () => (
-           <Flex gap={4}>
-             <Badge variant="success" icon={<Icon size="sm"><path d="M5 13l4 4L19 7" /></Icon>}>Verified</Badge>
-             <Badge variant="danger" icon={<Icon size="sm"><path d="M6 18L18 6M6 6l12 12" /></Icon>}>Deleted</Badge>
+           <Flex gap={2}>
+             <Badge variant="default">Default</Badge>
+             <Badge variant="primary">Primary</Badge>
+             <Badge variant="success">Success</Badge>
+             <Badge variant="warning">Warning</Badge>
+             <Badge variant="danger">Danger</Badge>
            </Flex>
          ),
-         code: `<Badge variant="success" icon={<Icon><path d="..." /></Icon>}>Verified</Badge>\n<Badge variant="danger" icon={<Icon><path d="..." /></Icon>}>Deleted</Badge>`
-      }
+         usageCode: `<Badge variant="default">Default</Badge>
+<Badge variant="primary">Primary</Badge>
+<Badge variant="success">Success</Badge>
+<Badge variant="warning">Warning</Badge>
+<Badge variant="danger">Danger</Badge>`
+       }
     ],
     props: [
-      { name: 'variant', type: 'string', default: 'default', desc: 'Visual style.' },
-      { name: 'size', type: 'sm | md | lg', default: 'md', desc: 'Size of badge.' },
-      { name: 'isRound', type: 'boolean', default: 'false', desc: 'Use pill shape.' },
-      { name: 'icon', type: 'ReactNode', default: '-', desc: 'Icon element.' },
-    ],
-  },
-  box: {
-      id: 'box',
-      name: 'Box',
-      category: 'Primitives',
-      description: 'Box is a low-level wrapper component.',
-      examples: [
-          {
-              title: 'Usage',
-              render: () => <Box padding={4} bg="black" rounded="md" style={{ color: 'white' }}>Box Content</Box>,
-              code: `<Box padding={4} bg="black" rounded="md" style={{ color: 'white' }}>Box Content</Box>`
-          },
-          {
-              title: 'As Button',
-              render: () => <Box as="button" padding="2" bg="primary.100" rounded="md" className="hover:bg-primary-200 transition">Clickable Box</Box>,
-              code: `<Box as="button" padding="2" ...>Clickable Box</Box>`
-          }
-      ],
-      props: [
-        { name: 'padding', type: 'string | number', default: '-', desc: 'Padding value.' },
-        { name: 'margin', type: 'string | number', default: '-', desc: 'Margin value.' },
-        { name: 'bg', type: 'string', default: '-', desc: 'Background color.' },
-        { name: 'border', type: 'string', default: '-', desc: 'Border styles.' },
-        { name: 'rounded', type: 'string', default: '-', desc: 'Border radius.' },
-        { name: 'shadow', type: 'string', default: '-', desc: 'Box shadow.' },
-        { name: 'width', type: 'string | number', default: '-', desc: 'Width.' },
-        { name: 'height', type: 'string | number', default: '-', desc: 'Height.' },
-        { name: 'position', type: 'relative | absolute | fixed', default: '-', desc: 'Positioning.' },
-        { name: 'as', type: 'ElementType', default: 'div', desc: 'Polymorphic prop.' }
-      ]
-  },
-  flex: {
-    id: 'flex',
-    name: 'Flex',
-    category: 'Primitives',
-    description: 'Flexbox container.',
-    examples: [{
-      title: 'Alignment & Justify',
-      render: () => <Flex gap={4} justify="between" align="center" className="bg-neutral-100 p-4"><Box>Left</Box><Box>Right</Box></Flex>,
-      code: `<Flex gap={4} justify="between" align="center">\n  <Box>Left</Box>\n  <Box>Right</Box>\n</Flex>`
-    }],
-    props: [
-      { name: 'direction', type: 'row | col | row-reverse | col-reverse', default: 'row', desc: 'Flex direction.' },
-      { name: 'align', type: 'start | center | end | stretch | baseline', default: 'stretch', desc: 'Align items.' },
-      { name: 'justify', type: 'start | center | end | between | around | evenly', default: 'start', desc: 'Justify content.' },
-      { name: 'wrap', type: 'nowrap | wrap | wrap-reverse', default: 'nowrap', desc: 'Flex wrap.' },
-      { name: 'gap', type: 'number | string', default: '0', desc: 'Gap between items.' }
+      { name: 'variant', type: 'default | primary | success | warning | danger', default: 'default', desc: 'Visual style.' },
+      { name: 'size', type: 'sm | md | lg', default: 'md', desc: 'Size of the badge.' }
     ]
   },
-  container: {
-    id: 'container',
-    name: 'Container',
-    category: 'Layout',
-    description: 'Centers content horizontally.',
-    examples: [{
-      title: 'Sizes',
-      render: () => <Flex direction="col" gap={4}><Container size="sm" className="bg-neutral-100 p-4 border text-center">Small</Container><Container size="md" className="bg-neutral-100 p-4 border text-center">Medium</Container><Container size="lg" className="bg-neutral-100 p-4 border text-center">Large</Container></Flex>,
-      code: `<Container size="sm">Small</Container>\n<Container size="md">Medium</Container>\n<Container size="lg">Large</Container>`
-    }],
-    props: [
-      { name: 'size', type: 'sm | md | lg | xl | full', default: 'lg', desc: 'Max width.' },
-      { name: 'children', type: 'ReactNode', default: '-', desc: 'Content.' }
-    ]
-  },
-  card: {
-    id: 'card',
-    name: 'Card',
-    category: 'Layout',
-    description: 'Container for grouped content.',
-    examples: [{
-      title: 'Basic',
-      render: () => <Card><Heading level={4}>Card Title</Heading><Text className="mt-2">Card content goes here.</Text><Button className="mt-4" size="sm">Action</Button></Card>,
-      code: `<Card>\n  <Heading level={4}>Title</Heading>\n  <Text>Content</Text>\n  <Button>Action</Button>\n</Card>`
-    }],
-    props: [
-      { name: 'padding', type: 'none | sm | md | lg', default: 'md', desc: 'Inner spacing.' },
-      { name: 'interactive', type: 'boolean', default: 'false', desc: 'Hover effects.' },
-      { name: 'children', type: 'ReactNode', default: '-', desc: 'Card content.' }
-    ],
-  },
-  stack: {
-    id: 'stack',
-    name: 'Stack',
-    category: 'Layout',
-    description: 'Vertical or horizontal stack.',
-    examples: [{
-      title: 'Vertical Stack',
-      render: () => <Stack spacing={4}><Box bg="primary.100" p={4} rounded="md">Item 1</Box><Box bg="primary.200" p={4} rounded="md">Item 2</Box><Box bg="primary.300" p={4} rounded="md">Item 3</Box></Stack>,
-      code: `<Stack spacing={4}>\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Stack>`
-    }],
-    props: [
-      { name: 'direction', type: 'row | col', default: 'col', desc: 'Stack direction.' },
-      { name: 'spacing', type: '0-12', default: '4', desc: 'Gap between items.' },
-      { name: 'align', type: 'start | center | end | stretch', default: 'stretch', desc: 'Align items.' },
-      { name: 'justify', type: 'start | center | end | between', default: 'start', desc: 'Justify content.' }
-    ]
-  },
-  icon: {
-      id: 'icon',
-      name: 'Icon',
-      category: 'Primitives',
-      description: 'A component for rendering SVG icons with support for outline and solid variants.',
-      examples: [
-          {
-              title: 'Sizes',
-              render: () => (
-                  <Flex gap={4} align="center">
-                      <Icon size="xs"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></Icon>
-                      <Icon size="sm"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></Icon>
-                      <Icon size="md"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></Icon>
-                      <Icon size="lg"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></Icon>
-                      <Icon size="xl"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></Icon>
-                      <Icon size="2xl"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></Icon>
-                  </Flex>
-              ),
-              code: `<Flex gap={4} align="center">\n  <Icon size="xs" .../>\n  <Icon size="md" .../>\n  <Icon size="xl" .../>\n  <Icon size="2xl" .../>\n</Flex>`
-          },
-          {
-             title: 'Variants (Outline vs Solid)',
-             render: () => (
-                <Flex gap={8}>
-                   <Stack spacing={2} align="center">
-                      <Icon color="primary.600" size="lg"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></Icon>
-                      <Text size="xs">Outline</Text>
-                   </Stack>
-                   <Stack spacing={2} align="center">
-                      <Icon variant="solid" color="red.500" size="lg"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></Icon>
-                      <Text size="xs">Solid</Text>
-                   </Stack>
-                   <Stack spacing={2} align="center">
-                      <Icon variant="solid" color="blue.500" size="lg"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></Icon>
-                      <Text size="xs">Solid Check</Text>
-                   </Stack>
-                </Flex>
-             ),
-             code: `<Icon variant="outline" ... />\n<Icon variant="solid" color="red.500" ... />`
-          },
-          {
-             title: 'Colors & Stroke',
-             render: () => (
-                <Flex gap={4}>
-                   <Icon color="red" strokeWidth={1}><path d="M13 10V3L4 14h7v7l9-11h-7z" /></Icon>
-                   <Icon color="blue" strokeWidth={2}><path d="M13 10V3L4 14h7v7l9-11h-7z" /></Icon>
-                   <Icon color="green" strokeWidth={3}><path d="M13 10V3L4 14h7v7l9-11h-7z" /></Icon>
-                </Flex>
-             ),
-             code: `<Flex gap={4}>\n  <Icon color="red" strokeWidth={1}><path .../></Icon>\n  <Icon color="blue" strokeWidth={2}><path .../></Icon>\n</Flex>`
-          }
-      ],
-      props: [
-        { name: 'size', type: 'xs | sm | md | lg | xl | 2xl', default: 'md', desc: 'Size of the icon.' },
-        { name: 'variant', type: 'outline | solid', default: 'outline', desc: 'Display variant.' },
-        { name: 'color', type: 'string', default: 'currentColor', desc: 'Icon color.' },
-        { name: 'fill', type: 'string', default: 'none', desc: 'Custom fill color (if different from color).' },
-        { name: 'strokeWidth', type: 'number', default: '2', desc: 'Stroke width for outline icons.' },
-      ]
-  },
-  'icon-button': {
-    id: 'icon-button',
-    name: 'Icon Button',
-    category: 'Primitives',
-    description: 'A button containing only an icon, used for common actions in compact spaces.',
+  input: {
+    id: 'input',
+    name: 'Input',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'Used for single-line text input.',
+    implementationSource: SOURCES.forms,
     examples: [
       {
-        title: 'Variants',
-        render: () => (
-          <Flex gap={4}>
-            <IconButton aria-label="Search" icon={<Icon><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></Icon>} />
-            <IconButton variant="ghost" aria-label="Edit" icon={<Icon><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></Icon>} />
-            <IconButton variant="outline" aria-label="Delete" icon={<Icon><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></Icon>} />
-            <IconButton variant="surface" aria-label="Share" icon={<Icon><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></Icon>} />
-          </Flex>
-        ),
-        code: `<IconButton aria-label="Search" icon={<Icon ... />} />\n<IconButton variant="ghost" aria-label="Edit" ... />\n<IconButton variant="outline" aria-label="Delete" ... />`
-      },
-      {
-        title: 'Sizes',
-        render: () => (
-          <Flex gap={4} align="center">
-            <IconButton size="sm" aria-label="Small" icon={<Icon size="sm"><path d="M12 4v16m8-8H4"/></Icon>} />
-            <IconButton size="md" aria-label="Medium" icon={<Icon size="md"><path d="M12 4v16m8-8H4"/></Icon>} />
-            <IconButton size="lg" aria-label="Large" icon={<Icon size="lg"><path d="M12 4v16m8-8H4"/></Icon>} />
-          </Flex>
-        ),
-        code: `<IconButton size="sm" ... />\n<IconButton size="md" ... />\n<IconButton size="lg" ... />`
-      },
-      {
-        title: 'States',
-        render: () => (
-          <Flex gap={4}>
-            <IconButton isLoading aria-label="Loading" icon={<Icon><path d="M12 4v16m8-8H4"/></Icon>} />
-            <IconButton disabled aria-label="Disabled" icon={<Icon><path d="M12 4v16m8-8H4"/></Icon>} />
-            <IconButton tooltip="Special Action" aria-label="Help" icon={<Icon><path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></Icon>} />
-          </Flex>
-        ),
-        code: `<IconButton isLoading aria-label="Loading" ... />\n<IconButton disabled aria-label="Disabled" ... />\n<IconButton tooltip="Tooltip Text" aria-label="Help" ... />`
+        title: 'Basic',
+        render: () => <Input placeholder="Enter your name" />,
+        usageCode: `<Input placeholder="Enter your name" />`
       }
     ],
     props: [
-      { name: 'icon', type: 'ReactNode', default: '-', desc: 'The icon element to render.' },
-      { name: 'aria-label', type: 'string', default: '-', desc: 'Required accessible label for the button.' },
-      { name: 'variant', type: 'solid | ghost | outline | surface', default: 'solid', desc: 'The visual style of the button.' },
-      { name: 'size', type: 'sm | md | lg', default: 'md', desc: 'The size of the button.' },
-      { name: 'isLoading', type: 'boolean', default: 'false', desc: 'Shows a loading spinner instead of the icon.' },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Prevents user interaction.' },
-      { name: 'tooltip', type: 'string', default: '-', desc: 'Text for the integrated tooltip.' },
-      { name: 'onClick', type: '() => void', default: '-', desc: 'Click handler.' }
+      { name: 'label', type: 'string', default: '-', desc: 'Label text.' },
+      { name: 'error', type: 'string', default: '-', desc: 'Error message.' }
     ]
+  },
+  textarea: {
+    id: 'textarea',
+    name: 'Textarea',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'Multi-line text input.',
+    implementationSource: SOURCES.forms,
+    examples: [
+      {
+        title: 'Basic',
+        render: () => <Textarea label="Message" placeholder="Type your message..." rows={4} />,
+        usageCode: `<Textarea label="Message" placeholder="Type your message..." rows={4} />`
+      }
+    ],
+    props: [
+      { name: 'label', type: 'string', default: '-', desc: 'Label text.' },
+      { name: 'rows', type: 'number', default: '4', desc: 'Number of rows.' }
+    ]
+  },
+  select: {
+    id: 'select',
+    name: 'Select',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'Dropdown selection input.',
+    implementationSource: SOURCES.forms,
+    examples: [
+      {
+        title: 'Basic',
+        render: () => <Select label="Country" options={[{label: 'United States', value: 'us'}, {label: 'Canada', value: 'ca'}]} />,
+        usageCode: `<Select label="Country" options={[{label: 'United States', value: 'us'}, {label: 'Canada', value: 'ca'}]} />`
+      }
+    ],
+    props: [
+      { name: 'options', type: '{label, value}[]', default: '[]', desc: 'Options to display.' }
+    ]
+  },
+  heading: {
+    id: 'heading',
+    name: 'Heading',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'Headings are used for titles and subtitles, supporting levels 1 through 6.',
+    implementationSource: SOURCES.primitives,
+    examples: [
+      {
+        title: 'Levels',
+        render: () => <Stack spacing={2}><Heading level={1}>Heading 1</Heading><Heading level={2}>Heading 2</Heading><Heading level={3}>Heading 3</Heading></Stack>,
+        usageCode: `<Heading level={1}>Heading 1</Heading>`
+      }
+    ],
+    props: [{ name: 'level', type: '1 | 2 | 3 | 4 | 5 | 6', default: '1', desc: 'Heading level.' }]
   },
   avatar: {
     id: 'avatar',
     name: 'Avatar',
-    category: 'Primitives',
-    description: 'Avatars represent a user or organization.',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'Displays a user image or initials as a fallback.',
+    implementationSource: SOURCES.primitives,
     examples: [
       {
-        title: 'Sizes',
-        render: () => (
-          <Flex gap={4} align="center">
-            <Avatar size="sm" fallback="S" />
-            <Avatar size="md" fallback="M" />
-            <Avatar size="lg" fallback="L" />
-            <Avatar size="xl" fallback="XL" />
-            <Avatar size="2xl" fallback="2X" />
-          </Flex>
-        ),
-        code: `<Flex gap={4} align="center">\n  <Avatar size="sm" fallback="S" />\n  <Avatar size="md" fallback="M" />\n  <Avatar size="lg" fallback="L" />\n  <Avatar size="xl" fallback="XL" />\n  <Avatar size="2xl" fallback="2X" />\n</Flex>`
-      },
+        title: 'Basic',
+        render: () => <Flex gap={4}><Avatar src="https://i.pravatar.cc/150?u=1" alt="User" /><Avatar fallback="JD" /><Avatar status="online" /></Flex>,
+        usageCode: `<Avatar src="..." alt="User" />`
+      }
+    ],
+    props: [{ name: 'src', type: 'string', default: '-', desc: 'Image source.' }]
+  },
+  box: {
+    id: 'box',
+    name: 'Box',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'A primitive layout component for managing spacing, borders, and position.',
+    implementationSource: SOURCES.primitives,
+    examples: [
       {
-        title: 'Shapes',
-        render: () => (
-          <Flex gap={4} align="center">
-            <Avatar shape="circle" fallback="C" />
-            <Avatar shape="rounded" fallback="R" />
-            <Avatar shape="square" fallback="S" />
-          </Flex>
-        ),
-        code: `<Flex gap={4}>\n  <Avatar shape="circle" fallback="C" />\n  <Avatar shape="rounded" fallback="R" />\n  <Avatar shape="square" fallback="S" />\n</Flex>`
-      },
+        title: 'Styling',
+        render: () => <Box className="p-4 bg-primary-100 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-lg"><Text>This is a Box</Text></Box>,
+        usageCode: `<Box className="p-4 bg-primary-100 border rounded-lg">...</Box>`
+      }
+    ],
+    props: []
+  },
+  flex: {
+    id: 'flex',
+    name: 'Flex',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'A layout component based on Flexbox.',
+    implementationSource: SOURCES.primitives,
+    examples: [
       {
-        title: 'Status Indicators',
-        render: () => (
-          <Flex gap={4}>
-            <Avatar status="online" fallback="ON" />
-            <Avatar status="offline" fallback="OFF" />
-            <Avatar status="busy" fallback="BZ" />
-            <Avatar status="away" fallback="AW" />
-          </Flex>
-        ),
-        code: `<Flex gap={4}>\n  <Avatar status="online" fallback="ON" />\n  <Avatar status="offline" fallback="OFF" />\n  <Avatar status="busy" fallback="BZ" />\n  <Avatar status="away" fallback="AW" />\n</Flex>`
+        title: 'Row Layout',
+        render: () => <Flex gap={4} justify="between" className="w-full bg-neutral-100 p-2 rounded"><Box className="w-10 h-10 bg-primary-500 rounded" /><Box className="w-10 h-10 bg-primary-500 rounded" /><Box className="w-10 h-10 bg-primary-500 rounded" /></Flex>,
+        usageCode: `<Flex gap={4} justify="between">...</Flex>`
+      }
+    ],
+    props: [{ name: 'direction', type: 'row | col', default: 'row', desc: 'Flex direction.' }]
+  },
+  checkbox: {
+    id: 'checkbox',
+    name: 'Checkbox',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'Allows multiple selection.',
+    implementationSource: SOURCES.forms,
+    examples: [
+      {
+        title: 'Basic',
+        render: () => <Checkbox label="Accept terms and conditions" />,
+        usageCode: `<Checkbox label="Accept terms and conditions" />`
       }
     ],
     props: [
-      { name: 'size', type: 'sm | md | lg | xl | 2xl', default: 'md', desc: 'Size of the avatar.' },
-      { name: 'shape', type: 'circle | rounded | square', default: 'circle', desc: 'Shape of avatar.' },
-      { name: 'src', type: 'string', default: '-', desc: 'Image URL.' },
-      { name: 'fallback', type: 'string', default: '-', desc: 'Fallback text.' },
-      { name: 'status', type: 'online | offline | busy | away', default: '-', desc: 'Optional status indicator.' }
-    ]
-  },
-
-  // Forms
-  input: {
-      id: 'input',
-      name: 'Input',
-      category: 'Forms',
-      description: 'Used for single-line text input.',
-      examples: [
-          {
-              title: 'Basic',
-              render: () => <Input placeholder="Enter text..." />,
-              code: `<Input placeholder="Enter text..." />`
-          },
-          {
-              title: 'With Label & Error',
-              render: () => <Input label="Email" placeholder="test@example.com" error="Invalid email" />,
-              code: `<Input label="Email" placeholder="test@example.com" error="Invalid email" />`
-          }
-      ],
-    props: [
-        { name: 'label', type: 'string', default: '-', desc: 'Input label.' },
-        { name: 'error', type: 'string', default: '-', desc: 'Error message.' },
-        { name: 'helperText', type: 'string', default: '-', desc: 'Helper text.' },
-        { name: 'placeholder', type: 'string', default: '-', desc: 'Placeholder text.' },
-        { name: 'type', type: 'string', default: 'text', desc: 'Input type.' }
-    ]
-  },
-  textarea: {
-      id: 'textarea',
-      name: 'Textarea',
-      category: 'Forms',
-      description: 'Used for multi-line text input.',
-      examples: [
-          {
-              title: 'Basic',
-              render: () => <Textarea label="Description" placeholder="Enter description..." />,
-              code: `<Textarea label="Description" placeholder="Enter description..." />`
-          }
-      ],
-    props: [
-        { name: 'label', type: 'string', default: '-', desc: 'Input label.' },
-        { name: 'rows', type: 'number', default: '4', desc: 'Number of rows.' },
-        { name: 'placeholder', type: 'string', default: '-', desc: 'Placeholder text.' }
-    ]
-  },
-  select: {
-      id: 'select',
-      name: 'Select',
-      category: 'Forms',
-      description: 'Allows selection from a list of options.',
-      examples: [
-          {
-              title: 'Basic',
-              render: () => <Select label="Country" options={[{label: 'USA', value: 'usa'}, {label: 'Canada', value: 'ca'}]} />,
-              code: `<Select label="Country" options={[{label: 'USA', value: 'usa'}, {label: 'Canada', value: 'ca'}]} />`
-          }
-      ],
-    props: [
-        { name: 'label', type: 'string', default: '-', desc: 'Input label.' },
-        { name: 'options', type: '{label: string, value: string}[]', default: '[]', desc: 'Options list.' },
-        { name: 'error', type: 'string', default: '-', desc: 'Error message.' }
-    ]
-  },
-  checkbox: {
-      id: 'checkbox',
-      name: 'Checkbox',
-      category: 'Forms',
-      description: 'Allows multiple selection.',
-      examples: [
-          {
-              title: 'Basic',
-              render: () => <Stack spacing={2}><Checkbox label="Option 1" /><Checkbox label="Option 2" checked /></Stack>,
-              code: `<Stack spacing={2}>\n  <Checkbox label="Option 1" />\n  <Checkbox label="Option 2" checked />\n</Stack>`
-          }
-      ],
-    props: [
-        { name: 'label', type: 'string', default: '-', desc: 'Checkbox label.' },
-        { name: 'checked', type: 'boolean', default: '-', desc: 'Checked state.' },
-        { name: 'onChange', type: '(e) => void', default: '-', desc: 'Change handler.' }
+      { name: 'label', type: 'string', default: '-', desc: 'Label text.' },
+      { name: 'checked', type: 'boolean', default: 'false', desc: 'Checked state.' }
     ]
   },
   radio: {
-      id: 'radio',
-      name: 'Radio',
-      category: 'Forms',
-      description: 'Allows single selection.',
-      examples: [
-          {
-              title: 'Basic',
-              render: () => <Stack spacing={2}><Radio name="g1" label="Option 1" /><Radio name="g1" label="Option 2" /></Stack>,
-              code: `<Stack spacing={2}>\n  <Radio name="g1" label="Option 1" />\n  <Radio name="g1" label="Option 2" />\n</Stack>`
-          }
-      ],
+    id: 'radio',
+    name: 'Radio',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'Single selection from a group.',
+    implementationSource: SOURCES.forms,
+    examples: [
+      {
+        title: 'Basic',
+        render: () => <Stack spacing={2}><Radio name="plan" label="Free Plan" /><Radio name="plan" label="Pro Plan" /></Stack>,
+        usageCode: `<Stack spacing={2}>\n  <Radio name="plan" label="Free Plan" />\n  <Radio name="plan" label="Pro Plan" />\n</Stack>`
+      }
+    ],
     props: [
-        { name: 'label', type: 'string', default: '-', desc: 'Radio label.' },
-        { name: 'name', type: 'string', default: '-', desc: 'Group name.' },
-        { name: 'checked', type: 'boolean', default: '-', desc: 'Checked state.' }
+      { name: 'label', type: 'string', default: '-', desc: 'Label text.' },
+      { name: 'name', type: 'string', default: '-', desc: 'Group name.' }
     ]
   },
   switch: {
-      id: 'switch',
-      name: 'Switch',
-      category: 'Forms',
-      description: 'Toggle between two states.',
-      examples: [
-          {
-              title: 'Usage',
-              render: () => {
-                  const [on, setOn] = useState(false);
-                  return <Switch checked={on} onChange={setOn} label="Notifications" />;
-              },
-              code: `const [on, setOn] = useState(false);\nreturn <Switch checked={on} onChange={setOn} label="Notifications" />;`
-          }
-      ],
+    id: 'switch',
+    name: 'Switch',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'Toggle between two states.',
+    implementationSource: SOURCES.forms,
+    examples: [
+      {
+        title: 'Basic',
+        render: () => {
+          const [checked, setChecked] = useState(false);
+          return <Switch label="Airplane Mode" checked={checked} onChange={setChecked} />;
+        },
+        usageCode: `const [checked, setChecked] = useState(false);\n<Switch label="Airplane Mode" checked={checked} onChange={setChecked} />`
+      }
+    ],
     props: [
-        { name: 'label', type: 'string', default: '-', desc: 'Switch label.' },
-        { name: 'checked', type: 'boolean', default: 'false', desc: 'Checked state.' },
-        { name: 'onChange', type: '(checked) => void', default: '-', desc: 'Change handler.' }
+      { name: 'label', type: 'string', default: '-', desc: 'Label text.' }
     ]
   },
   slider: {
-      id: 'slider',
-      name: 'Slider',
-      category: 'Forms',
-      description: 'Select a value from a range.',
-      examples: [
-          {
-              title: 'Usage',
-              render: () => {
-                  const [val, setVal] = useState(50);
-                  return <Slider value={val} onChange={setVal} label="Volume" />;
-              },
-              code: `const [val, setVal] = useState(50);\nreturn <Slider value={val} onChange={setVal} label="Volume" />;`
-          }
-      ],
+    id: 'slider',
+    name: 'Slider',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'Select a value from a range.',
+    implementationSource: SOURCES.forms,
+    examples: [
+      {
+        title: 'Basic',
+        render: () => <Slider label="Volume" min={0} max={100} value={50} onChange={() => {}} />,
+        usageCode: `<Slider label="Volume" min={0} max={100} value={50} onChange={setVal} />`
+      }
+    ],
     props: [
-        { name: 'label', type: 'string', default: '-', desc: 'Slider label.' },
-        { name: 'value', type: 'number', default: '0', desc: 'Current value.' },
-        { name: 'min', type: 'number', default: '0', desc: 'Minimum value.' },
-        { name: 'max', type: 'number', default: '100', desc: 'Maximum value.' },
-        { name: 'onChange', type: '(val) => void', default: '-', desc: 'Change handler.' }
+      { name: 'min', type: 'number', default: '0', desc: 'Minimum value.' }
     ]
   },
-
-  // Feedback
   spinner: {
-      id: 'spinner',
-      name: 'Spinner',
-      category: 'Feedback',
-      description: 'Indicates loading state.',
-      examples: [
-          {
-              title: 'Sizes',
-              render: () => <Flex gap={4}><Spinner size="sm"/><Spinner size="md"/><Spinner size="lg"/></Flex>,
-              code: `<Flex gap={4}>\n  <Spinner size="sm"/>\n  <Spinner size="md"/>\n  <Spinner size="lg"/>\n</Flex>`
-          }
-      ],
-      props: [{ name: 'size', type: 'sm | md | lg', default: 'md', desc: 'Size of spinner.' }]
-  },
-  skeleton: {
-      id: 'skeleton',
-      name: 'Skeleton',
-      category: 'Feedback',
-      description: 'Placeholder for content loading.',
-      examples: [
-          {
-              title: 'Variants',
-              render: () => (
-                  <Stack spacing={4}>
-                      <Skeleton variant="text" width={200} />
-                      <Skeleton variant="circular" width={40} height={40} />
-                      <Skeleton variant="rectangular" width="100%" height={100} />
-                  </Stack>
-              ),
-              code: `<Stack spacing={4}>\n  <Skeleton variant="text" width={200} />\n  <Skeleton variant="circular" width={40} height={40} />\n  <Skeleton variant="rectangular" width="100%" height={100} />\n</Stack>`
-          }
-      ],
-      props: [{ name: 'variant', type: 'text | circular | rectangular', default: 'text', desc: 'Shape variant.' }]
-  },
-  'progress': {
-    id: 'progress',
-    name: 'Progress',
-    category: 'Feedback',
-    description: 'Displays an indicator showing the completion progress of a task.',
-    examples: [{
-      title: 'Basic',
-      render: () => (
-        <Stack spacing={6}>
-          <ProgressBar value={32} label="Default" labelPosition="right" showLabel />
-          <ProgressBar value={60} label="With Top Label" showLabel />
-        </Stack>
-      ),
-      code: `<ProgressBar value={32} label="Progress" labelPosition="right" showLabel />\n<ProgressBar value={60} showLabel />`
-    }, {
-      title: 'Variants',
-      render: () => (
-        <Stack spacing={6}>
-          <ProgressBar value={40} variant="success" labelPosition="right" showLabel />
-          <ProgressBar value={70} variant="warning" labelPosition="right" showLabel />
-          <ProgressBar value={90} variant="danger" labelPosition="right" showLabel />
-          <ProgressBar value={60} variant="gradient" labelPosition="right" showLabel />
-        </Stack>
-      ),
-      code: `<ProgressBar value={40} variant="success" labelPosition="right" showLabel />
-<ProgressBar value={70} variant="warning" labelPosition="right" showLabel />
-<ProgressBar value={90} variant="danger" labelPosition="right" showLabel />
-<ProgressBar value={60} variant="gradient" labelPosition="right" showLabel />`
-    }, {
-      title: 'Indeterminate',
-      render: () => <ProgressBar indeterminate />,
-      code: `<ProgressBar indeterminate />`
-    }],
+    id: 'spinner',
+    name: 'Spinner',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'Indicates loading state.',
+    implementationSource: SOURCES.feedback,
+    examples: [
+      {
+        title: 'Sizes',
+        render: () => <Flex gap={4}><Spinner size="sm" /><Spinner size="md" /><Spinner size="lg" /></Flex>,
+        usageCode: `<Spinner size="sm" />\n<Spinner size="md" />\n<Spinner size="lg" />`
+      }
+    ],
     props: [
-      { name: 'value', type: 'number', default: '0', desc: 'Percentage (0-100).' },
-      { name: 'variant', type: 'default | success | warning | danger | gradient', default: 'default', desc: 'Color variant.' },
-      { name: 'showLabel', type: 'boolean', default: 'false', desc: 'Show percentage label.' },
-      { name: 'indeterminate', type: 'boolean', default: 'false', desc: 'Loading animation.' },
-      { name: 'size', type: 'sm | md | lg | xl', default: 'md', desc: 'Height of bar.' }
+      { name: 'size', type: 'sm | md | lg | xl', default: 'md', desc: 'Size of the spinner.' }
+    ]
+  },
+  divider: {
+    id: 'divider',
+    name: 'Divider',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'Visually separates content.',
+    examples: [
+      {
+        title: 'Usage',
+        render: () => <Box><Text>Above</Text><Divider /><Text>Below</Text></Box>,
+        usageCode: `<Text>Above</Text>\n<hr className="my-4 border-neutral-200" />\n<Text>Below</Text>`
+      }
+    ],
+    props: []
+  },
+  'progress-bar': {
+    id: 'progress-bar',
+    name: 'Progress Bar',
+    category: '1D Components',
+    subCategory: 'Atomic',
+    description: 'Visual indicator of progress.',
+    implementationSource: SOURCES.progressBarJSX,
+    cssSource: SOURCES.progressBarCSS,
+    examples: [
+      {
+        title: 'Basic',
+        render: () => <Stack spacing={4} className="w-full max-w-md"><ProgressBar value={25} /><ProgressBar value={50} showLabel /><ProgressBar value={75} variant="success" /></Stack>,
+        usageCode: `<ProgressBar value={25} />\n<ProgressBar value={50} showLabel />\n<ProgressBar value={75} variant="success" />`
+      }
+    ],
+    props: [
+      { name: 'value', type: 'number', default: '0', desc: 'Current progress.' }
     ]
   },
 
-
-
-  // --- Forms & Auth ---
-  'form-wrapper': {
-    id: 'form-wrapper',
-    name: 'Form Wrapper',
-    category: 'Forms & Auth',
-    description: 'A wrapper component for handling form submission.',
-    examples: [{
-      title: 'Basic Usage',
-      render: () => <FormWrapper onSubmit={(e) => alert('Submitted!')}><Input placeholder="Type here" /><Button type="submit">Submit</Button></FormWrapper>,
-      code: `<FormWrapper onSubmit={handleSubmit}>\n  <Input />\n  <Button type="submit">Submit</Button>\n</FormWrapper>`
-    }],
-    props: [{ name: 'onSubmit', type: '(e) => void', default: '-', desc: 'Submit handler.' }]
-  },
-  'login-form': {
-    id: 'login-form',
-    name: 'Login Form',
-    category: 'Forms & Auth',
-    description: 'Pre-built login form component.',
-    examples: [{
-      title: 'Example',
-      render: () => <LoginForm onSubmit={(data) => console.log(data)} />,
-      code: `<LoginForm onSubmit={(data) => console.log(data)} />`
-    }],
-    props: [{ name: 'onSubmit', type: '(data) => void', default: '-', desc: 'Handler called with email and password.' }]
-  },
-  'signup-form': {
-    id: 'signup-form',
-    name: 'Signup Form',
-    category: 'Forms & Auth',
-    description: 'Pre-built signup form component.',
-    examples: [{
-      title: 'Example',
-      render: () => <SignupForm onSubmit={(data) => console.log(data)} />,
-      code: `<SignupForm onSubmit={(data) => console.log(data)} />`
-    }],
-    props: [{ name: 'onSubmit', type: '(data) => void', default: '-', desc: 'Handler called with name, email, password.' }]
-  },
-  'forgot-password': {
-    id: 'forgot-password',
-    name: 'Forgot Password',
-    category: 'Forms & Auth',
-    description: 'Form to request password reset.',
-    examples: [{
-      title: 'Example',
-      render: () => <ForgotPasswordForm onSubmit={(data) => console.log(data)} />,
-      code: `<ForgotPasswordForm onSubmit={(data) => console.log(data)} />`
-    }],
-    props: [{ name: 'onSubmit', type: '(data) => void', default: '-', desc: 'Handler called with email.' }]
-  },
-  'reset-password': {
-    id: 'reset-password',
-    name: 'Reset Password',
-    category: 'Forms & Auth',
-    description: 'Form to reset password.',
-    examples: [{
-      title: 'Example',
-      render: () => <ResetPasswordForm onSubmit={(data) => console.log(data)} />,
-      code: `<ResetPasswordForm onSubmit={(data) => console.log(data)} />`
-    }],
-    props: [{ name: 'onSubmit', type: '(data) => void', default: '-', desc: 'Handler called with new password.' }]
-  },
-  'otp-verification': {
-    id: 'otp-verification',
-    name: 'OTP Verification',
-    category: 'Forms & Auth',
-    description: 'Input for one-time password verification.',
-    examples: [{
-      title: '6-Digit OTP',
-      render: () => <OTPVerification onComplete={(code) => alert(`Code: ${code}`)} />,
-      code: `<OTPVerification onComplete={(code) => handleVerify(code)} />`
-    }],
-    props: [{ name: 'length', type: 'number', default: '6', desc: 'Number of inputs.' }, { name: 'onComplete', type: '(code) => void', default: '-', desc: 'Called when filled.' }]
-  },
-  'password-strength': {
-    id: 'password-strength',
-    name: 'Password Strength',
-    category: 'Forms & Auth',
-    description: 'Visual indicator for password strength.',
-    examples: [{
-      title: 'Interactive',
-      render: () => {
-        const [p, setP] = useState('');
-        return <div className="max-w-xs"><Input type="password" value={p} onChange={e => setP(e.target.value)} placeholder="Type password..." /><PasswordStrengthMeter password={p} /></div>;
-      },
-      code: `<Input type="password" value={pass} onChange={e => setPass(e.target.value)} />\n<PasswordStrengthMeter password={pass} />`
-    }],
-    props: [{ name: 'password', type: 'string', default: '-', desc: 'Password string to evaluate.' }]
-  },
-  'file-upload': {
-    id: 'file-upload',
-    name: 'File Upload',
-    category: 'Forms & Auth',
-    description: 'Drag and drop file upload zone.',
-    examples: [{
-      title: 'Basic',
-      render: () => <FileUpload />,
-      code: `<FileUpload label="Upload Image" accept="image/*" />`
-    }],
-    props: [{ name: 'label', type: 'string', default: 'Upload file', desc: 'Label text.' }, { name: 'accept', type: 'string', default: '-', desc: 'File types accepted.' }]
-  },
-  'date-time-picker': {
-    id: 'date-time-picker',
-    name: 'Date & Time',
-    category: 'Forms & Auth',
-    description: 'Native date and time pickers.',
-    examples: [{
-      title: 'Pickers',
-      render: () => <Stack spacing={4}><DatePicker label="Select Date" /><TimePicker label="Select Time" /></Stack>,
-      code: `<DatePicker label="Select Date" />\n<TimePicker label="Select Time" />`
-    }],
-    props: [{ name: 'label', type: 'string', default: '-', desc: 'Input label.' }]
-  },
-  'search-input': {
-    id: 'search-input',
-    name: 'Search Input',
-    category: 'Forms & Auth',
-    description: 'Search field with icon.',
-    examples: [{
-      title: 'Basic',
-      render: () => <SearchInput onSearch={console.log} />,
-      code: `<SearchInput onSearch={(val) => filterResults(val)} />`
-    }],
+  // --- 2D Components ---
+  card: {
+    id: 'card',
+    name: 'Card',
+    category: '2D Components',
+    subCategory: 'Surface',
+    description: 'Container for grouped content.',
+    implementationSource: SOURCES.layout,
+    examples: [
+      {
+        title: 'Basic',
+        render: () => (
+          <Card>
+            <Heading level={4}>Card Title</Heading>
+            <Text className="mt-2 text-neutral-600 dark:text-neutral-400">This is a card component used to group related information.</Text>
+            <div className="mt-4 flex justify-end">
+              <Button size="sm">Action</Button>
+            </div>
+          </Card>
+        ),
+        usageCode: `<Card>\n  <Heading level={4}>Card Title</Heading>\n  <Text>Card content...</Text>\n  <Button>Action</Button>\n</Card>`
+      }
+    ],
     props: [
-        { name: 'placeholder', type: 'string', default: 'Search...', desc: 'Placeholder text.' },
-        { name: 'onSearch', type: '(val) => void', default: '-', desc: 'Callback on change.' }
+      { name: 'padding', type: 'none | sm | md | lg', default: 'md', desc: 'Padding inside the card.' }
     ]
   },
-
-  // --- Composite ---
-  'modal': {
+  stack: {
+    id: 'stack',
+    name: 'Stack',
+    category: '2D Components',
+    subCategory: 'Layout',
+    description: 'Vertical or horizontal stack.',
+    implementationSource: SOURCES.layout,
+    examples: [
+      {
+        title: 'Vertical',
+        render: () => <Stack spacing={4}><Box className="p-4 bg-neutral-200 dark:bg-neutral-800 rounded">1</Box><Box className="p-4 bg-neutral-200 dark:bg-neutral-800 rounded">2</Box></Stack>,
+        usageCode: `<Stack spacing={4}>\n  <Box>1</Box>\n  <Box>2</Box>\n</Stack>`
+      }
+    ],
+    props: []
+  },
+  modal: {
     id: 'modal',
     name: 'Modal',
-    category: 'Composite',
-    description: 'Dialog window overlay.',
-    examples: [{
-      title: 'Basic',
-      render: () => {
-        const [o, setO] = useState(false);
-        return <><Button onClick={() => setO(true)}>Open Modal</Button><Modal isOpen={o} onClose={() => setO(false)} title="My Modal"><Text>Content here.</Text></Modal></>;
-      },
-      code: `const [isOpen, setIsOpen] = useState(false);\n\n<Button onClick={() => setIsOpen(true)}>Open Modal</Button>\n\n<Modal \n  isOpen={isOpen} \n  onClose={() => setIsOpen(false)} \n  title="My Modal"\n>\n  <Text>Modal content goes here.</Text>\n</Modal>`
-    }],
+    category: '2D Components',
+    subCategory: 'Surface',
+    description: 'Dialog window that requires user interaction.',
+    implementationSource: SOURCES.composite,
+    examples: [
+      {
+        title: 'Example',
+        render: () => {
+          const [isOpen, setIsOpen] = useState(false);
+          return (
+            <>
+              <Button onClick={() => setIsOpen(true)}>Open Modal</Button>
+              <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Example Modal" footer={<Button onClick={() => setIsOpen(false)}>Close</Button>}>
+                <Text>This is the modal content. It overlays the page content.</Text>
+              </Modal>
+            </>
+          );
+        },
+        usageCode: `const [isOpen, setIsOpen] = useState(false);\n<Modal \n  isOpen={isOpen} \n  onClose={() => setIsOpen(false)} \n  title="Example Modal"\n>\n  <Text>Modal content...</Text>\n</Modal>`
+      }
+    ],
     props: [
-      { name: 'isOpen', type: 'boolean', default: 'false', desc: 'Controls visibility.' },
-      { name: 'onClose', type: '() => void', default: '-', desc: 'Close handler.' },
-      { name: 'title', type: 'string', default: '-', desc: 'Modal header title.' },
-      { name: 'size', type: 'sm | md | lg | xl | full', default: 'md', desc: 'Modal width.' },
-      { name: 'footer', type: 'ReactNode', default: '-', desc: 'Footer content (buttons).' },
-      { name: 'children', type: 'ReactNode', default: '-', desc: 'Modal body content.' }
+      { name: 'isOpen', type: 'boolean', default: 'false', desc: 'Controls visibility.' }
     ]
   },
-  'drawer': {
-    id: 'drawer',
-    name: 'Drawer',
-    category: 'Composite',
-    description: 'Side panel that slides in.',
-    examples: [{
-      title: 'Right Drawer',
-      render: () => {
-        const [o, setO] = useState(false);
-        return <><Button onClick={() => setO(true)}>Open Drawer</Button><Drawer isOpen={o} onClose={() => setO(false)} title="My Drawer"><Text>Content here.</Text></Drawer></>;
-      },
-      code: `const [isOpen, setIsOpen] = useState(false);\n\n<Drawer \n  isOpen={isOpen} \n  onClose={() => setIsOpen(false)} \n  title="Drawer Title" \n  placement="right"\n>\n  <Text>Drawer content.</Text>\n</Drawer>`
-    }],
-    props: [
-      { name: 'isOpen', type: 'boolean', default: 'false', desc: 'Controls visibility.' },
-      { name: 'onClose', type: '() => void', default: '-', desc: 'Close handler.' },
-      { name: 'placement', type: 'left | right | top | bottom', default: 'right', desc: 'Drawer edge position.' },
-      { name: 'size', type: 'sm | md | lg | xl | full', default: 'md', desc: 'Drawer width/height.' },
-      { name: 'title', type: 'string', default: '-', desc: 'Drawer header title.' },
-      { name: 'footer', type: 'ReactNode', default: '-', desc: 'Footer content.' }
-    ]
-  },
-  'tooltip': {
-    id: 'tooltip',
-    name: 'Tooltip',
-    category: 'Composite',
-    description: 'Contextual info on hover.',
-    examples: [{
-      title: 'Positions',
-      render: () => <Flex gap={4}><Tooltip content="Top"><Button size="sm">Hover Me</Button></Tooltip></Flex>,
-      code: `<Tooltip content="Top"><Button>Hover Me</Button></Tooltip>`
-    }],
-    props: [
-        { name: 'content', type: 'string', default: '-', desc: 'Tooltip text.' },
-        { name: 'position', type: 'top | bottom | left | right', default: 'top', desc: 'Tooltip position.' },
-        { name: 'delay', type: 'number', default: '200', desc: 'Show delay in ms.' },
-        { name: 'children', type: 'ReactNode', default: '-', desc: 'Trigger element.' }
-    ]
-  },
-  'popover': {
-    id: 'popover',
-    name: 'Popover',
-    category: 'Composite',
-    description: 'Rich content on click/hover.',
-    examples: [{
-      title: 'Basic',
-      render: () => <Popover trigger={<Button>Click Me</Button>} content={<Box p={4}>Popover Content</Box>} />,
-      code: `<Popover trigger={<Button>Click</Button>} content={<Box>Content</Box>} />`
-    }],
-    props: [
-        { name: 'trigger', type: 'ReactNode', default: '-', desc: 'Clickable trigger element.' },
-        { name: 'content', type: 'ReactNode', default: '-', desc: 'Popover body content.' },
-        { name: 'position', type: 'top | bottom | left | right', default: 'bottom', desc: 'Popover position.' }
-    ]
-  },
-  'tabs': {
+  tabs: {
     id: 'tabs',
     name: 'Tabs',
-    category: 'Composite',
-    description: 'Switch between views.',
-    examples: [{
-      title: 'Basic',
-      render: () => <Tabs items={[{id:'1', label:'Tab 1', content:<Text>Content 1</Text>}, {id:'2', label:'Tab 2', content:<Text>Content 2</Text>}]} />,
-      code: `<Tabs items={[{id:'1', label:'Tab 1', content:<Text>1</Text>}]} />`
-    }],
-    props: [
-        { name: 'items', type: '{id, label, content}[]', default: '[]', desc: 'Tab definitions.' },
-        { name: 'defaultTab', type: 'string', default: '-', desc: 'Initially active tab ID.' },
-        { name: 'variant', type: 'line | enclosed | pills', default: 'line', desc: 'Visual style.' }
+    category: '2D Components',
+    subCategory: 'Surface',
+    description: 'Switch between different views.',
+    implementationSource: SOURCES.composite,
+    examples: [
+      {
+        title: 'Basic',
+        render: () => (
+          <Tabs items={[
+            { id: '1', label: 'Tab 1', content: <Text>Content 1</Text> },
+            { id: '2', label: 'Tab 2', content: <Text>Content 2</Text> },
+          ]} />
+        ),
+        usageCode: `<Tabs items={[\n  { id: '1', label: 'Tab 1', content: <Text>Content 1</Text> },\n  { id: '2', label: 'Tab 2', content: <Text>Content 2</Text> }\n]} />`
+      }
     ],
+    props: []
   },
-  'accordion': {
-    id: 'accordion',
-    name: 'Accordion',
-    category: 'Composite',
-    description: 'Expandable content sections.',
-    examples: [{
-      title: 'Basic',
-      render: () => <Accordion items={[{id:'1', title:'Section 1', content:<Text>Content 1</Text>}, {id:'2', title:'Section 2', content:<Text>Content 2</Text>}]} />,
-      code: `<Accordion items={[{id:'1', title:'Section 1', content:<Text>Content 1</Text>}]} />`
-    }],
-    props: [
-        { name: 'items', type: '{id, title, content}[]', default: '[]', desc: 'Accordion items.' },
-        { name: 'allowMultiple', type: 'boolean', default: 'false', desc: 'Allow multiple sections open.' }
-    ]
+
+  // --- 3D Components ---
+  navbar: {
+    id: 'navbar',
+    name: 'Navbar',
+    category: '3D Components',
+    subCategory: 'Page-Level',
+    description: 'Top navigation bar.',
+    examples: [
+      {
+        title: 'Preview',
+        render: () => (
+          <div className="relative h-20 border border-neutral-200 dark:border-neutral-800 rounded-md overflow-hidden transform scale-95 origin-top">
+             <Navbar onToggleDarkMode={() => {}} isDarkMode={false} />
+          </div>
+        ),
+        usageCode: `<Navbar onToggleDarkMode={toggle} isDarkMode={isDark} />`
+      }
+    ],
+    props: []
   },
-  'dropdown': {
-    id: 'dropdown',
-    name: 'Dropdown',
-    category: 'Composite',
-    description: 'Menu for actions.',
-    examples: [{
-      title: 'Basic',
-      render: () => <Dropdown trigger={<Button>Options</Button>} items={[{label:'Edit'}, {label:'Delete', danger:true}]} />,
-      code: `<Dropdown trigger={<Button>Options</Button>} items={[{label:'Edit'}]} />`
-    }],
-    props: [
-        { name: 'trigger', type: 'ReactNode', default: '-', desc: 'Dropdown trigger button.' },
-        { name: 'items', type: '{label, onClick, danger, icon}[]', default: '[]', desc: 'Menu items.' },
-        { name: 'align', type: 'left | right', default: 'left', desc: 'Menu alignment.' }
-    ]
+  sidebar: {
+    id: 'sidebar',
+    name: 'Sidebar',
+    category: '3D Components',
+    subCategory: 'Page-Level',
+    description: 'Side navigation menu.',
+    examples: [
+      {
+         title: 'Preview',
+         render: () => (
+           <div className="h-64 border border-neutral-200 dark:border-neutral-800 rounded-md overflow-hidden relative">
+              <div className="absolute inset-0 overflow-y-auto">
+                 <Sidebar />
+              </div>
+           </div>
+         ),
+         usageCode: `<Sidebar />`
+      }
+    ],
+    props: []
   },
-  'table': {
-    id: 'table',
-    name: 'Table',
-    category: 'Composite',
-    description: 'Data display grid.',
-    examples: [{
-      title: 'Basic',
-      render: () => <Table headers={['Name', 'Role']} data={[{name:'Alice', role:'Dev'}, {name:'Bob', role:'Design'}]} renderRow={(row, i) => <tr key={i}><td className="p-4">{row.name}</td><td className="p-4">{row.role}</td></tr>} />,
-      code: `<Table headers={['Name']} data={data} renderRow={...} />`
-    }],
-    props: [
-        { name: 'headers', type: 'string[]', default: '[]', desc: 'Column headers.' },
-        { name: 'data', type: 'any[]', default: '[]', desc: 'Array of data objects.' },
-        { name: 'renderRow', type: '(row, index) => ReactNode', default: '-', desc: 'Row render function.' }
-    ]
-  },
-  'pagination': {
-    id: 'pagination',
-    name: 'Pagination',
-    category: 'Composite',
-    description: 'Navigate pages.',
-    examples: [{
-      title: 'Basic',
-      render: () => {
-         const [p, setP] = useState(1);
-         return <Pagination currentPage={p} totalPages={10} onPageChange={setP} />;
-      },
-      code: `<Pagination currentPage={p} totalPages={10} onPageChange={setP} />`
-    }],
-    props: [
-        { name: 'currentPage', type: 'number', default: '1', desc: 'Active page.' },
-        { name: 'totalPages', type: 'number', default: '1', desc: 'Total pages.' },
-        { name: 'onPageChange', type: '(page) => void', default: '-', desc: 'Page change handler.' }
-    ]
-  },
-  'alert': {
+  alert: {
     id: 'alert',
     name: 'Alert',
-    category: 'Composite',
-    description: 'Important messages.',
-    examples: [{
-      title: 'Variants',
-      render: () => <Stack spacing={4}><Alert variant="info">Info Alert</Alert><Alert variant="success">Success Alert</Alert><Alert variant="warning">Warning Alert</Alert><Alert variant="danger">Error Alert</Alert></Stack>,
-      code: `<Alert variant="info">Info</Alert>`
-    }],
-    props: [
-      { name: 'variant', type: 'info | success | warning | danger', default: 'info', desc: 'Alert style.' },
-      { name: 'title', type: 'string', default: '-', desc: 'Alert title (optional).' },
-      { name: 'children', type: 'ReactNode', default: '-', desc: 'Alert message body.' },
-      { name: 'icon', type: 'ReactNode', default: '-', desc: 'Custom icon.' },
-      { name: 'onClose', type: '() => void', default: '-', desc: 'Dismiss handler.' }
-    ]
-  },
-  'toast': {
-    id: 'toast',
-    name: 'Toast',
-    category: 'Composite',
-    description: 'Temporary notifications.',
-    examples: [{
-      title: 'Demo',
-      render: () => {
-        const [show, setShow] = useState(false);
-        return <><Button onClick={() => setShow(true)}>Show Toast</Button>{show && <Toast title="Saved" onClose={() => setShow(false)} variant="success" />}</>;
-      },
-      code: `const [show, setShow] = useState(false);\n\n<Button onClick={() => setShow(true)}>Show Toast</Button>\n\n{show && (\n  <Toast \n    title="Saved Successfully" \n    variant="success" \n    onClose={() => setShow(false)} \n  />\n)}`
-    }],
-    props: [
-      { name: 'title', type: 'string', default: '-', desc: 'Toast title.' },
-      { name: 'description', type: 'string', default: '-', desc: 'Detailed message.' },
-      { name: 'variant', type: 'info | success | warning | danger', default: 'info', desc: 'Visual style.' },
-      { name: 'duration', type: 'number', default: '3000', desc: 'Auto-close delay (ms).' },
-      { name: 'onClose', type: '() => void', default: '-', desc: 'Dismiss handler.' }
-    ]
-  },
-  // List
-  'list': {
-    id: 'list',
-    name: 'List',
-    category: 'Composite',
-    description: 'Lists are continuous, vertical indexes of text or images.',
+    category: '2D Components',
+    subCategory: 'Composition',
+    description: 'Displays a brief, important message for a user.',
+    implementationSource: SOURCES.composite,
     examples: [
-        {
-            title: 'Basic List',
-            render: () => (
-                <Card padding="none">
-                    <List>
-                        <ListItem>
-                            <ListItemText primary="Inbox" secondary="You have 3 unread messages" />
-                        </ListItem>
-                        <ListDivider />
-                        <ListItem>
-                            <ListItemText primary="Drafts" secondary="Saved 2 hours ago" />
-                        </ListItem>
-                        <ListDivider />
-                        <ListItem>
-                            <ListItemText primary="Sent" />
-                        </ListItem>
-                    </List>
-                </Card>
-            ),
-            code: `<List>\n  <ListItem>\n    <ListItemText primary="Inbox" secondary="3 unread" />\n  </ListItem>\n  <ListDivider />\n  <ListItem>\n    <ListItemText primary="Drafts" />\n  </ListItem>\n</List>`
-        },
-        {
-            title: 'Interactive with Icons',
-            render: () => (
-                <Card padding="none" className="max-w-sm">
-                    <List>
-                        <ListItem onClick={() => alert('Wifi clicked')}>
-                            <ListItemIcon>
-                                <Icon size="md"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01" /></Icon>
-                            </ListItemIcon>
-                            <ListItemText primary="Wi-Fi" secondary="Connected" />
-                        </ListItem>
-                        <ListItem disabled onClick={() => alert('Bluetooth clicked')}>
-                            <ListItemIcon>
-                                <Icon size="md"><path d="M9.172 16.172a4 4 0 015.656 0M9 10a5 5 0 017 0m-7-5a1 1 0 012 0 1 1 0 012 0m-4 5h4" /></Icon>
-                            </ListItemIcon>
-                            <ListItemText primary="Bluetooth" secondary="Off" />
-                        </ListItem>
-                        <ListItem href="#settings">
-                            <ListItemIcon>
-                                <Icon size="md"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></Icon>
-                            </ListItemIcon>
-                            <ListItemText primary="Settings" />
-                            <ListItemIcon position="end">
-                                <Icon size="sm"><path d="M9 5l7 7-7 7" /></Icon>
-                            </ListItemIcon>
-                        </ListItem>
-                    </List>
-                </Card>
-            ),
-            code: `<List>\n  <ListItem onClick={...}>\n    <ListItemIcon><Icon ... /></ListItemIcon>\n    <ListItemText primary="Wi-Fi" />\n  </ListItem>\n  <ListItem href="#settings">\n    <ListItemIcon><Icon ... /></ListItemIcon>\n    <ListItemText primary="Settings" />\n    <ListItemIcon position="end"><Icon ... /></ListItemIcon>\n  </ListItem>\n</List>`
-        },
-        {
-            title: 'Selected State & Compact',
-            render: () => (
-                <Card padding="none" className="max-w-sm">
-                    <List variant="compact">
-                        <ListItem selected onClick={() => {}}>
-                            <ListItemIcon><Box className="w-2 h-2 rounded-full bg-primary-500" /></ListItemIcon>
-                            <ListItemText primary="Selected Item" />
-                        </ListItem>
-                        <ListItem onClick={() => {}}>
-                            <ListItemIcon><Box className="w-2 h-2 rounded-full bg-neutral-300" /></ListItemIcon>
-                            <ListItemText primary="Normal Item" />
-                        </ListItem>
-                    </List>
-                </Card>
-            ),
-            code: `<List variant="compact">\n  <ListItem selected>\n    <ListItemText primary="Selected Item" />\n  </ListItem>\n  <ListItem>\n    <ListItemText primary="Normal Item" />\n  </ListItem>\n</List>`
-        }
+      {
+        title: 'Variants',
+        render: () => <Stack spacing={4} className="w-full"><Alert variant="info" title="Information">Updates available.</Alert><Alert variant="success" title="Success">Settings saved.</Alert><Alert variant="danger" title="Error">Action failed.</Alert></Stack>,
+        usageCode: `<Alert variant="success" title="Success">Settings saved.</Alert>`
+      }
     ],
-    props: [
-        { name: 'variant', type: 'default | compact', default: 'default', desc: 'Spacing variant.' },
-        { name: 'orientation', type: 'vertical | horizontal', default: 'vertical', desc: 'Layout direction.' },
-        { name: 'onClick', type: 'function', default: '-', desc: 'Click handler for items.' },
-        { name: 'selected', type: 'boolean', default: 'false', desc: 'Selected state for items.' },
-        { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disabled state for items.' },
-        { name: 'href', type: 'string', default: '-', desc: 'URL for link items.' },
-    ],
+    props: [{ name: 'variant', type: 'info | success | warning | danger', default: 'info', desc: 'Alert style.' }]
   },
-  'notification-banner': {
-    id: 'notification-banner',
-    name: 'Notification Banner',
-    category: 'Composite',
-    description: 'Global notification bar.',
-    examples: [{
-      title: 'Basic',
-      render: () => <NotificationBanner title="Update Available" cta={<Button size="sm" variant="ghost" className="text-white">Update</Button>} />,
-      code: `<NotificationBanner title="Update Available" />`
-    }],
-    props: [
-        { name: 'title', type: 'string', default: '-', desc: 'Main message.' },
-        { name: 'description', type: 'string', default: '-', desc: 'Secondary text.' },
-        { name: 'cta', type: 'ReactNode', default: '-', desc: 'Call to action element.' },
-        { name: 'onClose', type: '() => void', default: '-', desc: 'Dismiss handler.' }
-    ]
-  },
-  'empty-state': {
-    id: 'empty-state',
-    name: 'Empty State',
-    category: 'Composite',
-    description: 'Placeholder when no data exists.',
-    examples: [{
-      title: 'Basic',
-      render: () => <EmptyState title="No Projects" description="Create a project to get started." action={<Button>Create Project</Button>} />,
-      code: `<EmptyState title="No Projects" action={<Button>Create</Button>} />`
-    }],
-    props: [
-        { name: 'title', type: 'string', default: '-', desc: 'Main heading.' },
-        { name: 'description', type: 'string', default: '-', desc: 'Explainer text.' },
-        { name: 'icon', type: 'ReactNode', default: '-', desc: 'Custom illustration/icon.' },
-        { name: 'action', type: 'ReactNode', default: '-', desc: 'Primary action button.' }
-    ]
-  },
-
-  // --- Navigation ---
-  'breadcrumbs': {
+  breadcrumbs: {
     id: 'breadcrumbs',
     name: 'Breadcrumbs',
-    category: 'Navigation',
-    description: 'Path navigation.',
-    examples: [{
-      title: 'Basic',
-      render: () => <Breadcrumbs items={[{label:'Home', href:'#'}, {label:'Docs', href:'#'}, {label:'Breadcrumbs', isCurrent:true}]} />,
-      code: `<Breadcrumbs items={[{label:'Home'}, {label:'Page', isCurrent:true}]} />`
-    }],
-    props: [
-        { name: 'items', type: '{label, href, isCurrent}[]', default: '[]', desc: 'Breadcrumb links.' },
-        { name: 'separator', type: 'ReactNode', default: '-', desc: 'Custom separator icon.' }
-    ]
+    category: '3D Components',
+    subCategory: 'Navigation',
+    description: 'Shows the current page location within a hierarchy.',
+    implementationSource: SOURCES.navigation,
+    examples: [
+      {
+        title: 'Usage',
+        render: () => <Breadcrumbs items={[{ label: 'Home', href: '#' }, { label: 'Components', href: '#' }, { label: 'Breadcrumbs', isCurrent: true }]} />,
+        usageCode: `<Breadcrumbs items={[{ label: 'Home', href: '/' }, ...]} />`
+      }
+    ],
+    props: []
   },
-  'stepper': {
-    id: 'stepper',
-    name: 'Stepper',
-    category: 'Navigation',
-    description: 'Progress through steps.',
-    examples: [{
-      title: 'Horizontal',
-      render: () => <Stepper steps={[{title:'Step 1', status:'complete'}, {title:'Step 2', status:'current'}, {title:'Step 3', status:'upcoming'}]} />,
-      code: `<Stepper steps={[{title:'Step 1', status:'complete'}]} />`
-    }],
-    props: [
-        { name: 'steps', type: '{title, description, status}[]', default: '[]', desc: 'Step definitions.' },
-        { name: 'orientation', type: 'horizontal | vertical', default: 'horizontal', desc: 'Layout direction.' }
-    ]
-  },
-  'command-palette': {
-    id: 'command-palette',
-    name: 'Command Palette',
-    category: 'Navigation',
-    description: 'Global command menu.',
-    examples: [{
-      title: 'Demo',
-      render: () => {
-         const [o, setO] = useState(false);
-         return <><Button onClick={() => setO(true)}>Open Palette</Button><CommandPalette isOpen={o} onClose={() => setO(false)} items={[{group:'General', items:[{label:'Go Home', onClick:()=>{}}]}]} /></>;
-      },
-      code: `const [isOpen, setIsOpen] = useState(false);\n\n/* Items grouped by category */\nconst items = [\n  {\n    group: 'General',\n    items: [\n      { label: 'Go Home', onClick: () => navigate('/') },\n      { label: 'Settings', onClick: () => navigate('/settings') }\n    ]\n  }\n];\n\n<CommandPalette \n  isOpen={isOpen} \n  onClose={() => setIsOpen(false)} \n  items={items} \n/>`
-    }],
-    props: [
-        { name: 'isOpen', type: 'boolean', default: 'false', desc: 'Controls visibility.' },
-        { name: 'onClose', type: '() => void', default: '-', desc: 'Close handler.' },
-        { name: 'items', type: '{group, items: {label, onClick...}[]}[]', default: '[]', desc: 'Command groups.' }
-    ]
-  },
-
-  // --- Patterns ---
   'auth-layout': {
     id: 'auth-layout',
     name: 'Auth Layout',
-    category: 'Patterns',
-    description: 'Layout for login/signup pages.',
-    examples: [{
-      title: 'Preview',
-      render: () => <div className="h-96 border overflow-hidden"><AuthLayout title="Welcome" logo={<Box p={2} bg="primary.600" rounded="md" className="w-10 h-10" />}><LoginForm onSubmit={()=>{}} /></AuthLayout></div>,
-      code: `<AuthLayout title="Welcome">\n  <LoginForm />\n</AuthLayout>`
-    }],
-    props: [
-      { name: 'children', type: 'ReactNode', default: '-', desc: 'Content (usually a form).' },
-      { name: 'title', type: 'string', default: '-', desc: 'Page title.' },
-      { name: 'subtitle', type: 'string', default: '-', desc: 'Page subtitle.' },
-      { name: 'backgroundImage', type: 'string', default: '-', desc: 'URL for side image.' },
-      { name: 'logo', type: 'ReactNode', default: '-', desc: 'Logo component.' }
-    ]
-  },
-  'dashboard-layout': {
-    id: 'dashboard-layout',
-    name: 'Dashboard Layout',
-    category: 'Patterns',
-    description: 'Layout for app dashboard.',
-    examples: [{
-      title: 'Preview',
-      render: () => <div className="h-96 border overflow-hidden relative"><DashboardLayout><Heading level={2}>Dashboard Content</Heading></DashboardLayout></div>,
-      code: `<DashboardLayout>\n  Content\n</DashboardLayout>`
-    }],
-    props: [
-      { name: 'children', type: 'ReactNode', default: '-', desc: 'Main content.' },
-      { name: 'sidebar', type: 'ReactNode', default: '<Sidebar />', desc: 'Custom sidebar.' },
-      { name: 'navbar', type: 'ReactNode', default: '-', desc: 'Custom navbar.' }
-    ]
-  },
-  'hero-section': {
-    id: 'hero-section',
-    name: 'Hero Section',
-    category: 'Patterns',
-    description: 'Marketing hero section.',
-    examples: [{
-      title: 'Preview',
-      render: () => <div className="h-96 border overflow-hidden overflow-y-auto"><HeroSection title="Build Faster" subtitle="The ultimate UI kit." ctaPrimary={<Button>Get Started</Button>} /></div>,
-      code: `<HeroSection title="Build Faster" ctaPrimary={<Button>Get Started</Button>} />`
-    }],
-    props: [
-      { name: 'title', type: 'string', default: '-', desc: 'Main headline.' },
-      { name: 'subtitle', type: 'string', default: '-', desc: 'Subheadline text.' },
-      { name: 'ctaPrimary', type: 'ReactNode', default: '-', desc: 'Primary button.' },
-      { name: 'ctaSecondary', type: 'ReactNode', default: '-', desc: 'Secondary button.' },
-      { name: 'image', type: 'string', default: '-', desc: 'Hero image URL.' }
-    ]
-  },
-  'feature-grid': {
-    id: 'feature-grid',
-    name: 'Feature Grid',
-    category: 'Patterns',
-    description: 'Grid of features.',
-    examples: [{
-      title: 'Preview',
-      render: () => <div className="border overflow-hidden"><FeatureGrid title="Everything you need" features={[{title:'Fast', description:'Blazing fast.', icon:<Icon><path d="M13 10V3L4 14h7v7l9-11h-7z"/></Icon>}]} /></div>,
-      code: `<FeatureGrid features={[{title:'Fast', icon:...}]} />`
-    }],
-    props: [
-      { name: 'title', type: 'string', default: '-', desc: 'Section title.' },
-      { name: 'subtitle', type: 'string', default: '-', desc: 'Section subtitle.' },
-      { name: 'features', type: '{title, description, icon}[]', default: '[]', desc: 'List of features.' }
-    ]
-  },
-  'pricing-section': {
-    id: 'pricing-section',
-    name: 'Pricing Section',
-    category: 'Patterns',
-    description: 'Pricing plans display.',
-    examples: [{
-      title: 'Preview',
-      render: () => <div className="border overflow-hidden"><PricingSection title="Simple Pricing" plans={[{name:'Pro', price:'$29', features:['Feature A'], cta:'Buy'}]} /></div>,
-      code: `<PricingSection plans={plans} />`
-    }],
-    props: [
-      { name: 'title', type: 'string', default: '-', desc: 'Section title.' },
-      { name: 'plans', type: '{name, price, features, cta, recommended}[]', default: '[]', desc: 'Pricing plans.' }
-    ]
-  },
-  'footer': {
-    id: 'footer',
-    name: 'Footer',
-    category: 'Patterns',
-    description: 'Site footer.',
-    examples: [{
-      title: 'Preview',
-      render: () => <div className="border overflow-hidden"><Footer links={[{title:'Product', items:['Features']}]} socials={<>Socials</>} /></div>,
-      code: `<Footer links={links} />`
-    }],
-    props: [
-      { name: 'links', type: '{title: string, items: string[]}[]', default: '[]', desc: 'Navigation columns.' },
-      { name: 'socials', type: 'ReactNode', default: '-', desc: 'Social media icons.' }
-    ]
-  },
-  '404-page': {
-    id: '404-page',
-    name: '404 Page',
-    category: 'Patterns',
-    description: 'Not Found page.',
-    examples: [{
-      title: 'Preview',
-      render: () => <div className="h-96 border overflow-hidden relative"><Page404 /></div>,
-      code: `<Page404 />`
-    }],
+    category: '3D Components',
+    subCategory: 'Page-Level',
+    description: 'Layout for authentication pages.',
+    implementationSource: SOURCES.patterns,
+    examples: [
+       {
+         title: 'Structure',
+         render: () => (
+           <div className="h-64 border rounded overflow-hidden">
+             <AuthLayout title="Welcome Back">
+               <div className="p-4 bg-white/50 rounded text-center">Content</div>
+             </AuthLayout>
+           </div>
+         ),
+         usageCode: `<AuthLayout title="Welcome">\n  <LoginForm />\n</AuthLayout>`
+       }
+    ],
     props: []
-  },
-  'error-page': {
-    id: 'error-page',
-    name: 'Error Page',
-    category: 'Patterns',
-    description: 'Generic error page.',
-    examples: [{
-      title: 'Preview',
-      render: () => <div className="h-96 border overflow-hidden relative"><ErrorPage /></div>,
-      code: `<ErrorPage />`
-    }],
-    props: []
-  },
-
-  // --- Utilities ---
-  'theme-toggle': {
-    id: 'theme-toggle',
-    name: 'Theme Toggle',
-    category: 'Utilities',
-    description: 'Button to toggle light/dark mode.',
-    examples: [{
-      title: 'Basic',
-      render: () => <ThemeToggle />,
-      code: `<ThemeToggle />`
-    }],
-    props: [
-      { name: 'className', type: 'string', default: '-', desc: 'Additional CSS classes.' }
-    ]
-  },
-
-  'copy-to-clipboard': {
-    id: 'copy-to-clipboard',
-    name: 'Copy To Clipboard',
-    category: 'Utilities',
-    description: 'Copy text helper.',
-    examples: [{
-      title: 'Basic',
-      render: () => <CopyToClipboard text="Copied Text!" />,
-      code: `<CopyToClipboard text="Text" />`
-    }],
-    props: [
-        { name: 'text', type: 'string', default: '-', desc: 'Text to copy.' },
-        { name: 'children', type: 'ReactNode', default: '-', desc: 'Custom trigger element.' }
-    ]
-  },
-  'code-block': {
-    id: 'code-block',
-    name: 'Code Block',
-    category: 'Utilities',
-    description: 'Syntax highlighted code display.',
-    examples: [{
-      title: 'Basic',
-      render: () => <CodeBlock code="const a = 1;" language="typescript" />,
-      code: `<CodeBlock code="const a = 1;" />`
-    }],
-    props: [
-        { name: 'code', type: 'string', default: '-', desc: 'Code content.' },
-        { name: 'language', type: 'string', default: 'tsx', desc: 'Language for syntax highlighting.' },
-        { name: 'showLineNumbers', type: 'boolean', default: 'true', desc: 'Show line numbers.' }
-    ]
-  },
-  'portal': {
-    id: 'portal',
-    name: 'Portal',
-    category: 'Utilities',
-    description: 'Render children in a portal.',
-    examples: [{
-      title: 'Usage',
-      render: () => <Portal><div className="fixed top-0 right-0 p-2 bg-red-500 text-white text-xs z-[9999]">Portal Test</div></Portal>,
-      code: `<Portal>Content</Portal>`
-    }],
-    props: [
-        { name: 'children', type: 'ReactNode', default: '-', desc: 'Content to render in portal.' },
-        { name: 'container', type: 'HTMLElement', default: 'document.body', desc: 'Target container.' }
-    ]
-  },
-  'responsive-visibility': {
-    id: 'responsive-visibility',
-    name: 'Responsive Visibility',
-    category: 'Utilities',
-    description: 'Show/hide based on breakpoint.',
-    examples: [{
-      title: 'Example',
-      render: () => <><ResponsiveVisibility hideBelow="md"><Badge>Hidden on Small</Badge></ResponsiveVisibility><ResponsiveVisibility hideAbove="md"><Badge>Visible on Small</Badge></ResponsiveVisibility></>,
-      code: `<ResponsiveVisibility hideBelow="md">Content</ResponsiveVisibility>`
-    }],
-    props: [
-        { name: 'hideBelow', type: 'sm|md|lg|xl', default: '-', desc: 'Hide below this breakpoint.' },
-        { name: 'hideAbove', type: 'sm|md|lg|xl', default: '-', desc: 'Hide above this breakpoint.' },
-        { name: 'children', type: 'ReactNode', default: '-', desc: 'Content to toggle.' }
-    ]
-  },
-  'visually-hidden': {
-    id: 'visually-hidden',
-    name: 'Visually Hidden',
-    category: 'Utilities',
-    description: 'Hide content visually but keep for screen readers.',
-    examples: [{
-      title: 'Example',
-      render: () => <Button><VisuallyHidden>Close</VisuallyHidden><Icon><path d="M6 18L18 6M6 6l12 12"/></Icon></Button>,
-      code: `<VisuallyHidden>Screen Reader Text</VisuallyHidden>`
-    }],
-    props: [
-        { name: 'children', type: 'ReactNode', default: '-', desc: 'Content to hide visually.' }
-    ]
-  },
-  'focus-trap': {
-    id: 'focus-trap',
-    name: 'Focus Trap',
-    category: 'Utilities',
-    description: 'Trap focus within a container.',
-    examples: [{
-      title: 'Example',
-      render: () => <FocusTrap><div className="p-4 border"><Input placeholder="Trapped" /><Button>Trapped</Button></div></FocusTrap>,
-      code: `<FocusTrap>Content</FocusTrap>`
-    }],
-    props: [
-        { name: 'isActive', type: 'boolean', default: 'true', desc: 'Enable trap.' },
-        { name: 'children', type: 'ReactNode', default: '-', desc: 'Content to trap focus in.' }
-    ]
   }
 };
 
-const ExampleWrapper: React.FC<{ render: () => React.ReactNode }> = ({ render }) => {
-  const Component = render as unknown as React.FC;
-  return <Component />;
+const SyntaxHighlighter = ({ code, language = 'tsx' }: { code: string; language?: string }) => {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(code);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+        <div className="relative group">
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                <Button size="sm" variant="ghost" onClick={handleCopy} className="bg-neutral-800 text-neutral-300 hover:bg-neutral-700 hover:text-white">
+                    {copied ? 'Copied' : 'Copy'}
+                </Button>
+            </div>
+            <pre className="bg-neutral-900 text-neutral-100 p-4 rounded-md overflow-x-auto text-sm font-mono leading-relaxed max-h-[500px]">
+                <code>{code}</code>
+            </pre>
+        </div>
+    );
+};
+
+const InteractivePanel = ({ children, props, onChange }: { 
+    children: (props: any) => React.ReactNode; 
+    props: { name: string; type: string; default: string; options?: string[] }[];
+    onChange: (prop: string, value: any) => void;
+}) => {
+    const [activeProps, setActiveProps] = useState<Record<string, any>>(
+        props.reduce((acc, p) => ({ ...acc, [p.name]: p.default === '-' ? '' : (p.default === 'true' ? true : (p.default === 'false' ? false : p.default)) }), {})
+    );
+
+    const handlePropChange = (name: string, value: any) => {
+        setActiveProps(prev => ({ ...prev, [name]: value }));
+        onChange(name, value);
+    };
+
+    return (
+        <div className="flex flex-col lg:flex-row gap-8 bg-neutral-50/50 dark:bg-neutral-900/50 p-6 rounded-lg min-h-[400px]">
+            <div className="flex-1 flex items-center justify-center p-8 border border-neutral-200 dark:border-neutral-800 rounded-lg bg-white dark:bg-neutral-950 shadow-inner">
+                {children(activeProps)}
+            </div>
+            <div className="w-full lg:w-72 space-y-6">
+                <Heading level={4} className="text-sm uppercase tracking-wider text-neutral-500">Interactive Props</Heading>
+                <Stack spacing={4}>
+                    {props.filter(p => p.options || p.type === 'boolean' || p.type === 'string').map(prop => (
+                        <div key={prop.name} className="space-y-2">
+                            <Label className="text-xs font-semibold">{prop.name}</Label>
+                            {prop.type === 'boolean' ? (
+                                <Switch 
+                                    checked={activeProps[prop.name]} 
+                                    onChange={(val) => handlePropChange(prop.name, val)} 
+                                />
+                            ) : prop.options ? (
+                                <Select 
+                                    value={activeProps[prop.name]} 
+                                    onChange={(e) => handlePropChange(prop.name, e.target.value)}
+                                    options={prop.options.map(o => ({ label: o, value: o }))}
+                                />
+                            ) : (
+                                <Input 
+                                    value={activeProps[prop.name]} 
+                                    onChange={(e) => handlePropChange(prop.name, e.target.value)}
+                                    placeholder={prop.name}
+                                />
+                            )}
+                        </div>
+                    ))}
+                </Stack>
+            </div>
+        </div>
+    );
 };
 
 export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }) => {
   const doc = docs[componentId];
-  const [activeTabs, setActiveTabs] = useState<Record<number, 'preview' | 'code'>>({});
 
   if (!doc) {
     return (
-      <div className="text-center py-20">
-        <Heading level={2}>Coming Soon</Heading>
-        <Text color="muted" className="mt-4">We are currently documenting the {componentId} component.</Text>
-      </div>
+      <Container size="md" className="py-20 text-center">
+        <Heading level={2}>Component Documentation Coming Soon</Heading>
+        <Text className="mt-4 text-neutral-500">Full source code integration for "{componentId}" is being finalized.</Text>
+      </Container>
     );
   }
 
-  const toggleTab = (index: number, tab: 'preview' | 'code') => {
-    setActiveTabs(prev => ({ ...prev, [index]: tab }));
+  // Define interactive props metadata for generic toggles
+  const interactivePropsMetadata: Record<string, any[]> = {
+    button: [
+      { name: 'variant', type: 'select', default: 'primary', options: ['primary', 'secondary', 'outline', 'ghost', 'danger', 'success', 'warning', 'link'] },
+      { name: 'size', type: 'select', default: 'md', options: ['sm', 'md', 'lg'] },
+      { name: 'isLoading', type: 'boolean', default: 'false' },
+      { name: 'disabled', type: 'boolean', default: 'false' },
+      { name: 'children', type: 'string', default: 'Button Text' },
+    ],
+    input: [
+      { name: 'label', type: 'string', default: 'Username' },
+      { name: 'placeholder', type: 'string', default: 'Enter your username' },
+      { name: 'error', type: 'string', default: '' },
+      { name: 'disabled', type: 'boolean', default: 'false' },
+    ],
+    badge: [
+        { name: 'variant', type: 'select', default: 'default', options: ['default', 'primary', 'secondary', 'outline', 'ghost', 'success', 'warning', 'danger', 'info'] },
+        { name: 'size', type: 'select', default: 'md', options: ['sm', 'md', 'lg'] },
+        { name: 'isRound', type: 'boolean', default: 'false' },
+        { name: 'children', type: 'string', default: 'Status' },
+    ],
+    spinner: [
+        { name: 'size', type: 'select', default: 'md', options: ['sm', 'md', 'lg', 'xl'] },
+        { name: 'color', type: 'select', default: 'primary', options: ['primary', 'current', 'white', 'neutral'] },
+    ],
+    modal: [
+      { name: 'title', type: 'string', default: 'Interactive Modal' },
+      { name: 'isOpen', type: 'boolean', default: 'false' },
+    ],
+    tabs: [
+      { name: 'variant', type: 'select', default: 'line', options: ['line', 'pills', 'folder'] },
+    ],
+    alert: [
+      { name: 'variant', type: 'select', default: 'info', options: ['info', 'success', 'warning', 'danger'] },
+      { name: 'title', type: 'string', default: 'Attention' },
+      { name: 'children', type: 'string', default: 'This is an alert message.' },
+    ]
+  };
+
+  const interactiveProps = interactivePropsMetadata[componentId];
+
+  const generateCode = (componentId: string, activeProps: any) => {
+    const propsString = Object.entries(activeProps)
+      .filter(([key, value]) => {
+        const metadata = interactiveProps.find(p => p.name === key);
+        return value !== metadata?.default && key !== 'children';
+      })
+      .map(([key, value]) => {
+        if (typeof value === 'boolean') return value ? key : '';
+        if (typeof value === 'string') return `${key}="${value}"`;
+        return `${key}={${JSON.stringify(value)}}`;
+      })
+      .filter(Boolean)
+      .join(' ');
+
+    const componentName = componentId.charAt(0).toUpperCase() + componentId.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+    
+    if (activeProps.children) {
+      return `<${componentName}${propsString ? ' ' + propsString : ''}>\n  ${activeProps.children}\n</${componentName}>`;
+    }
+    return `<${componentName}${propsString ? ' ' + propsString : ''} />`;
   };
 
   return (
-    <div className="space-y-12">
-      <header>
-        <Badge variant="primary" className="mb-4">{doc.category}</Badge>
-        <Heading level={1} className="mb-4">{doc.name}</Heading>
-        <Text size="lg" color="muted" className="max-w-3xl">{doc.description}</Text>
+    <div className="space-y-8 animate-in fade-in duration-500 max-w-6xl mx-auto">
+      <header className="space-y-4 px-4">
+        <div className="flex items-center gap-3">
+          <Badge variant="secondary" className="uppercase tracking-wider text-[10px]">{doc.category}</Badge>
+          {doc.subCategory && <Badge variant="outline" className="uppercase tracking-wider text-[10px]">{doc.subCategory}</Badge>}
+        </div>
+        <Heading level={1} className="text-4xl lg:text-5xl font-bold tracking-tight">{doc.name}</Heading>
       </header>
 
-      <section className="space-y-8">
-        <Heading level={2} className="border-b border-neutral-200 dark:border-neutral-800 pb-4">Examples</Heading>
-        {doc.examples.map((example, i) => {
-          const currentTab = activeTabs[i] || 'preview';
-          return (
-            <div key={i} className="space-y-4 border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-2 bg-neutral-50 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800">
-                <Text weight="medium">{example.title}</Text>
-                <div className="flex space-x-2 bg-neutral-200 dark:bg-neutral-800 p-1 rounded-md">
-                   <button 
-                     onClick={() => toggleTab(i, 'preview')}
-                     className={`px-3 py-1 text-xs font-medium rounded-sm transition-all ${currentTab === 'preview' ? 'bg-white text-primary-600 shadow-sm dark:bg-neutral-700 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400'}`}
-                   >
-                     Preview
-                   </button>
-                   <button 
-                     onClick={() => toggleTab(i, 'code')}
-                     className={`px-3 py-1 text-xs font-medium rounded-sm transition-all ${currentTab === 'code' ? 'bg-white text-primary-600 shadow-sm dark:bg-neutral-700 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400'}`}
-                   >
-                     Code
-                   </button>
+      <Card padding="none" className="overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-xl bg-white dark:bg-neutral-950 rounded-2xl">
+        <Tabs 
+          variant="line"
+          className="w-full"
+          items={[
+            {
+              id: 'preview',
+              label: 'Preview & Examples',
+              content: (
+                <div className="p-6 lg:p-10 space-y-16">
+                   {interactiveProps && (
+                     <div className="space-y-8">
+                        <InteractivePanel props={interactiveProps} onChange={() => {}}>
+                            {(activeProps) => (
+                              <div className="w-full space-y-8">
+                                <div className="flex flex-col lg:flex-row gap-8">
+                                  <div className="flex-1 flex items-center justify-center p-12 border border-neutral-200 dark:border-neutral-800 rounded-2xl bg-white dark:bg-neutral-950 shadow-inner min-h-[400px]">
+                                      {(() => {
+                                          if (componentId === 'button') return <Button {...activeProps}>{activeProps.children}</Button>;
+                                          if (componentId === 'badge') return <Badge {...activeProps}>{activeProps.children}</Badge>;
+                                          if (componentId === 'spinner') return <Spinner {...activeProps} />;
+                                          if (componentId === 'input') return <div className="w-full max-w-sm"><Input {...activeProps} /></div>;
+                                          if (componentId === 'modal') return (
+                                            <div className="relative h-64 w-full border border-dashed rounded flex items-center justify-center bg-neutral-50 dark:bg-neutral-900/50">
+                                              <Button onClick={() => alert('In doc preview, modal would open here.')}>Open Modal Overlay</Button>
+                                              {activeProps.isOpen && <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center rounded"><Card className="p-4 w-64 shadow-xl"><Heading level={4}>{activeProps.title}</Heading><Text size="sm" className="mt-2">Modal content preview</Text></Card></div>}
+                                            </div>
+                                          );
+                                          if (componentId === 'tabs') return <Tabs variant={activeProps.variant} items={[{id: '1', label: 'Tab 1', content: 'Content 1'}, {id: '2', label: 'Tab 2', content: 'Content 2'}]} />;
+                                          if (componentId === 'alert') return <Alert {...activeProps}>{activeProps.children}</Alert>;
+                                          return doc.examples[0].render();
+                                      })()}
+                                  </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                  <SyntaxHighlighter code={generateCode(componentId, activeProps)} />
+                                </div>
+                              </div>
+                            )}
+                        </InteractivePanel>
+                     </div>
+                   )}
+
+                   <div className="space-y-10">
+                     <div className="border-t border-neutral-100 dark:border-neutral-800 pt-10">
+                     </div>
+                     <div className="grid gap-12">
+                     {doc.examples.map((example, index) => (
+                       <div key={index} className="space-y-4">
+                          <Heading level={3} className="text-xl">{example.title}</Heading>
+                          {example.description && <Text>{example.description}</Text>}
+                          
+                          <Card padding="none" className="overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-sm rounded-xl">
+                            <Tabs 
+                              items={[
+                                {
+                                  id: 'preview',
+                                  label: 'Preview',
+                                  content: (
+                                    <div className="p-8 bg-neutral-50/50 dark:bg-neutral-900/50 flex items-center justify-center min-h-[250px] overflow-auto">
+                                      {example.render()}
+                                    </div>
+                                  )
+                                },
+                                {
+                                  id: 'code',
+                                  label: 'Code',
+                                  content: (
+                                    <div className="bg-neutral-950 p-2">
+                                       <Tabs 
+                                         variant="pills"
+                                         items={[
+                                             { id: 'usage', label: 'Usage Example', content: <SyntaxHighlighter code={example.usageCode} /> },
+                                             { 
+                                               id: 'source', 
+                                               label: 'Implementation Source', 
+                                               content: doc.implementationSource ? (
+                                                 <div className="space-y-4">
+                                                   <Text size="sm" className="px-4 text-neutral-400">Full React component implementation</Text>
+                                                   <SyntaxHighlighter code={doc.implementationSource} />
+                                                   {doc.cssSource && (
+                                                     <>
+                                                       <Text size="sm" className="px-4 text-neutral-400">CSS Module</Text>
+                                                       <SyntaxHighlighter code={doc.cssSource} />
+                                                     </>
+                                                   )}
+                                                 </div>
+                                               ) : (
+                                                 <div className="p-8 text-center text-neutral-500">Source code not available for this legacy pattern.</div>
+                                               )
+                                             }
+                                         ]}
+                                       />
+                                    </div>
+                                  )
+                                }
+                              ]}
+                              variant="line"
+                              className="w-full"
+                            />
+                          </Card>
+                       </div>
+                     ))}
+                     </div>
+                   </div>
                 </div>
-              </div>
-              
-              <div className={`p-6 transition-colors duration-200 min-h-[100px] ${currentTab === 'code' ? 'bg-black text-white' : 'bg-white dark:bg-neutral-950'}`}>
-                {currentTab === 'preview' ? (
-                  <div className="flex items-center justify-center w-full">
-                    <ExampleWrapper render={example.render} />
-                  </div>
-                ) : (
-                   <pre className="text-sm font-mono overflow-x-auto">
-                     <code>{String(example.code || '')}</code>
-                   </pre>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </section>
+              )
+            },
+            {
+              id: 'code',
+              label: 'Full Source Code',
+              content: (
+                <div className="bg-neutral-950 min-h-[500px]">
+                   {doc.implementationSource ? (
+                     <div className="p-6 lg:p-10 space-y-8">
+                       <div className="space-y-8">
+                          <div className="space-y-4">
+                             <SyntaxHighlighter code={doc.implementationSource} />
+                          </div>
+                          
+                          {doc.cssSource && (
+                            <div className="space-y-4">
+                               <SyntaxHighlighter code={doc.cssSource} />
+                            </div>
+                          )}
+                       </div>
+                     </div>
+                   ) : (
+                     <div className="p-32 text-center text-white">
+                        <Heading level={3} className="text-neutral-500">Source Code Unavailable</Heading>
+                        <Text color="muted" className="mt-2">This component uses a legacy implementation without direct source mapping.</Text>
+                     </div>
+                   )}
+                </div>
+              )
+            },
+            {
+              id: 'info',
+              label: 'Information & API',
+              content: (
+                <div className="p-6 lg:p-10 space-y-16">
+                   <div className="space-y-4">
+                      <Text size="lg" className="text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-4xl">
+                        {doc.description}
+                      </Text>
+                   </div>
 
-      <section className="space-y-8">
-        <Heading level={2} className="border-b border-neutral-200 dark:border-neutral-800 pb-4">API Reference</Heading>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-neutral-200 dark:border-neutral-800">
-                <th className="py-4 px-2 text-sm font-bold">Prop</th>
-                <th className="py-4 px-2 text-sm font-bold">Type</th>
-                <th className="py-4 px-2 text-sm font-bold">Default</th>
-                <th className="py-4 px-2 text-sm font-bold">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {doc.props.map((prop, i) => (
-                <tr key={i} className="border-b border-neutral-100 dark:border-neutral-900">
-                  <td className="py-4 px-2 text-sm font-mono text-primary-600">{prop.name}</td>
-                  <td className="py-4 px-2 text-sm font-mono text-neutral-500">{prop.type}</td>
-                  <td className="py-4 px-2 text-sm font-mono text-neutral-400">{prop.default}</td>
-                  <td className="py-4 px-2 text-sm text-neutral-600 dark:text-neutral-400">{prop.desc}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-
+                   {doc.props.length > 0 && (
+                     <div className="space-y-8 pt-10 border-t border-neutral-100 dark:border-neutral-800">
+                        <div className="overflow-hidden border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-sm">
+                          <table className="w-full text-left text-sm border-collapse">
+                            <thead className="bg-neutral-50 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800">
+                              <tr>
+                                <th className="p-4 font-bold text-neutral-900 dark:text-neutral-100">Prop</th>
+                                <th className="p-4 font-bold text-neutral-900 dark:text-neutral-100">Type</th>
+                                <th className="p-4 font-bold text-neutral-900 dark:text-neutral-100">Default</th>
+                                <th className="p-4 font-bold text-neutral-900 dark:text-neutral-100">Description</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800 bg-white dark:bg-neutral-950">
+                              {doc.props.map((prop) => (
+                                <tr key={prop.name} className="hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition duration-150">
+                                  <td className="p-4 font-mono font-semibold text-primary-600 dark:text-primary-400">{prop.name}</td>
+                                  <td className="p-4 font-mono text-xs text-neutral-500">{prop.type}</td>
+                                  <td className="p-4 font-mono text-xs text-neutral-500">{prop.default}</td>
+                                  <td className="p-4 text-neutral-600 dark:text-neutral-300 leading-relaxed">{prop.desc}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                     </div>
+                   )}
+                </div>
+              )
+            }
+          ]}
+        />
+      </Card>
     </div>
   );
 };

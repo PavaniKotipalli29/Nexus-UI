@@ -102,6 +102,7 @@ export interface ContainerProps extends BaseProps {
 export interface CardProps extends BaseProps {
   padding?: "none" | "sm" | "md" | "lg";
   interactive?: boolean;
+  onClick?: () => void;
 }
 
 export interface StackProps extends BaseProps {
@@ -218,7 +219,7 @@ export interface PopoverProps extends BaseProps {
 }
 
 export interface TabsProps extends BaseProps {
-  items: { label: string; content: ReactNode; id: string }[];
+  items: { label: ReactNode; content: ReactNode; id: string }[];
   defaultTab?: string;
   variant?: "line" | "enclosed" | "pills";
 }

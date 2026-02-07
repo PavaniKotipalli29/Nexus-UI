@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { BaseProps, ComponentVariant, ComponentSize, TextProps, HeadingProps, BadgeProps, ButtonProps, AvatarProps, BoxProps, FlexProps, IconProps } from '../../types';
+import { BaseProps, ComponentVariant, ComponentSize, TextProps, HeadingProps, BadgeProps, ButtonProps, AvatarProps, BoxProps, FlexProps, IconProps, SpinnerProps } from '../../types';
+import { Spinner } from './Feedback';
 
 // Note: ButtonProps interface is now defined in types.ts
 export const Button: React.FC<ButtonProps> = ({
@@ -393,4 +394,6 @@ export const Icon: React.FC<IconProps> = ({
   );
 };
 
+export { Spinner };
+export type { SpinnerProps };
 export * from './icon-button/IconButton';

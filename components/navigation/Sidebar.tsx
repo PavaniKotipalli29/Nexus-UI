@@ -3,137 +3,27 @@ import { Button } from '../ui/Primitives';
 
 const navGroups = [
   {
-    group: 'System',
+    group: '1D Components',
     sections: [
       {
-        title: 'Foundations',
-        items: [
-          { name: 'Colors', id: 'colors' },
-          { name: 'Typography Scale', id: 'typography-scale' },
-          { name: 'Spacing', id: 'spacing' },
-          { name: 'Design Tokens', id: 'design-tokens' },
-          { name: 'Motion', id: 'motion' },
-          { name: 'CSS Reset', id: 'css-reset' },
-          { name: 'Theme Provider', id: 'theme-provider' },
-        ]
-      },
-      {
-        title: 'Utilities',
-        items: [
-          { name: 'Theme Toggle', id: 'theme-toggle' },
-          { name: 'Copy To Clipboard', id: 'copy-to-clipboard' },
-          { name: 'Code Block', id: 'code-block' },
-          { name: 'Portal', id: 'portal' },
-          { name: 'Responsive Visibility', id: 'responsive-visibility' },
-          { name: 'Visually Hidden', id: 'visually-hidden' },
-          { name: 'Focus Trap', id: 'focus-trap' },
-        ]
-      }
-    ]
-  },
-  {
-    group: 'Components',
-    sections: [
-      {
-        title: 'Primitives',
+        title: 'Atomic / Inline',
         items: [
           { name: 'Button', id: 'button' },
-          { name: 'Icon Button', id: 'icon-button' },
-          { name: 'Text', id: 'text' },
-          { name: 'Heading', id: 'heading' },
-          { name: 'Badge', id: 'badge' },
-          { name: 'Avatar', id: 'avatar' },
-          { name: 'Box', id: 'box' },
-          { name: 'Flex', id: 'flex' },
-          { name: 'Icon', id: 'icon' },
-        ]
-      },
-      {
-        title: 'Layout',
-        items: [
-          { name: 'Container', id: 'container' },
-          { name: 'Card', id: 'card' },
-          { name: 'Stack', id: 'stack' },
-        ]
-      },
-      {
-        title: 'Forms',
-        items: [
           { name: 'Input', id: 'input' },
-          { name: 'Textarea', id: 'textarea' },
-          { name: 'Select', id: 'select' },
-          { name: 'Checkbox', id: 'checkbox' },
-          { name: 'Radio', id: 'radio' },
-          { name: 'Switch', id: 'switch' },
-          { name: 'Slider', id: 'slider' },
-          { name: 'Form Wrapper', id: 'form-wrapper' },
-          { name: 'Login Form', id: 'login-form' },
-          { name: 'Signup Form', id: 'signup-form' },
-          /* Merged specialized forms for brevity in the menu list if desired, keeping logic simple */
-          { name: 'Search Input', id: 'search-input' },
-        ]
-      },
-      {
-        title: 'Composite',
-        items: [
-          { name: 'Modal', id: 'modal' },
-          { name: 'Drawer', id: 'drawer' },
-          { name: 'Tooltip', id: 'tooltip' },
-          { name: 'Popover', id: 'popover' },
-          { name: 'Tabs', id: 'tabs' },
-          { name: 'Accordion', id: 'accordion' },
-          { name: 'Dropdown', id: 'dropdown' },
-          { name: 'Table', id: 'table' },
-          { name: 'Pagination', id: 'pagination' },
-          { name: 'Alert', id: 'alert' },
-          { name: 'Toast', id: 'toast' },
-          { name: 'Notification Banner', id: 'notification-banner' },
-          { name: 'Empty State', id: 'empty-state' },
-          { name: 'List', id: 'list' },
-        ]
-      },
-      {
-        title: 'Navigation',
-        items: [
-          { name: 'Breadcrumbs', id: 'breadcrumbs' },
-          { name: 'Stepper', id: 'stepper' },
-          { name: 'Command Palette', id: 'command-palette' },
-        ]
-      },
-      {
-        title: 'Feedback',
-        items: [
-          { name: 'Spinner', id: 'spinner' },
-          { name: 'Skeleton', id: 'skeleton' },
-          { name: 'Progress', id: 'progress' },
+          { name: 'Badge', id: 'badge' },
         ]
       }
     ]
   },
   {
-    group: 'Patterns',
+    group: '3D Components',
     sections: [
       {
-        title: 'Application Shells',
+        title: 'Flow / Page-Level',
         items: [
-          { name: 'Auth Layout', id: 'auth-layout' },
-          { name: 'Dashboard Layout', id: 'dashboard-layout' },
-        ]
-      },
-      {
-        title: 'Marketing',
-        items: [
-          { name: 'Hero Section', id: 'hero-section' },
-          { name: 'Feature Grid', id: 'feature-grid' },
-          { name: 'Pricing Section', id: 'pricing-section' },
-          { name: 'Footer', id: 'footer' },
-        ]
-      },
-      {
-        title: 'Pages',
-        items: [
-          { name: '404 Page', id: '404-page' },
-          { name: 'Error Page', id: 'error-page' },
+          { name: 'Modal', id: 'modal' },
+          { name: 'Tabs', id: 'tabs' },
+          { name: 'Alert', id: 'alert' },
         ]
       }
     ]

@@ -26,7 +26,9 @@ export const Card: React.FC<CardProps> = ({
   children,
   className = '',
   padding = 'md',
-  interactive = false
+  interactive = false,
+  onClick,
+  ...props
 }) => {
   const paddings = {
     none: 'p-0',
@@ -38,7 +40,11 @@ export const Card: React.FC<CardProps> = ({
   const interactiveStyle = interactive ? 'hover:shadow-md hover:border-neutral-300 dark:hover:border-neutral-600 cursor-pointer transition-all duration-200' : '';
 
   return (
-    <div className={`bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-md shadow-sm ${paddings[padding]} ${interactiveStyle} ${className}`}>
+    <div 
+      className={`bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-md shadow-sm ${paddings[padding]} ${interactiveStyle} ${className}`}
+      onClick={onClick}
+      {...props}
+    >
       {children}
     </div>
   );

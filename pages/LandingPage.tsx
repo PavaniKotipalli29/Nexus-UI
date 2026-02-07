@@ -1,11 +1,14 @@
-
 import React from 'react';
 import { Container, Stack, Card } from '../components/ui/Layout';
 import { Heading, Text, Button, Badge } from '../components/ui/Primitives';
+import { ComponentGallery } from '../components/ComponentGallery';
 import { openGitHubRepos } from '../utils/github';
 
-
 export const LandingPage: React.FC = () => {
+  const scrollToGallery = () => {
+    document.getElementById('explore-components')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="pb-24">
       {/* Hero Section */}
@@ -20,10 +23,28 @@ export const LandingPage: React.FC = () => {
               A strictly typed, accessibility-first React component library. No Tailwind dependencies, no Bootstrap bloat—just pure CSS Modules and robust TypeScript patterns for serious engineering teams.
             </Text>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" onClick={() => window.location.hash = '#/docs/button'}>Get Started</Button>
-              <Button size="lg" variant="secondary" onClick={() => window.location.hash = '#/patterns/dashboard'}>View Dashboard Example</Button>
+              <Button size="lg" onClick={scrollToGallery}>Get Started</Button>
             </div>
           </div>
+        </Container>
+      </section>
+
+      {/* Gallery Section */}
+      <section id="explore-components" className="py-24 bg-white dark:bg-neutral-900 border-y border-neutral-100 dark:border-neutral-800">
+        <Container>
+          <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="max-w-2xl">
+              <Heading level={2} className="mb-4 text-3xl">Explore Components</Heading>
+              <Text color="muted" size="lg">
+                Explore our collection of strictly typed, accessibility-first components.
+              </Text>
+            </div>
+            <Button variant="outline" onClick={() => window.location.hash = '#/components'} className="shrink-0">
+              View All Components
+            </Button>
+          </div>
+
+          <ComponentGallery limit={6} />
         </Container>
       </section>
 
@@ -100,7 +121,6 @@ export const LandingPage: React.FC = () => {
             <div>
               <h5 className="font-bold mb-6">Product</h5>
               <ul className="space-y-4 text-sm text-neutral-500">
-                <li><a href="#/patterns/dashboard" className="hover:text-primary-600">Documentation</a></li>
                 <li><a href="#/docs/button" className="hover:text-primary-600">Components</a></li>
               </ul>
             </div>

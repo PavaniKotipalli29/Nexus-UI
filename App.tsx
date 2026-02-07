@@ -3,11 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/navigation/Navbar';
 import { Sidebar } from './components/navigation/Sidebar';
 import { LandingPage } from './pages/LandingPage';
-import { WhyNexusPage } from './pages/WhyNexusPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { ComponentPage } from './pages/ComponentPage';
-import { DashboardPage } from './pages/patterns/DashboardPage';
+import { ComponentsGalleryPage } from './pages/ComponentsGalleryPage';
 
 
 // Simple Hash-based Router
@@ -41,9 +40,6 @@ const App: React.FC = () => {
       return <LandingPage />;
     }
 
-    if (currentPath === '#/why-nexus') {
-      return <WhyNexusPage />;
-    }
 
     if (currentPath === '#/about') {
       return <AboutPage />;
@@ -53,15 +49,17 @@ const App: React.FC = () => {
       return <ContactPage />;
     }
 
+    if (currentPath === '#/components') {
+      return <ComponentsGalleryPage />;
+    }
 
 
-    if (currentPath.startsWith('#/docs')) {
+    if (currentPath.startsWith('#/docs/')) {
       const componentName = currentPath.split('/').pop() || '';
       return (
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <main className="flex-1 lg:pl-64">
-            <div className="max-w-5xl mx-auto p-6 lg:p-12">
+        <div className="flex min-h-screen bg-neutral-50 dark:bg-neutral-950">
+          <main className="flex-1">
+            <div className="max-w-7xl mx-auto p-6 lg:p-12">
               <ComponentPage key={componentName} componentId={componentName} />
             </div>
           </main>
@@ -69,9 +67,7 @@ const App: React.FC = () => {
       );
     }
 
-    if (currentPath === '#/patterns/dashboard') {
-      return <DashboardPage />;
-    }
+
 
 
 
