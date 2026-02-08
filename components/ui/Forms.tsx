@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BaseProps, InputProps, CheckboxProps, SwitchProps, TextareaProps, SelectProps, RadioProps, SliderProps } from '../../types';
-import { Button, Heading, Text, Icon, Box, Spinner } from './Primitives';
+import { Button, Heading, Text, Icon, Box, Spinner, Label } from './Primitives';
 import { Stack, Card } from './Layout';
 import { Alert } from './Composite';
 
@@ -9,31 +9,103 @@ import { Alert } from './Composite';
 export const Input: React.FC<InputProps> = ({
   label,
   error,
+  success,
   helperText,
+  variant = 'default',
+  isLoading = false,
+  leftIcon,
+  rightIcon,
+  clearable = false,
+  onClear,
   className = '',
   id,
+  disabled,
+  value,
+  onChange,
   ...props
 }) => {
+  const baseInputStyles = "block w-full transition-all duration-200 outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50";
+  
+  const variants = {
+    default: "bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-md focus:border-primary-500 focus:ring-primary-500/20 shadow-sm",
+    filled: "bg-neutral-100 dark:bg-neutral-800 border border-transparent rounded-md focus:bg-white dark:focus:bg-neutral-900 focus:border-primary-500 focus:ring-primary-500/20",
+    ghost: "bg-transparent border border-transparent rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-800 focus:bg-white dark:focus:bg-neutral-900 focus:border-primary-500 focus:ring-primary-500/20",
+    underline: "bg-transparent border-b border-neutral-200 dark:border-neutral-800 rounded-none px-0 focus:border-primary-500 focus:ring-0 shadow-none",
+  };
+
+  const statusStyles = error 
+    ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" 
+    : success 
+    ? "border-green-500 focus:border-green-500 focus:ring-green-500/20" 
+    : "";
+
   return (
-    <div className="w-full space-y-1.5">
+    <div className={`w-full space-y-1.5 ${className}`}>
       {label && (
         <label htmlFor={id} className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
           {label}
         </label>
       )}
-      <input
-        id={id}
-        className={`
-          block w-full px-3 py-2 bg-white dark:bg-neutral-900 border rounded-md shadow-sm transition duration-200
-          placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500
-          disabled:bg-neutral-50 disabled:text-neutral-500 disabled:cursor-not-allowed
-          ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : 'border-neutral-200 dark:border-neutral-800'}
-          ${className}
-        `}
-        {...props}
-      />
-      {error && <p className="text-xs text-red-600 mt-1">{error}</p>}
-      {helperText && !error && <p className="text-xs text-neutral-500 mt-1">{helperText}</p>}
+      <div className="relative group">
+        {leftIcon && (
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400 group-focus-within:text-primary-500 transition-colors">
+            {leftIcon}
+          </div>
+        )}
+        
+        <input
+          id={id}
+          disabled={disabled || isLoading}
+          value={value}
+          onChange={onChange}
+          className={`
+            ${baseInputStyles}
+            ${variants[variant]}
+            ${statusStyles}
+            ${leftIcon ? 'pl-10' : 'pl-3'}
+            ${(rightIcon || isLoading || clearable) ? 'pr-10' : 'pr-3'}
+            py-2 text-sm
+          `}
+          {...props}
+        />
+
+        <div className="absolute inset-y-0 right-0 flex items-center pr-3 space-x-1">
+          {isLoading ? (
+            <svg className="animate-spin h-4 w-4 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          ) : clearable && value && (
+            <button 
+              type="button" 
+              onClick={onClear}
+              className="p-0.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-400 hover:text-neutral-600 transition-colors"
+            >
+              <Icon size="xs"><path d="M6 18L18 6M6 6l12 12" /></Icon>
+            </button>
+          )}
+          
+          {!isLoading && rightIcon && (
+            <div className={`flex items-center text-neutral-400 group-focus-within:text-primary-500 transition-colors`}>
+              {rightIcon}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {error && <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
+        <Icon size="xs"><path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></Icon>
+        {error}
+      </p>}
+      
+      {success && <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+        <Icon size="xs"><path d="M5 13l4 4L19 7" /></Icon>
+        {success}
+      </p>}
+      
+      {helperText && !error && !success && (
+        <p className="text-xs text-neutral-500 mt-1">{helperText}</p>
+      )}
     </div>
   );
 };
@@ -227,12 +299,8 @@ export const Slider: React.FC<SliderProps> = ({
 
 // --- Form Building Blocks ---
 
-export const Label: React.FC<{ htmlFor?: string; children: React.ReactNode; required?: boolean }> = ({ htmlFor, children, required }) => (
-  <label htmlFor={htmlFor} className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-    {children}
-    {required && <span className="text-red-500 ml-1">*</span>}
-  </label>
-);
+// Note: Label is now imported from Primitives.tsx
+
 
 export const ErrorMessage: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <p className="text-xs text-red-600 mt-1 flex items-center gap-1">

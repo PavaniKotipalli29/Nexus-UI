@@ -39,24 +39,77 @@ export interface BaseProps {
 }
 
 // Primitives
-export interface TextProps extends BaseProps {
-  size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl";
-  weight?: "normal" | "medium" | "semibold" | "bold" | "black";
-  align?: "left" | "center" | "right" | "justify";
-  color?: "default" | "muted" | "primary" | "error" | "success" | "warning" | "white";
+// Typography
+export type TypographyWeight = "regular" | "medium" | "semibold" | "bold";
+export type TypographyTone = "default" | "muted" | "subtle" | "destructive" | "success";
+export type TypographyAlign = "left" | "center" | "right";
+
+export interface TypographyProps extends BaseProps {
+  weight?: TypographyWeight;
+  tone?: TypographyTone;
+  align?: TypographyAlign;
+  truncate?: boolean;
 }
 
-export interface HeadingProps extends BaseProps {
-  level?: 1 | 2 | 3 | 4 | 5 | 6;
-  align?: "left" | "center" | "right";
-  weight?: "normal" | "medium" | "semibold" | "bold" | "black";
+export type TextVariant = 
+  | "display-xl" | "display-lg" 
+  | "heading-xl" | "heading-lg" | "heading-md" 
+  | "body-lg" | "body-md" | "body-sm" 
+  | "label-md" | "caption" | "code";
+
+export type TextWeight = "light" | "regular" | "medium" | "semibold" | "bold";
+
+export type TextTone = 
+  | "default" | "muted" | "subtle" 
+  | "primary" | "success" | "warning" | "danger" 
+  | "disabled" | "inverse";
+
+export interface TextProps extends BaseProps {
+  variant?: TextVariant;
+  weight?: TextWeight;
+  tone?: TextTone;
+  align?: TypographyAlign;
+  truncate?: boolean;
 }
+
+export interface HeadingProps extends TypographyProps {
+  level?: 1 | 2 | 3 | 4 | 5 | 6;
+}
+
+export type LabelVariant = "default" | "subtle" | "primary" | "success" | "warning" | "danger" | "info" | "outline" | "ghost" | "gradient";
+
+export interface LabelProps extends BaseProps {
+  variant?: LabelVariant;
+  size?: "sm" | "md" | "lg";
+  htmlFor?: string;
+  required?: boolean;
+  disabled?: boolean;
+  isLoading?: boolean;
+  weight?: TypographyWeight;
+  align?: TypographyAlign;
+}
+
+export interface CaptionProps extends TypographyProps {
+  size?: "xs" | "sm";
+}
+
+export interface CodeProps extends BaseProps {
+  variant?: "inline" | "block";
+}
+
+export interface BlockquoteProps extends TypographyProps {
+  cite?: string;
+}
+
+
+export type BadgeVariant = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | "outline";
+export type BadgeStyle = "solid" | "subtle" | "soft" | "pill";
 
 export interface BadgeProps extends BaseProps {
-  variant?: "default" | "primary" | "secondary" | "outline" | "ghost" | "danger" | "success" | "warning" | "info";
-  size?: "sm" | "md" | "lg";
-  isRound?: boolean;
+  variant?: BadgeVariant;
+  style?: BadgeStyle;
   icon?: ReactNode;
+  size?: "sm" | "md" | "lg";
 }
 
 export interface AvatarProps extends BaseProps {
@@ -145,11 +198,20 @@ export interface ProgressBarProps extends BaseProps {
   label?: string;
 }
 
+export type InputVariant = "default" | "filled" | "ghost" | "underline";
+
 // Forms
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  success?: string;
   helperText?: string;
+  variant?: InputVariant;
+  isLoading?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  clearable?: boolean;
+  onClear?: () => void;
 }
 
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {

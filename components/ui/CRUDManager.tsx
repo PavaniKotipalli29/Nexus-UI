@@ -8,10 +8,11 @@ import {
   Badge, 
   IconButton, 
   Box, 
-  Flex
+  Flex,
+  Label
 } from './Primitives';
 import { Card, Stack, Container } from './Layout';
-import { Input, Select, Checkbox, Label } from './Forms';
+import { Input, Select, Checkbox } from './Forms';
 import { 
   Modal, 
   Drawer, 

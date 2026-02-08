@@ -145,11 +145,20 @@ export interface ProgressBarProps extends BaseProps {
   label?: string;
 }
 
+export type InputVariant = "default" | "filled" | "ghost" | "underline";
+
 // Forms
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  success?: string;
   helperText?: string;
+  variant?: InputVariant;
+  isLoading?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  clearable?: boolean;
+  onClear?: () => void;
 }
 
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -323,7 +332,7 @@ export interface PortalProps {
 }
 `,
   primitives: `import React from 'react';
-import { BaseProps, ComponentVariant, ComponentSize, TextProps, HeadingProps, BadgeProps, ButtonProps, AvatarProps, BoxProps, FlexProps, IconProps } from '../../types';
+import { BaseProps, ComponentVariant, ComponentSize, TextProps, HeadingProps, BadgeProps, ButtonProps, AvatarProps, BoxProps, FlexProps, IconProps, LabelVariant, LabelProps, CaptionProps, CodeProps, BlockquoteProps } from '../../types';
 
 export const Button: React.FC<ButtonProps> = ({
   children,
@@ -344,10 +353,10 @@ export const Button: React.FC<ButtonProps> = ({
   const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variants = {
-    primary: \`\${isActive ? 'bg-primary-700 ring-2 ring-primary-500' : 'bg-primary-600'} text-white hover:bg-primary-700 focus:ring-primary-500 shadow-sm\`,
-    secondary: \`\${isActive ? 'bg-neutral-100 dark:bg-neutral-700 border-primary-500' : 'bg-white dark:bg-neutral-800'} text-neutral-700 border border-neutral-200 hover:bg-neutral-50 dark:text-neutral-200 dark:border-neutral-700 dark:hover:bg-neutral-700 focus:ring-neutral-200 shadow-sm\`,
-    outline: \`\${isActive ? 'bg-primary-50 dark:bg-primary-950/30 border-primary-700' : 'bg-transparent'} border border-primary-600 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-950/20 focus:ring-primary-500\`,
-    ghost: \`\${isActive ? 'bg-neutral-100 dark:bg-neutral-800 text-primary-600' : 'bg-transparent'} text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 focus:ring-neutral-200\`,
+    primary: \\\`\\\${isActive ? 'bg-primary-700 ring-2 ring-primary-500' : 'bg-primary-600'} text-white hover:bg-primary-700 focus:ring-primary-500 shadow-sm\\\`,
+    secondary: \\\`\\\${isActive ? 'bg-neutral-100 dark:bg-neutral-700 border-primary-500' : 'bg-white dark:bg-neutral-800'} text-neutral-700 border border-neutral-200 hover:bg-neutral-50 dark:text-neutral-200 dark:border-neutral-700 dark:hover:bg-neutral-700 focus:ring-neutral-200 shadow-sm\\\`,
+    outline: \\\`\\\${isActive ? 'bg-primary-50 dark:bg-primary-950/30 border-primary-700' : 'bg-transparent'} border border-primary-600 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-950/20 focus:ring-primary-500\\\`,
+    ghost: \\\`\\\${isActive ? 'bg-neutral-100 dark:bg-neutral-800 text-primary-600' : 'bg-transparent'} text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 focus:ring-neutral-200\\\`,
     danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 shadow-sm',
     success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 shadow-sm',
     warning: 'bg-yellow-50 text-white hover:bg-yellow-600 focus:ring-yellow-400 shadow-sm',
@@ -366,7 +375,7 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <button
       type={type}
-      className={\`\${baseStyles} \${variants[variant]} \${sizes[size]} \${roundedStyle} \${widthStyle} \${className}\`}
+      className={#BACKTICK_ESCAPE#\${baseStyles} \${variants[variant]} \${sizes[size]} \${roundedStyle} \${widthStyle} \${className}#BACKTICK_ESCAPE#}
       onClick={onClick}
       disabled={disabled || isLoading}
     >
@@ -386,37 +395,267 @@ export const Button: React.FC<ButtonProps> = ({
 export const Text: React.FC<TextProps> = ({
   children,
   className = '',
-  size = 'base',
-  weight = 'normal',
-  color = 'default',
-  align = 'left'
+  variant = 'body-md',
+  weight = 'regular',
+  tone = 'default',
+  align = 'left',
+  truncate = false,
+  ...props
 }) => {
-  const sizes = {
-    xs: 'text-xs',
-    sm: 'text-sm',
-    base: 'text-base',
-    lg: 'text-lg',
-    xl: 'text-xl',
-    '2xl': 'text-2xl',
-    '3xl': 'text-3xl',
+  // Map variants to HTML tags
+  const Component = React.useMemo(() => {
+    if (variant.startsWith('display')) return 'h1';
+    if (variant.startsWith('heading')) {
+      const level = variant.split('-')[1];
+      return level === 'xl' ? 'h2' : level === 'lg' ? 'h3' : 'h4';
+    }
+    if (variant === 'code') return 'code';
+    if (variant === 'caption') return 'span';
+    return 'p';
+  }, [variant]);
+
+  const variantStyles = {
+    'display-xl': 'text-5xl md:text-6xl tracking-tight leading-tight',
+    'display-lg': 'text-4xl md:text-5xl tracking-tight leading-tight',
+    'heading-xl': 'text-3xl md:text-4xl tracking-tight leading-snug',
+    'heading-lg': 'text-2xl md:text-3xl tracking-tight leading-snug',
+    'heading-md': 'text-xl md:text-2xl tracking-tight leading-snug',
+    'body-lg': 'text-lg leading-relaxed',
+    'body-md': 'text-base leading-relaxed',
+    'body-sm': 'text-sm leading-relaxed',
+    'label-md': 'text-sm font-medium leading-none',
+    'caption': 'text-xs leading-normal',
+    'code': 'font-mono text-sm bg-neutral-100 dark:bg-neutral-800 px-1 py-0.5 rounded',
   };
+
   const weights = {
-    normal: 'font-normal',
+    light: 'font-light',
+    regular: 'font-normal',
     medium: 'font-medium',
     semibold: 'font-semibold',
     bold: 'font-bold',
-    black: 'font-black',
   };
-  const colors = {
+
+  const tones = {
     default: 'text-neutral-900 dark:text-neutral-100',
     muted: 'text-neutral-500 dark:text-neutral-400',
-    primary: 'text-primary-600',
-    error: 'text-red-600',
-    success: 'text-green-600',
-    warning: 'text-yellow-500',
-    white: 'text-white',
+    subtle: 'text-neutral-400 dark:text-neutral-500',
+    primary: 'text-primary-600 dark:text-primary-400',
+    success: 'text-green-600 dark:text-green-400',
+    warning: 'text-yellow-600 dark:text-yellow-400',
+    danger: 'text-red-600 dark:text-red-400',
+    destructive: 'text-red-600 dark:text-red-400', // alias for danger
+    disabled: 'text-neutral-300 dark:text-neutral-600',
+    inverse: 'text-white dark:text-neutral-900',
   };
-  return <p className={\`\${sizes[size]} \${weights[weight]} \${colors[color]} text-\${align} \${className}\`}>{children}</p>;
+
+  // Legacy support helper (mapped to new variants/tones where possible)
+  const legacySizeMap: Record<string, string> = {
+    'xs': 'caption', 'sm': 'body-sm', 'base': 'body-md', 'lg': 'body-lg', 
+    'xl': 'heading-md', '2xl': 'heading-lg', '3xl': 'heading-xl'
+  };
+  const legacyColorMap: Record<string, string> = {
+    'error': 'danger', 'white': 'inverse'
+  };
+  
+  // Handle legacy props if they exist in rest props (casted to any to avoid TS errors for now)
+  const p = props as any;
+  const finalVariant = p.size ? legacySizeMap[p.size] || variant : variant;
+  const finalTone = p.color ? legacyColorMap[p.color] || p.color : tone;
+
+  const classes = [
+    variantStyles[finalVariant as keyof typeof variantStyles],
+    weights[weight as keyof typeof weights],
+    tones[finalTone as keyof typeof tones],
+    #BACKTICK_ESCAPE#text-\${align}#BACKTICK_ESCAPE#,
+    truncate ? 'truncate' : '',
+    className
+  ].filter(Boolean).join(' ');
+
+  return <Component className={classes}>{children}</Component>;
+};
+
+export const Heading: React.FC<HeadingProps> = ({
+  children,
+  className = '',
+  level = 1,
+  align = 'left',
+  weight = 'bold',
+  tone = 'default',
+  truncate = false,
+}) => {
+  const Tag = #BACKTICK_ESCAPE#h\${level}#BACKTICK_ESCAPE# as any;
+  const styles = {
+    1: 'text-4xl tracking-tight lg:text-5xl',
+    2: 'text-3xl tracking-tight',
+    3: 'text-2xl tracking-tight',
+    4: 'text-xl',
+    5: 'text-lg',
+    6: 'text-base',
+  };
+
+  const weights = {
+    regular: 'font-normal',
+    medium: 'font-medium',
+    semibold: 'font-semibold',
+    bold: 'font-bold',
+  };
+
+  const tones = {
+    default: 'text-neutral-900 dark:text-neutral-100',
+    muted: 'text-neutral-500 dark:text-neutral-400',
+    subtle: 'text-neutral-400 dark:text-neutral-500',
+    destructive: 'text-red-600 dark:text-red-400',
+    success: 'text-green-600 dark:text-green-400',
+  };
+
+  const classes = [
+    styles[level as keyof typeof styles],
+    weights[weight as keyof typeof weights],
+    tones[tone as keyof typeof tones],
+    #BACKTICK_ESCAPE#text-\${align}#BACKTICK_ESCAPE#,
+    truncate ? 'truncate block' : '',
+    className
+  ].filter(Boolean).join(' ');
+
+  return <Tag className={classes}>{children}</Tag>;
+};
+
+export const Label: React.FC<LabelProps> = ({
+  children,
+  className = '',
+  htmlFor,
+  required = false,
+  variant = 'default',
+  size = 'md',
+  disabled = false,
+  isLoading = false,
+  weight = 'medium',
+  align = 'left',
+}) => {
+  const baseStyles = 'inline-flex items-center gap-2 font-medium transition-all duration-200';
+  
+  const variants = {
+    default: 'text-neutral-700 dark:text-neutral-300',
+    subtle: 'text-neutral-500 dark:text-neutral-400',
+    primary: 'text-primary-600 dark:text-primary-400',
+    success: 'text-green-600 dark:text-green-400',
+    warning: 'text-yellow-600 dark:text-yellow-400',
+    danger: 'text-red-600 dark:text-red-400',
+    info: 'text-blue-600 dark:text-blue-400',
+    outline: 'px-2 py-0.5 border border-neutral-300 dark:border-neutral-700 rounded text-neutral-600 dark:text-neutral-400',
+    ghost: 'px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded text-neutral-600 dark:text-neutral-400',
+    gradient: 'text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-accent-600 font-bold',
+  };
+
+  const sizes = {
+    sm: 'text-xs',
+    md: 'text-sm',
+    lg: 'text-base',
+  };
+
+  const weights = {
+    regular: 'font-normal',
+    medium: 'font-medium',
+    semibold: 'font-semibold',
+    bold: 'font-bold',
+  };
+
+  const disabledStyles = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
+
+  return (
+    <label
+      htmlFor={htmlFor}
+      className={#BACKTICK_ESCAPE#
+        \${baseStyles} 
+        \${variants[variant]} 
+        \${sizes[size]} 
+        \${weights[weight as keyof typeof weights]} 
+        text-\${align} 
+        \${disabledStyles} 
+        \${className}
+      #BACKTICK_ESCAPE#}
+    >
+      {isLoading && (
+        <svg className="animate-spin h-3 w-3 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      )}
+      {children}
+      {required && <span className="text-red-500 ml-0.5">*</span>}
+    </label>
+  );
+};
+
+export const Badge: React.FC<BadgeProps> = ({
+  children,
+  className = '',
+  variant = 'default',
+  style = 'subtle',
+  size = 'md',
+  icon,
+}) => {
+  const baseStyles = 'inline-flex items-center justify-center font-medium transition-colors';
+  
+  const sizes = {
+    sm: 'text-xs px-1.5 py-0.5 gap-1',
+    md: 'text-sm px-2.5 py-0.5 gap-1.5',
+    lg: 'text-sm px-3 py-1 gap-2',
+  };
+
+  const getVariantStyles = (v: string, s: string) => {
+    // Style: solid
+    if (s === 'solid') {
+      switch (v) {
+        case 'primary': return 'bg-primary-600 text-white';
+        case 'secondary': return 'bg-neutral-600 text-white';
+        case 'success': return 'bg-green-600 text-white';
+        case 'warning': return 'bg-yellow-500 text-white';
+        case 'danger': return 'bg-red-600 text-white';
+        case 'outline': return 'bg-transparent border border-neutral-300 text-neutral-700'; // Fallback
+        default: return 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900';
+      }
+    }
+    // Style: subtle (light bg, dark text)
+    if (s === 'subtle') {
+      switch (v) {
+        case 'primary': return 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300';
+        case 'secondary': return 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300';
+        case 'success': return 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300';
+        case 'warning': return 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300';
+        case 'danger': return 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300';
+        case 'outline': return 'bg-neutral-50 text-neutral-600 border border-neutral-200';
+        default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
+      }
+    }
+    // Style: soft
+    if (s === 'soft') {
+       switch (v) {
+        case 'primary': return 'bg-primary-50/50 text-primary-600 dark:bg-primary-900/20';
+        case 'success': return 'bg-green-50/50 text-green-600 dark:bg-green-900/20';
+        case 'warning': return 'bg-yellow-50/50 text-yellow-600 dark:bg-yellow-900/20';
+        case 'danger': return 'bg-red-50/50 text-red-600 dark:bg-red-900/20';
+        default: return 'bg-neutral-50/50 text-neutral-600 dark:bg-neutral-800/50';
+      }
+    }
+    // Style: pill (shape)
+    if (s === 'pill') {
+       const base = getVariantStyles(v, 'subtle');
+       return \`\${base} rounded-full\`;
+    }
+    return '';
+  };
+
+  const styleClasses = getVariantStyles(variant, style);
+  const roundedClass = style === 'pill' ? 'rounded-full' : 'rounded';
+
+  return (
+    <span className={\`\${baseStyles} \${sizes[size]} \${styleClasses} \${roundedClass} \${className}\`}>
+      {icon && <span className="opacity-70">{icon}</span>}
+      {children}
+    </span>
+  );
 };`,
   layout: `import React from 'react';
 import { ContainerProps, CardProps, StackProps } from '../../types';
@@ -467,7 +706,7 @@ export const Card: React.FC<CardProps> = ({
 };`,
   forms: `import React, { useState, useEffect } from 'react';
 import { BaseProps, InputProps, CheckboxProps, SwitchProps, TextareaProps, SelectProps, RadioProps, SliderProps } from '../../types';
-import { Button, Heading, Text, Icon, Box, Spinner } from './Primitives';
+import { Button, Heading, Text, Icon, Box, Label, Spinner } from './Primitives';
 import { Stack, Card } from './Layout';
 import { Alert } from './Composite';
 

@@ -1,20 +1,5 @@
 import React from 'react';
-import { BaseProps, ComponentVariant, ComponentSize, TextProps, HeadingProps, BadgeProps, ButtonProps, AvatarProps, BoxProps, FlexProps, IconProps, SpinnerProps } from '../../types';
-
-export type { 
-  BaseProps, 
-  ComponentVariant, 
-  ComponentSize, 
-  TextProps, 
-  HeadingProps, 
-  BadgeProps, 
-  ButtonProps, 
-  AvatarProps, 
-  BoxProps, 
-  FlexProps, 
-  IconProps, 
-  SpinnerProps 
-};
+import { BaseProps, ComponentVariant, ComponentSize, TextProps, HeadingProps, BadgeProps, ButtonProps, AvatarProps, BoxProps, FlexProps, IconProps, SpinnerProps, LabelProps, CaptionProps, CodeProps, BlockquoteProps } from '../../types';
 import { Spinner } from './Feedback';
 
 // Note: ButtonProps interface is now defined in types.ts
@@ -128,100 +113,311 @@ export const HamburgerButton: React.FC<ButtonProps> = (props) => {
 export const Text: React.FC<TextProps> = ({
   children,
   className = '',
-  size = 'base',
-  weight = 'normal',
-  color = 'default',
-  align = 'left'
+  variant = 'body-md',
+  weight = 'regular',
+  tone = 'default',
+  align = 'left',
+  truncate = false,
+  ...props
 }) => {
-  const sizes = {
-    xs: 'text-xs',
-    sm: 'text-sm',
-    base: 'text-base',
-    lg: 'text-lg',
-    xl: 'text-xl',
-    '2xl': 'text-2xl',
-    '3xl': 'text-3xl',
+  // Map variants to HTML tags
+  const Component = React.useMemo(() => {
+    if (variant.startsWith('display')) return 'h1';
+    if (variant.startsWith('heading')) {
+      const level = variant.split('-')[1];
+      return level === 'xl' ? 'h2' : level === 'lg' ? 'h3' : 'h4';
+    }
+    if (variant === 'code') return 'code';
+    if (variant === 'caption') return 'span';
+    return 'p';
+  }, [variant]);
+
+  const variantStyles = {
+    'display-xl': 'text-5xl md:text-6xl tracking-tight leading-tight',
+    'display-lg': 'text-4xl md:text-5xl tracking-tight leading-tight',
+    'heading-xl': 'text-3xl md:text-4xl tracking-tight leading-snug',
+    'heading-lg': 'text-2xl md:text-3xl tracking-tight leading-snug',
+    'heading-md': 'text-xl md:text-2xl tracking-tight leading-snug',
+    'body-lg': 'text-lg leading-relaxed',
+    'body-md': 'text-base leading-relaxed',
+    'body-sm': 'text-sm leading-relaxed',
+    'label-md': 'text-sm font-medium leading-none',
+    'caption': 'text-xs leading-normal',
+    'code': 'font-mono text-sm bg-neutral-100 dark:bg-neutral-800 px-1 py-0.5 rounded',
   };
 
   const weights = {
-    normal: 'font-normal',
+    light: 'font-light',
+    regular: 'font-normal',
     medium: 'font-medium',
     semibold: 'font-semibold',
     bold: 'font-bold',
-    black: 'font-black',
   };
 
-  const colors = {
+  const tones = {
     default: 'text-neutral-900 dark:text-neutral-100',
     muted: 'text-neutral-500 dark:text-neutral-400',
-    primary: 'text-primary-600',
-    error: 'text-red-600',
-    success: 'text-green-600',
-    warning: 'text-yellow-500',
-    white: 'text-white',
+    subtle: 'text-neutral-400 dark:text-neutral-500',
+    primary: 'text-primary-600 dark:text-primary-400',
+    success: 'text-green-600 dark:text-green-400',
+    warning: 'text-yellow-600 dark:text-yellow-400',
+    danger: 'text-red-600 dark:text-red-400',
+    destructive: 'text-red-600 dark:text-red-400', // alias for danger
+    disabled: 'text-neutral-300 dark:text-neutral-600',
+    inverse: 'text-white dark:text-neutral-900',
   };
 
-  return <p className={`${sizes[size]} ${weights[weight]} ${colors[color]} text-${align} ${className}`}>{children}</p>;
+  // Legacy support helper (mapped to new variants/tones where possible)
+  const legacySizeMap: Record<string, string> = {
+    'xs': 'caption', 'sm': 'body-sm', 'base': 'body-md', 'lg': 'body-lg', 
+    'xl': 'heading-md', '2xl': 'heading-lg', '3xl': 'heading-xl'
+  };
+  const legacyColorMap: Record<string, string> = {
+    'error': 'danger', 'white': 'inverse'
+  };
+  
+  // Handle legacy props if they exist in rest props (casted to any to avoid TS errors for now)
+  const p = props as any;
+  const finalVariant = p.size ? legacySizeMap[p.size] || variant : variant;
+  const finalTone = p.color ? legacyColorMap[p.color] || p.color : tone;
+
+  const classes = [
+    variantStyles[finalVariant as keyof typeof variantStyles],
+    weights[weight as keyof typeof weights],
+    tones[finalTone as keyof typeof tones],
+    `text-${align}`,
+    truncate ? 'truncate' : '',
+    className
+  ].filter(Boolean).join(' ');
+
+  return <Component className={classes}>{children}</Component>;
 };
 
+// Re-export Heading as a wrapper around Text for backward compatibility
 export const Heading: React.FC<HeadingProps> = ({
   children,
-  className = '',
   level = 1,
-  align = 'left',
-  weight = 'bold'
+  weight = 'bold',
+  ...props
 }) => {
-  // Fix: Use any to avoid "Cannot find namespace 'JSX'" and "does not have any construct or call signatures" errors
-  const Tag = `h${level}` as any;
-  const styles = {
-    1: 'text-4xl tracking-tight lg:text-5xl',
-    2: 'text-3xl tracking-tight',
-    3: 'text-2xl tracking-tight',
-    4: 'text-xl',
-    5: 'text-lg',
-    6: 'text-base',
+  const mapLevelToVariant = {
+    1: 'display-xl', 2: 'display-lg', 3: 'heading-xl', 
+    4: 'heading-lg', 5: 'heading-md', 6: 'body-lg'
+  };
+  return (
+    <Text 
+      variant={mapLevelToVariant[level as keyof typeof mapLevelToVariant] as any} 
+      weight={weight} 
+      {...props} 
+    >
+      {children}
+    </Text>
+  );
+};
+
+export const Label: React.FC<LabelProps> = ({
+  children,
+  className = '',
+  htmlFor,
+  required = false,
+  variant = 'default',
+  size = 'md',
+  disabled = false,
+  isLoading = false,
+  weight = 'medium',
+  align = 'left',
+}) => {
+  const baseStyles = 'inline-flex items-center gap-2 font-medium transition-all duration-200';
+  
+  const variants = {
+    default: 'text-neutral-700 dark:text-neutral-300',
+    subtle: 'text-neutral-500 dark:text-neutral-400',
+    primary: 'text-primary-600 dark:text-primary-400',
+    success: 'text-green-600 dark:text-green-400',
+    warning: 'text-yellow-600 dark:text-yellow-400',
+    danger: 'text-red-600 dark:text-red-400',
+    destructive: 'text-red-600 dark:text-red-400', // alias for danger
+    info: 'text-blue-600 dark:text-blue-400',
+    outline: 'px-2 py-0.5 border border-neutral-300 dark:border-neutral-700 rounded text-neutral-600 dark:text-neutral-400',
+    ghost: 'px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded text-neutral-600 dark:text-neutral-400',
+    gradient: 'text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-accent-600 font-bold',
+  };
+
+  const sizes = {
+    sm: 'text-xs',
+    md: 'text-sm',
+    lg: 'text-base',
   };
 
   const weights = {
-    normal: 'font-normal',
+    regular: 'font-normal',
     medium: 'font-medium',
     semibold: 'font-semibold',
     bold: 'font-bold',
-    black: 'font-black',
   };
 
-  return <Tag className={`${styles[level]} ${weights[weight]} text-neutral-900 dark:text-neutral-50 text-${align} ${className}`}>{children}</Tag>;
+  const disabledStyles = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
+
+  return (
+    <label
+      htmlFor={htmlFor}
+      className={`
+        ${baseStyles} 
+        ${variants[variant]} 
+        ${sizes[size]} 
+        ${weights[weight as keyof typeof weights]} 
+        text-${align} 
+        ${disabledStyles} 
+        ${className}
+      `}
+    >
+      {isLoading && (
+        <svg className="animate-spin h-3 w-3 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      )}
+      {children}
+      {required && <span className="text-red-500 ml-0.5">*</span>}
+    </label>
+  );
+};
+
+export const Caption: React.FC<CaptionProps> = ({
+  children,
+  className = '',
+  size = 'sm',
+  weight = 'regular',
+  tone = 'muted',
+  align = 'left',
+  truncate = false,
+}) => {
+  return (
+    <span className={`
+      ${size === 'xs' ? 'text-xs' : 'text-sm'}
+      ${weight === 'bold' ? 'font-bold' : weight === 'semibold' ? 'font-semibold' : weight === 'medium' ? 'font-medium' : 'font-normal'}
+      ${tone === 'muted' ? 'text-neutral-500' : tone === 'subtle' ? 'text-neutral-400' : tone === 'destructive' ? 'text-red-600' : 'text-neutral-900'}
+      text-${align}
+      ${truncate ? 'truncate block' : ''}
+      ${className}
+    `}>
+      {children}
+    </span>
+  );
+};
+
+export const Code: React.FC<CodeProps> = ({
+  children,
+  className = '',
+  variant = 'inline',
+}) => {
+  if (variant === 'block') {
+    return (
+      <pre className={`p-4 bg-neutral-100 dark:bg-neutral-800 rounded-lg overflow-x-auto text-sm font-mono text-neutral-800 dark:text-neutral-200 ${className}`}>
+        <code>{children}</code>
+      </pre>
+    );
+  }
+  return (
+    <code className={`px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded text-sm font-mono text-primary-600 dark:text-primary-400 ${className}`}>
+      {children}
+    </code>
+  );
+};
+
+export const Blockquote: React.FC<BlockquoteProps> = ({
+  children,
+  className = '',
+  tone = 'default',
+  align = 'left',
+  cite,
+}) => {
+  return (
+    <blockquote className={`border-l-4 border-neutral-200 dark:border-neutral-700 pl-4 py-1 my-4 text-${align} ${className}`}>
+      <Text tone={tone} variant="body-lg" className="italic">
+        "{children}"
+      </Text>
+      {cite && (
+        <cite className="block mt-2 text-sm not-italic font-medium text-neutral-500">
+          — {cite}
+        </cite>
+      )}
+    </blockquote>
+  );
 };
 
 export const Badge: React.FC<BadgeProps> = ({
   children,
   className = '',
   variant = 'default',
+  style = 'subtle',
   size = 'md',
-  isRound = false,
-  icon
+  icon,
 }) => {
-  const variants = {
-    default: 'bg-neutral-100 text-neutral-800 border-neutral-200 dark:bg-neutral-800 dark:text-neutral-200 dark:border-neutral-700',
-    primary: 'bg-primary-50 text-primary-700 border-primary-100 dark:bg-primary-950/30 dark:text-primary-400 dark:border-primary-900',
-    secondary: 'bg-white text-neutral-700 border-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-700',
-    outline: 'bg-transparent text-neutral-700 border-neutral-300 dark:text-neutral-300 dark:border-neutral-600',
-    ghost: 'bg-transparent text-neutral-600 dark:text-neutral-400 border-transparent',
-    success: 'bg-green-50 text-green-700 border-green-100 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900',
-    warning: 'bg-yellow-50 text-yellow-700 border-yellow-100 dark:bg-yellow-950/30 dark:text-yellow-400 dark:border-yellow-900',
-    danger: 'bg-red-50 text-red-700 border-red-100 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900',
-    info: 'bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-900',
+  const baseStyles = 'inline-flex items-center justify-center font-medium transition-colors';
+  
+  const sizes = {
+    sm: 'text-xs px-1.5 py-0.5 gap-1',
+    md: 'text-sm px-2.5 py-0.5 gap-1.5',
+    lg: 'text-sm px-3 py-1 gap-2',
   };
 
-  const sizes = {
-    sm: 'px-2 py-0.5 text-[10px]',
-    md: 'px-2.5 py-0.5 text-xs',
-    lg: 'px-3 py-1 text-sm',
+  const getVariantStyles = (v: string, s: string) => {
+    // Style: solid
+    if (s === 'solid') {
+      switch (v) {
+        case 'primary': return 'bg-primary-600 text-white';
+        case 'secondary': return 'bg-neutral-600 text-white';
+        case 'success': return 'bg-green-600 text-white';
+        case 'warning': return 'bg-yellow-500 text-white';
+        case 'danger': return 'bg-red-600 text-white';
+        case 'outline': return 'bg-transparent border border-neutral-300 text-neutral-700'; // Fallback
+        default: return 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900';
+      }
+    }
+    // Style: subtle (light bg, dark text)
+    if (s === 'subtle') {
+      switch (v) {
+        case 'primary': return 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300';
+        case 'secondary': return 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300';
+        case 'success': return 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300';
+        case 'warning': return 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300';
+        case 'danger': return 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300';
+        case 'outline': return 'bg-neutral-50 text-neutral-600 border border-neutral-200';
+        default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
+      }
+    }
+    // Style: soft (even lighter bg or transparent with color) - mapped similar to subtle but maybe different nuance?
+    // User requested "soft", let's make it slightly more transparent or just alias subtle for now but distinct
+    if (s === 'soft') {
+       switch (v) {
+        case 'primary': return 'bg-primary-50/50 text-primary-600 dark:bg-primary-900/20';
+        case 'success': return 'bg-green-50/50 text-green-600 dark:bg-green-900/20';
+        case 'warning': return 'bg-yellow-50/50 text-yellow-600 dark:bg-yellow-900/20';
+        case 'danger': return 'bg-red-50/50 text-red-600 dark:bg-red-900/20';
+        default: return 'bg-neutral-50/50 text-neutral-600 dark:bg-neutral-800/50';
+      }
+    }
+    // Style: pill (shape) - typically solid or subtle but fully rounded. 
+    // Implementing as Subtle + Rounded Full for this specific system unless strictly solid
+    // Let's assume pill is just a shape modifier on top of default colors, OR it's a specific style.
+    // Given the prompt "Styles: solid, subtle, soft, pill", it implies pill is a distinct visual style?
+    // Or maybe it's just the shape. Usually "pill" refers to `rounded-full`.
+    // I will treat it as "Subtle but fully rounded".
+    if (s === 'pill') {
+       // Use subtle colors but ensure rounded-full
+       const base = getVariantStyles(v, 'subtle');
+       return `${base} rounded-full`;
+    }
+    return '';
   };
+
+  const styleClasses = getVariantStyles(variant, style);
+  const roundedClass = style === 'pill' ? 'rounded-full' : 'rounded'; // Default rounded if not pill
 
   return (
-    <span className={`inline-flex items-center ${sizes[size]} ${isRound ? 'rounded-full' : 'rounded-md'} font-medium border ${variants[variant]} ${className}`}>
-      {icon && <span className="mr-1.5 -ml-0.5">{icon}</span>}
+    <span className={`${baseStyles} ${sizes[size]} ${styleClasses} ${roundedClass} ${className}`}>
+      {icon && <span className="opacity-70">{icon}</span>}
       {children}
     </span>
   );

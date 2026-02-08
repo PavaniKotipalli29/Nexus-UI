@@ -1,11 +1,12 @@
 
 import React from 'react';
 import { 
-  Button, Badge, Text, Heading, Icon, Avatar, Spinner, IconButton, SplitButton, HamburgerButton, Box, Flex 
+  Button, Badge, Text, Heading, Icon, Avatar, Spinner, IconButton, SplitButton, HamburgerButton, Box, Flex,
+  Label, Caption, Code, Blockquote
 } from '../components/ui/Primitives';
 import { Card, Stack, Container } from '../components/ui/Layout';
 import { 
-  Input, Label, Checkbox, Radio, Switch, Textarea, Select, Slider, 
+  Input, Checkbox, Radio, Switch, Textarea, Select, Slider, 
   FormField, SearchInput, LoginForm, SignupForm, DatePicker, TimePicker 
 } from '../components/ui/Forms';
 import { 
@@ -55,33 +56,95 @@ export const components: ComponentItem[] = [
     name: 'Input',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    variants: 4,
-    description: 'Text inputs for user data entry.',
-    preview: <div className="w-full px-4"><div className="h-10 border rounded px-3 flex items-center text-sm text-neutral-400 bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800">Placeholder...</div></div>,
-    code: '<Input placeholder="Enter text..." />',
-    info: 'Standard text input field.'
+    variants: 12,
+    description: 'Highly customizable text inputs with multiple variants, states, and icon support.',
+    preview: (
+      <Stack spacing={4} className="w-full px-6">
+        <Input 
+          variant="default" 
+          placeholder="Default variation" 
+          leftIcon={<Icon size="xs"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></Icon>}
+        />
+        <Input 
+          variant="filled" 
+          placeholder="Filled variation" 
+          clearable 
+          value="Clearable content"
+          onClear={() => {}}
+        />
+        <Input 
+          variant="underline" 
+          placeholder="Underline variation" 
+          error="This is an error state"
+        />
+      </Stack>
+    ),
+    code: `// Variants
+<Input variant="default" placeholder="Default" />
+<Input variant="filled" placeholder="Filled" />
+<Input variant="ghost" placeholder="Ghost" />
+<Input variant="underline" placeholder="Underline" />
+
+// States
+<Input disabled placeholder="Disabled" />
+<Input isLoading placeholder="Loading..." />
+<Input error="Error message" value="Invalid" />
+<Input success="Success message" value="Valid" />
+
+// Features
+<Input leftIcon={<UserIcon />} placeholder="With Icon" />
+<Input clearable value="Text" onClear={handleClear} />`,
+    info: 'A robust input component supporting 4 variants (default, filled, ghost, underline) and various interactive states like error, success, loading, and clearable. Includes built-in support for icons and accessibility features.'
   },
   {
     id: 'label',
     name: 'Label',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    variants: 2,
-    description: 'Text labels for form elements.',
-    preview: <Label>Field Label</Label>,
-    code: '<Label>Username</Label>',
-    info: 'Used to provide titles for form controls.'
+    variants: 24,
+    description: 'A versatile label component with multiple variants, sizes, and states.',
+    preview: (
+      <Stack spacing={4} className="w-full px-6">
+        <div className="flex flex-wrap gap-2">
+          <Label variant="primary">Primary</Label>
+          <Label variant="success">Success</Label>
+          <Label variant="warning">Warning</Label>
+          <Label variant="danger">Danger</Label>
+        </div>
+        <div className="flex gap-4 items-center">
+          <Label isLoading>Loading</Label>
+          <Label required>Required</Label>
+          <Label disabled>Disabled</Label>
+        </div>
+      </Stack>
+    ),
+    code: `<Label variant="primary">Username</Label>\n<Label isLoading>Uploading...</Label>\n<Label required>Email</Label>`,
+    info: 'A robust label component supporting 10 variants, 3 sizes, and various interactive states like loading, disabled, and required.'
   },
   {
     id: 'badge',
     name: 'Badge',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    variants: 9,
-    description: 'Status indicators and labels.',
-    preview: <Badge variant="success">Active</Badge>,
-    code: '<Badge variant="success">Active</Badge>',
-    info: 'Small visual indicators for status or tags.'
+    variants: 28,
+    description: 'Status indicators and labels with multiple styles and tones.',
+    preview: (
+      <Stack spacing={4} className="w-full px-6">
+        <div className="flex flex-wrap gap-2 justify-center">
+          <Badge variant="primary" style="solid">Solid</Badge>
+          <Badge variant="success" style="subtle">Subtle</Badge>
+          <Badge variant="warning" style="soft">Soft</Badge>
+          <Badge variant="danger" style="pill">Pill</Badge>
+        </div>
+        <div className="flex flex-wrap gap-2 justify-center">
+          <Badge variant="outline">Outline</Badge>
+          <Badge variant="primary" size="sm">Small</Badge>
+          <Badge variant="primary" icon={<span className="text-xs">★</span>}>Icon</Badge>
+        </div>
+      </Stack>
+    ),
+    code: `<Badge variant="success" style="subtle">Active</Badge>\n<Badge variant="primary" style="solid" size="lg">New</Badge>`,
+    info: 'Versatile status indicators supporting 7 colors, 4 styles (solid, subtle, soft, pill), and 3 sizes.'
   },
   {
     id: 'avatar',
@@ -154,11 +217,17 @@ export const components: ComponentItem[] = [
     name: 'Text',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    variants: 7,
-    description: 'Body text and small copy.',
-    preview: <Text>Sample body text</Text>,
-    code: '<Text size="base">Hello World</Text>',
-    info: 'Base component for all interface text.'
+    variants: 11,
+    description: 'The fundamental typography component for all text content.',
+    preview: (
+      <Stack spacing={2} className="w-full px-6 text-center">
+        <Text variant="heading-md" weight="bold">Heading MD</Text>
+        <Text variant="body-md">Body MD (Default)</Text>
+        <Text variant="caption" tone="muted">Caption / Muted</Text>
+      </Stack>
+    ),
+    code: `<Text variant="heading-lg">Title</Text>\n<Text variant="body-md" tone="muted">Subtitle</Text>`,
+    info: 'Unified typography component supporting display, heading, body, label, caption, and code variants with various weights and tones.'
   },
   {
     id: 'heading',
@@ -167,9 +236,14 @@ export const components: ComponentItem[] = [
     subCategory: 'Foundation / Primitives',
     variants: 6,
     description: 'Page and section titles.',
-    preview: <Heading level={3}>Section Title</Heading>,
-    code: '<Heading level={1}>Main Page Header</Heading>',
-    info: 'Uses semantic H1-H6 tags.'
+    preview: (
+      <Stack spacing={2} className="w-full px-6 text-center">
+        <Heading level={2}>Section Title</Heading>
+        <Heading level={4} tone="primary">Sub-heading</Heading>
+      </Stack>
+    ),
+    code: '<Heading level={1} weight="bold">Main Page Header</Heading>',
+    info: 'Uses semantic H1-H6 tags with themeable levels and tones.'
   },
 
   // --- REUSABLE (Molecules) ---

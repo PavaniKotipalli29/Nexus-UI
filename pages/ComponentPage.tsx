@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Heading, Text, Badge, Button, IconButton, Avatar, Box, Flex, Icon, SplitButton, HamburgerButton } from '../components/ui/Primitives';
+import { Heading, Text, Badge, Button, IconButton, Avatar, Box, Flex, Icon, SplitButton, HamburgerButton, Label, Caption, Code, Blockquote } from '../components/ui/Primitives';
 import { Card, Stack, Container } from '../components/ui/Layout';
-import { Input, Checkbox, Switch, Textarea, Select, Radio, Slider, FormWrapper, LoginForm, SignupForm, DatePicker, TimePicker, SearchInput, FileUpload, OTPVerification, Label } from '../components/ui/Forms';
+import { Input, Checkbox, Switch, Textarea, Select, Radio, Slider, FormWrapper, LoginForm, SignupForm, DatePicker, TimePicker, SearchInput, FileUpload, OTPVerification } from '../components/ui/Forms';
 import { Spinner, Skeleton } from '../components/ui/Feedback';
 import { ProgressBar } from '../components/ui/progress/ProgressBar';
 import { ColorPalette, TypographyScale, SpacingScale, DesignTokens, MotionTokens, CSSReset, ThemeProviderInfo } from '../components/ui/Foundations';
@@ -83,25 +83,47 @@ const docs: Record<string, ComponentDoc> = {
     implementationSource: SOURCES.primitives,
     examples: [
       {
-        title: 'Sizes',
+        title: 'Basic Usage',
         render: () => (
           <Stack spacing={2}>
-             <Text size="sm">Small text</Text>
-             <Text size="base">Base text</Text>
-             <Text size="lg">Large text</Text>
-             <Text size="xl">Extra Large text</Text>
+            <Text>Default text content.</Text>
+            <Text tone="muted">Muted text for secondary info.</Text>
+            <Text weight="bold">Bold emphasis text.</Text>
           </Stack>
         ),
-        usageCode: `<Text size="sm">Small text</Text>
-<Text size="base">Base text</Text>
-<Text size="lg">Large text</Text>
-<Text size="xl">Extra Large text</Text>`
+        usageCode: `<Text tone="muted">Secondary content</Text>`
       }
     ],
     props: [
-      { name: 'size', type: 'xs | sm | base | lg | xl | 2xl | 3xl', default: 'base', desc: 'Font size.' },
-      { name: 'weight', type: 'normal | medium | semibold | bold', default: 'normal', desc: 'Font weight.' },
-      { name: 'align', type: 'left | center | right', default: 'left', desc: 'Text alignment.' }
+      { name: 'variant', type: 'display | heading | body | label | caption | code', default: '"body-md"', desc: 'Typography variant.' },
+      { name: 'tone', type: 'default | muted | subtle | primary | success | warning | danger | inverse', default: '"default"', desc: 'Visual tone.' },
+      { name: 'weight', type: 'light | regular | medium | semibold | bold', default: '"regular"', desc: 'Font weight.' },
+      { name: 'align', type: 'left | center | right', default: '"left"', desc: 'Text alignment.' }
+    ]
+  },
+  heading: {
+    id: 'heading',
+    name: 'Heading',
+    category: 'Atomic',
+    subCategory: 'Foundation / Primitives',
+    description: 'Headings for titles and subtitles.',
+    implementationSource: SOURCES.primitives,
+    examples: [
+      {
+        title: 'Levels',
+        render: () => (
+          <Stack spacing={4}>
+            <Heading level={1}>Heading 1</Heading>
+            <Heading level={2}>Heading 2</Heading>
+            <Heading level={3}>Heading 3</Heading>
+          </Stack>
+        ),
+        usageCode: `<Heading level={1}>Main Title</Heading>`
+      }
+    ],
+    props: [
+      { name: 'level', type: '1 | 2 | 3 | 4 | 5 | 6', default: '1', desc: 'Heading level.' },
+      { name: 'tone', type: '"default" | "muted" | "primary" | "destructive" | "success"', default: '"default"', desc: 'Visual tone.' }
     ]
   },
   icon: {
@@ -137,26 +159,36 @@ const docs: Record<string, ComponentDoc> = {
     description: 'Badges highlight the state or status of an object.',
     implementationSource: SOURCES.primitives,
     examples: [
-       {
-         title: 'Variants',
-         render: () => (
-           <Flex gap={2}>
-             <Badge variant="default">Default</Badge>
-             <Badge variant="primary">Primary</Badge>
-             <Badge variant="success">Success</Badge>
-             <Badge variant="warning">Warning</Badge>
-             <Badge variant="danger">Danger</Badge>
-           </Flex>
-         ),
-         usageCode: `<Badge variant="default">Default</Badge>
-<Badge variant="primary">Primary</Badge>
-<Badge variant="success">Success</Badge>
-<Badge variant="warning">Warning</Badge>
-<Badge variant="danger">Danger</Badge>`
-       }
+      {
+        title: 'Variants',
+        render: () => (
+          <Flex gap={2} wrap="wrap">
+            <Badge variant="default">Default</Badge>
+            <Badge variant="primary">Primary</Badge>
+            <Badge variant="success">Success</Badge>
+            <Badge variant="warning">Warning</Badge>
+            <Badge variant="danger">Danger</Badge>
+            <Badge variant="outline">Outline</Badge>
+          </Flex>
+        ),
+        usageCode: `<Badge variant="primary">Primary</Badge>\n<Badge variant="outline">Outline</Badge>`
+      },
+      {
+        title: 'Styles',
+        render: () => (
+          <Flex gap={2} wrap="wrap">
+            <Badge variant="primary" style="solid">Solid</Badge>
+            <Badge variant="primary" style="subtle">Subtle</Badge>
+            <Badge variant="primary" style="soft">Soft</Badge>
+            <Badge variant="primary" style="pill">Pill</Badge>
+          </Flex>
+        ),
+        usageCode: `<Badge variant="primary" style="solid">Solid</Badge>\n<Badge variant="primary" style="pill">Pill</Badge>`
+      }
     ],
     props: [
-      { name: 'variant', type: 'default | primary | success | warning | danger', default: 'default', desc: 'Visual style.' },
+      { name: 'variant', type: 'default | primary | secondary | success | warning | danger | outline', default: 'default', desc: 'Visual variant.' },
+      { name: 'style', type: 'solid | subtle | soft | pill', default: 'subtle', desc: 'Visual style.' },
       { name: 'size', type: 'sm | md | lg', default: 'md', desc: 'Size of the badge.' }
     ]
   },
@@ -165,18 +197,67 @@ const docs: Record<string, ComponentDoc> = {
     name: 'Input',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    description: 'Used for single-line text input.',
+    description: 'A versatile input component supporting multiple variants, states, and icon configurations.',
     implementationSource: SOURCES.forms,
     examples: [
       {
-        title: 'Basic',
-        render: () => <Input placeholder="Enter your name" />,
-        usageCode: `<Input placeholder="Enter your name" />`
+        title: 'Variants',
+        render: () => (
+          <Stack spacing={4} className="w-full max-w-sm">
+            <Input variant="default" placeholder="Default variant" label="Default" />
+            <Input variant="filled" placeholder="Filled variant" label="Filled" />
+            <Input variant="ghost" placeholder="Ghost variant" label="Ghost" />
+            <Input variant="underline" placeholder="Underline variant" label="Underline" />
+          </Stack>
+        ),
+        usageCode: `<Input variant="default" placeholder="Default" />\n<Input variant="filled" placeholder="Filled" />\n<Input variant="ghost" placeholder="Ghost" />\n<Input variant="underline" placeholder="Underline" />`
+      },
+      {
+        title: 'States',
+        render: () => (
+          <Stack spacing={4} className="w-full max-w-sm">
+            <Input label="Disabled" disabled placeholder="Can't type here" />
+            <Input label="Loading" isLoading placeholder="Processing..." />
+            <Input label="Error" error="Invalid input" value="Invalid data" />
+            <Input label="Success" success="Input is valid" value="Correct data" />
+          </Stack>
+        ),
+        usageCode: `<Input disabled placeholder="Disabled" />\n<Input isLoading placeholder="Loading..." />\n<Input error="Error message" />\n<Input success="Success message" />`
+      },
+      {
+        title: 'With Icons',
+        render: () => (
+          <Stack spacing={4} className="w-full max-w-sm">
+            <Input 
+              placeholder="Search..." 
+              leftIcon={<Icon size="xs"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></Icon>} 
+            />
+            <Input 
+              placeholder="Email address" 
+              rightIcon={<Icon size="xs"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></Icon>} 
+            />
+          </Stack>
+        ),
+        usageCode: `<Input leftIcon={<SearchIcon />} />\n<Input rightIcon={<MailIcon />} />`
+      },
+      {
+        title: 'Clearable',
+        render: () => {
+          const [val, setVal] = useState('Clear me');
+          return <Input label="Clearable Input" value={val} onChange={(e) => setVal(e.target.value)} clearable onClear={() => setVal('')} />;
+        },
+        usageCode: `<Input clearable value={val} onClear={() => setVal('')} />`
       }
     ],
     props: [
+      { name: 'variant', type: 'default | filled | ghost | underline', default: 'default', desc: 'Visual variant.' },
       { name: 'label', type: 'string', default: '-', desc: 'Label text.' },
-      { name: 'error', type: 'string', default: '-', desc: 'Error message.' }
+      { name: 'error', type: 'string', default: '-', desc: 'Error message.' },
+      { name: 'success', type: 'string', default: '-', desc: 'Success message.' },
+      { name: 'isLoading', type: 'boolean', default: 'false', desc: 'Loading state.' },
+      { name: 'leftIcon', type: 'ReactNode', default: '-', desc: 'Icon on the left.' },
+      { name: 'rightIcon', type: 'ReactNode', default: '-', desc: 'Icon on the right.' },
+      { name: 'clearable', type: 'boolean', default: 'false', desc: 'Show clear button.' }
     ]
   },
   textarea: {
@@ -215,22 +296,6 @@ const docs: Record<string, ComponentDoc> = {
     props: [
       { name: 'options', type: '{label, value}[]', default: '[]', desc: 'Options to display.' }
     ]
-  },
-  heading: {
-    id: 'heading',
-    name: 'Heading',
-    category: 'Atomic',
-    subCategory: 'Foundation / Primitives',
-    description: 'Headings are used for titles and subtitles, supporting levels 1 through 6.',
-    implementationSource: SOURCES.primitives,
-    examples: [
-      {
-        title: 'Levels',
-        render: () => <Stack spacing={2}><Heading level={1}>Heading 1</Heading><Heading level={2}>Heading 2</Heading><Heading level={3}>Heading 3</Heading></Stack>,
-        usageCode: `<Heading level={1}>Heading 1</Heading>`
-      }
-    ],
-    props: [{ name: 'level', type: '1 | 2 | 3 | 4 | 5 | 6', default: '1', desc: 'Heading level.' }]
   },
   avatar: {
     id: 'avatar',
@@ -604,9 +669,53 @@ const docs: Record<string, ComponentDoc> = {
     name: 'Label',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    description: 'A simple text label for form fields.',
-    examples: [{ title: 'Basic', render: () => <Label>Username</Label>, usageCode: `<Label>Username</Label>` }],
-    props: []
+    description: 'A comprehensive label component used for form elements, with support for various styles, weights, and interactive states.',
+    implementationSource: SOURCES.primitives,
+    examples: [
+      {
+        title: 'Variants',
+        render: () => (
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <Stack spacing={2}><Label variant="default">Default</Label><Label variant="subtle">Subtle</Label></Stack>
+            <Stack spacing={2}><Label variant="primary">Primary</Label><Label variant="info">Info</Label></Stack>
+            <Stack spacing={2}><Label variant="success">Success</Label><Label variant="warning">Warning</Label></Stack>
+            <Stack spacing={2}><Label variant="danger">Danger</Label><Label variant="outline">Outline</Label></Stack>
+            <Stack spacing={2}><Label variant="ghost">Ghost</Label><Label variant="gradient">Gradient</Label></Stack>
+          </div>
+        ),
+        usageCode: `<Label variant="primary">Primary Label</Label>\n<Label variant="ghost">Ghost Label</Label>`
+      },
+      {
+        title: 'Sizes',
+        render: () => (
+          <Flex gap={6} align="end">
+            <Label size="sm">Small Label</Label>
+            <Label size="md">Medium Label</Label>
+            <Label size="lg">Large Label</Label>
+          </Flex>
+        ),
+        usageCode: `<Label size="sm">Small</Label>\n<Label size="lg">Large</Label>`
+      },
+      {
+        title: 'States',
+        render: () => (
+          <Flex gap={6} wrap>
+            <Label required>Required Field</Label>
+            <Label isLoading>Loading State</Label>
+            <Label disabled>Disabled Label</Label>
+          </Flex>
+        ),
+        usageCode: `<Label required>Required</Label>\n<Label isLoading>Loading</Label>\n<Label disabled>Disabled</Label>`
+      }
+    ],
+    props: [
+      { name: 'variant', type: '"default" | "subtle" | "primary" | "success" | "warning" | "danger" | "info" | "outline" | "ghost" | "gradient"', default: '"default"', desc: 'The visual style of the label.' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', desc: 'Size of the label.' },
+      { name: 'required', type: 'boolean', default: 'false', desc: 'Adds a red asterisk if true.' },
+      { name: 'isLoading', type: 'boolean', default: 'false', desc: 'Shows a loading spinner.' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Applies disabled styles.' },
+      { name: 'weight', type: '"regular" | "medium" | "semibold" | "bold"', default: '"medium"', desc: 'Font weight.' }
+    ]
   },
   tooltip: {
     id: 'tooltip',
@@ -624,15 +733,6 @@ const docs: Record<string, ComponentDoc> = {
     subCategory: 'Foundation / Primitives',
     description: 'Navigation link component.',
     examples: [{ title: 'Basic', render: () => <a href="#" className="text-primary-600 hover:underline">Click Here</a>, usageCode: `<a href="#" className="text-primary-600 hover:underline">Click Here</a>` }],
-    props: []
-  },
-  typography: {
-    id: 'typography',
-    name: 'Typography',
-    category: 'Atomic',
-    subCategory: 'Foundation / Primitives',
-    description: 'Combined text and heading styles.',
-    examples: [{ title: 'Scale', render: () => <Stack spacing={2}><Heading level={1}>H1</Heading><Text size="lg">Large Body</Text><Text color="muted">Small Detail</Text></Stack>, usageCode: `<Heading level={1}>H1</Heading>\n<Text>Body Text</Text>` }],
     props: []
   },
 
