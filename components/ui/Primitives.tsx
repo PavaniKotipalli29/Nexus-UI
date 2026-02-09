@@ -1,5 +1,5 @@
 import React from 'react';
-import { BaseProps, ComponentVariant, ComponentSize, TextProps, HeadingProps, BadgeProps, ButtonProps, AvatarProps, BoxProps, FlexProps, IconProps, SpinnerProps, LabelProps, CaptionProps, CodeProps, BlockquoteProps } from '../../types';
+import { BaseProps, ComponentVariant, ComponentSize, TextProps, HeadingProps, BadgeProps, ButtonProps, AvatarProps, AvatarGroupProps, BoxProps, FlexProps, IconProps, SpinnerProps, LabelProps, CaptionProps, CodeProps, BlockquoteProps } from '../../types';
 import { Spinner } from './Feedback';
 
 // Note: ButtonProps interface is now defined in types.ts
@@ -227,26 +227,26 @@ export const Label: React.FC<LabelProps> = ({
   weight = 'medium',
   align = 'left',
 }) => {
-  const baseStyles = 'inline-flex items-center gap-2 font-medium transition-all duration-200';
+  const baseStyles = 'inline-flex items-center gap-2 font-medium transition-all duration-200 rounded-md';
   
   const variants = {
-    default: 'text-neutral-700 dark:text-neutral-300',
-    subtle: 'text-neutral-500 dark:text-neutral-400',
-    primary: 'text-primary-600 dark:text-primary-400',
-    success: 'text-green-600 dark:text-green-400',
-    warning: 'text-yellow-600 dark:text-yellow-400',
-    danger: 'text-red-600 dark:text-red-400',
-    destructive: 'text-red-600 dark:text-red-400', // alias for danger
-    info: 'text-blue-600 dark:text-blue-400',
-    outline: 'px-2 py-0.5 border border-neutral-300 dark:border-neutral-700 rounded text-neutral-600 dark:text-neutral-400',
-    ghost: 'px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded text-neutral-600 dark:text-neutral-400',
-    gradient: 'text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-accent-600 font-bold',
+    default: 'text-neutral-700 dark:text-neutral-300 bg-transparent',
+    subtle: 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 border border-transparent',
+    primary: 'bg-primary-600 text-white hover:bg-primary-700 shadow-sm',
+    success: 'bg-green-600 text-white hover:bg-green-700 shadow-sm',
+    warning: 'bg-yellow-500 text-white hover:bg-yellow-600 shadow-sm',
+    danger: 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
+    destructive: 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
+    info: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
+    outline: 'bg-transparent border border-primary-600 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-950/20',
+    ghost: 'bg-transparent text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800',
+    gradient: 'bg-gradient-to-r from-primary-600 to-accent-600 text-white shadow-md font-bold',
   };
 
   const sizes = {
-    sm: 'text-xs',
-    md: 'text-sm',
-    lg: 'text-base',
+    sm: 'px-2.5 py-1 text-xs',
+    md: 'px-3.5 py-1.5 text-sm',
+    lg: 'px-5 py-2.5 text-base',
   };
 
   const weights = {
@@ -256,7 +256,7 @@ export const Label: React.FC<LabelProps> = ({
     bold: 'font-bold',
   };
 
-  const disabledStyles = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
+  const statusStyles = disabled ? 'opacity-50 cursor-not-allowed grayscale-[0.5]' : 'cursor-pointer';
 
   return (
     <label
@@ -267,18 +267,18 @@ export const Label: React.FC<LabelProps> = ({
         ${sizes[size]} 
         ${weights[weight as keyof typeof weights]} 
         text-${align} 
-        ${disabledStyles} 
+        ${statusStyles} 
         ${className}
       `}
     >
       {isLoading && (
-        <svg className="animate-spin h-3 w-3 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <svg className="animate-spin h-3.5 w-3.5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
       )}
       {children}
-      {required && <span className="text-red-500 ml-0.5">*</span>}
+      {required && <span className="text-red-500 ml-0.5 font-bold">*</span>}
     </label>
   );
 };
@@ -430,7 +430,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   size = 'md',
   className = '',
   status,
-  shape = 'circle'
+  variant = 'circle'
 }) => {
   const sizes = {
     sm: 'w-8 h-8 text-xs',
@@ -440,7 +440,7 @@ export const Avatar: React.FC<AvatarProps> = ({
     '2xl': 'w-24 h-24 text-2xl',
   };
 
-  const shapes = {
+  const variants = {
     circle: 'rounded-full',
     rounded: 'rounded-lg',
     square: 'rounded-none'
@@ -453,17 +453,75 @@ export const Avatar: React.FC<AvatarProps> = ({
     away: 'bg-yellow-500'
   };
 
+  const statusSizes = {
+    sm: 'w-2 h-2',
+    md: 'w-2.5 h-2.5',
+    lg: 'w-3 h-3',
+    xl: 'w-3.5 h-3.5',
+    '2xl': 'w-4 h-4'
+  };
+
   return (
-    <div className="relative inline-block">
-      <div className={`${sizes[size]} ${shapes[shape]} overflow-hidden bg-neutral-100 dark:bg-neutral-800 border-2 border-white dark:border-neutral-900 flex items-center justify-center font-medium text-neutral-600 dark:text-neutral-400 ${className}`}>
+    <div className={`relative inline-block ${className}`}>
+      <div 
+        className={`
+          flex items-center justify-center 
+          overflow-hidden bg-neutral-100 dark:bg-neutral-800 
+          border-2 border-white dark:border-neutral-900 
+          font-medium text-neutral-600 dark:text-neutral-400 
+          ${sizes[size]} 
+          ${variants[variant]}
+        `}
+      >
         {src ? (
           <img src={src} alt={alt} className="w-full h-full object-cover" />
         ) : (
-          <span>{fallback || alt.charAt(0).toUpperCase()}</span>
+          <span className="leading-none select-none">
+            {fallback || (alt ? alt.charAt(0).toUpperCase() : '?')}
+          </span>
         )}
       </div>
       {status && (
-        <span className={`absolute bottom-0 right-0 block w-[15%] h-[15%] rounded-full ring-2 ring-white dark:ring-neutral-900 ${statusColors[status]}`} />
+        <span 
+          className={`
+            absolute bottom-0 right-0 block 
+            rounded-full ring-2 ring-white dark:ring-neutral-900 
+            ${statusColors[status]}
+            ${statusSizes[size]}
+            ${variant === 'circle' ? 'translate-x-[5%] translate-y-[5%]' : 'translate-x-1/2 translate-y-1/2'}
+          `} 
+        />
+      )}
+    </div>
+  );
+};
+
+
+
+export const AvatarGroup: React.FC<AvatarGroupProps> = ({ children, size = 'md', limit, spacing = -8, className = '' }) => {
+  const childrenArray = React.Children.toArray(children);
+  const excess = limit ? childrenArray.length - limit : 0;
+  const displayChildren = limit ? childrenArray.slice(0, limit) : childrenArray;
+
+  return (
+    <div className={`flex items-center ${className}`} style={{ gap: spacing }}>
+      {displayChildren.map((child, index) => {
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child as React.ReactElement<any>, { 
+            key: index,
+            size,
+            className: `ring-2 ring-white dark:ring-neutral-950 ${child.props.className || ''}`
+          });
+        }
+        return child;
+      })}
+      {excess > 0 && (
+        <div 
+          className="relative inline-flex items-center justify-center font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 border-2 border-white dark:border-neutral-950 rounded-full"
+          style={{ width: size === 'sm' ? 32 : size === 'md' ? 40 : size === 'lg' ? 48 : 64, height: size === 'sm' ? 32 : size === 'md' ? 40 : size === 'lg' ? 48 : 64 }}
+        >
+          <span className="text-xs">+{excess}</span>
+        </div>
       )}
     </div>
   );

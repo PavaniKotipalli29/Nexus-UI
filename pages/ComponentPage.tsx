@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Heading, Text, Badge, Button, IconButton, Avatar, Box, Flex, Icon, SplitButton, HamburgerButton, Label, Caption, Code, Blockquote } from '../components/ui/Primitives';
+import { Heading, Text, Badge, Button, IconButton, Avatar, AvatarGroup, Box, Flex, Icon, SplitButton, HamburgerButton, Label, Caption, Code, Blockquote } from '../components/ui/Primitives';
 import { Card, Stack, Container } from '../components/ui/Layout';
 import { Input, Checkbox, Switch, Textarea, Select, Radio, Slider, FormWrapper, LoginForm, SignupForm, DatePicker, TimePicker, SearchInput, FileUpload, OTPVerification } from '../components/ui/Forms';
 import { Spinner, Skeleton } from '../components/ui/Feedback';
 import { ProgressBar } from '../components/ui/progress/ProgressBar';
 import { ColorPalette, TypographyScale, SpacingScale, DesignTokens, MotionTokens, CSSReset, ThemeProviderInfo } from '../components/ui/Foundations';
-import { Modal, Drawer, Tooltip, Popover, Tabs, Accordion, Dropdown, Table, Pagination, Alert, Toast, NotificationBanner, EmptyState } from '../components/ui/Composite';
+import { Modal, Drawer, Tooltip, Popover, Tabs, Accordion, Dropdown, Table, Pagination, Alert, Toast, NotificationBanner, EmptyState, Wizard } from '../components/ui/Composite';
 import { List, ListItem, ListItemIcon, ListItemText, ListDivider } from '../components/ui/list/List';
 import { Breadcrumbs, Stepper, CommandPalette } from '../components/ui/Navigation';
 import { AuthLayout, DashboardLayout, HeroSection, FeatureGrid, PricingSection, Footer, Page404, ErrorPage } from '../components/ui/Patterns';
@@ -302,16 +302,67 @@ const docs: Record<string, ComponentDoc> = {
     name: 'Avatar',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    description: 'Displays a user image or initials as a fallback.',
+    description: 'Visual representation of a user, supporting groups and status indicators.',
     implementationSource: SOURCES.primitives,
     examples: [
       {
-        title: 'Basic',
-        render: () => <Flex gap={4}><Avatar src="https://i.pravatar.cc/150?u=1" alt="User" /><Avatar fallback="JD" /><Avatar status="online" /></Flex>,
-        usageCode: `<Avatar src="..." alt="User" />`
+        title: 'Variants',
+        render: () => (
+          <Flex gap={4}>
+            <Avatar src="https://i.pravatar.cc/150?u=1" variant="circle" />
+            <Avatar src="https://i.pravatar.cc/150?u=2" variant="rounded" />
+            <Avatar src="https://i.pravatar.cc/150?u=3" variant="square" />
+          </Flex>
+        ),
+        usageCode: `<Avatar variant="circle" src="..." />\n<Avatar variant="rounded" src="..." />\n<Avatar variant="square" src="..." />`
+      },
+      {
+        title: 'Sizes',
+        render: () => (
+          <Flex gap={4} align="end">
+            <Avatar fallback="SM" size="sm" />
+            <Avatar fallback="MD" size="md" />
+            <Avatar fallback="LG" size="lg" />
+            <Avatar fallback="XL" size="xl" />
+          </Flex>
+        ),
+        usageCode: `<Avatar size="sm" fallback="SM" />\n<Avatar size="xl" fallback="XL" />`
+      },
+      {
+        title: 'Status Indicators',
+        render: () => (
+          <Flex gap={4}>
+            <Avatar src="https://i.pravatar.cc/150?u=4" status="online" />
+            <Avatar src="https://i.pravatar.cc/150?u=5" status="busy" />
+            <Avatar src="https://i.pravatar.cc/150?u=6" status="away" />
+            <Avatar fallback="OFF" status="offline" />
+          </Flex>
+        ),
+        usageCode: `<Avatar status="online" src="..." />\n<Avatar status="offline" fallback="OFF" />`
+      },
+      {
+        title: 'Avatar Group',
+        description: 'Display multiple avatars in a stack.',
+        render: () => (
+          <AvatarGroup limit={3}>
+            <Avatar src="https://i.pravatar.cc/150?u=7" />
+            <Avatar src="https://i.pravatar.cc/150?u=8" />
+            <Avatar src="https://i.pravatar.cc/150?u=9" />
+            <Avatar src="https://i.pravatar.cc/150?u=10" />
+            <Avatar src="https://i.pravatar.cc/150?u=11" />
+          </AvatarGroup>
+        ),
+        usageCode: `<AvatarGroup limit={3}>\n  <Avatar src="..." />\n  <Avatar src="..." />\n  <Avatar src="..." />\n  <Avatar src="..." />\n</AvatarGroup>`
       }
     ],
-    props: [{ name: 'src', type: 'string', default: '-', desc: 'Image source.' }]
+    props: [
+      { name: 'src', type: 'string', default: '-', desc: 'Image source URL.' },
+      { name: 'alt', type: 'string', default: 'Avatar', desc: 'Alt text for the image.' },
+      { name: 'fallback', type: 'string', default: 'A', desc: 'Initials to show if image fails or is missing.' },
+      { name: 'size', type: 'sm | md | lg | xl | 2xl', default: 'md', desc: 'Size of the avatar.' },
+      { name: 'variant', type: 'circle | rounded | square', default: 'circle', desc: 'Shape of the avatar.' },
+      { name: 'status', type: 'online | offline | busy | away', default: '-', desc: 'Live status indicator.' }
+    ]
   },
   box: {
     id: 'box',
@@ -427,17 +478,57 @@ const docs: Record<string, ComponentDoc> = {
     name: 'Spinner',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    description: 'Indicates loading state.',
+    description: 'Indicates a loading state or ongoing process with multiple visual styles.',
     implementationSource: SOURCES.feedback,
     examples: [
       {
-        title: 'Sizes',
-        render: () => <Flex gap={4}><Spinner size="sm" /><Spinner size="md" /><Spinner size="lg" /></Flex>,
-        usageCode: `<Spinner size="sm" />\n<Spinner size="md" />\n<Spinner size="lg" />`
+        title: 'Variants',
+        render: () => (
+          <Flex gap={8} align="center" wrap="wrap">
+            <Stack align="center" spacing={2}><Spinner variant="border" /><Caption>Border</Caption></Stack>
+            <Stack align="center" spacing={2}><Spinner variant="ring" /><Caption>Ring</Caption></Stack>
+            <Stack align="center" spacing={2}><Spinner variant="dots" /><Caption>Dots</Caption></Stack>
+            <Stack align="center" spacing={2}><Spinner variant="pulse" /><Caption>Pulse</Caption></Stack>
+            <Stack align="center" spacing={2} className="h-8"><Spinner variant="bars" /><Caption>Bars</Caption></Stack>
+            <Stack align="center" spacing={2}><Spinner variant="gradient" /><Caption>Gradient</Caption></Stack>
+          </Flex>
+        ),
+        usageCode: `<Spinner variant="border" />\n<Spinner variant="dots" />\n<Spinner variant="gradient" />`
+      },
+      {
+        title: 'Colors & Sizes',
+        render: () => (
+          <Stack spacing={6}>
+            <Flex gap={4} align="end">
+              <Spinner size="xs" color="primary" />
+              <Spinner size="sm" color="success" />
+              <Spinner size="md" color="warning" />
+              <Spinner size="lg" color="danger" />
+              <Spinner size="xl" color="secondary" />
+            </Flex>
+          </Stack>
+        ),
+        usageCode: `<Spinner size="sm" color="success" />\n<Spinner size="xl" color="primary" />`
+      },
+      {
+        title: 'With Labels',
+        render: () => (
+          <Flex gap={8}>
+            <Spinner label="Loading..." color="primary" />
+            <Spinner variant="dots" label="Processing" color="success" />
+          </Flex>
+        ),
+        usageCode: `<Spinner label="Loading..." />`
       }
     ],
     props: [
-      { name: 'size', type: 'sm | md | lg | xl', default: 'md', desc: 'Size of the spinner.' }
+      { name: 'variant', type: 'border | ring | dots | pulse | bars | gradient', default: 'border', desc: 'The visual animation style.' },
+      { name: 'size', type: 'xs | sm | md | lg | xl', default: 'md', desc: 'Size of the spinner.' },
+      { name: 'color', type: 'primary | secondary | success | warning | danger | neutral | white', default: 'primary', desc: 'Color variant.' },
+      { name: 'placement', type: 'inline | centered | fullscreen | overlay', default: 'inline', desc: 'Positioning and backdrop behavior.' },
+      { name: 'label', type: 'string', default: '-', desc: 'Optional text to display below the spinner.' },
+      { name: 'speed', type: 'slow | normal | fast', default: 'normal', desc: 'Animation speed.' },
+      { name: 'thickness', type: 'thin | normal | thick', default: 'normal', desc: 'Thickness of the spinner lines (for border and ring variants).' }
     ]
   },
   divider: {
@@ -902,6 +993,94 @@ const docs: Record<string, ComponentDoc> = {
     props: []
   },
 
+  'wizard': {
+    id: 'wizard',
+    name: 'Wizard',
+    category: 'Composite',
+    subCategory: 'Organisms / Patterns',
+    description: 'A professional multi-step indicator for complex workflows, supporting multiple orientations and premium visual styles.',
+    implementationSource: SOURCES.wizard,
+    examples: [
+      {
+        title: 'Orientations',
+        render: () => {
+          const steps = [
+            { id: 1, title: 'Identity', description: 'Personal details' },
+            { id: 2, title: 'Security', description: 'Account safety' },
+            { id: 3, title: 'Finalize', description: 'Review & submit' }
+          ];
+          return (
+            <Stack spacing={12} className="w-full">
+              <Stack spacing={4}>
+                <Caption>Horizontal (Default)</Caption>
+                <Wizard steps={steps} currentStep={1} />
+              </Stack>
+              <Stack spacing={4}>
+                <Caption>Vertical</Caption>
+                <Wizard steps={steps} currentStep={1} orientation="vertical" />
+              </Stack>
+            </Stack>
+          );
+        },
+        usageCode: `<Wizard \n  orientation="vertical" \n  steps={[...]} \n  currentStep={1} \n/>`
+      },
+      {
+        title: 'Visual Styles',
+        render: () => {
+          const steps = [{ title: 'Step One' }, { title: 'Step Two' }, { title: 'Step Three' }];
+          return (
+            <Stack spacing={8} className="w-full">
+              <Stack spacing={2}><Caption>Glassmorphism (Premium)</Caption><Wizard variant="glass" steps={steps} currentStep={1} /></Stack>
+              <Stack spacing={2}><Caption>Gradient Flow</Caption><Wizard variant="gradient" steps={steps} currentStep={1} /></Stack>
+              <Stack spacing={2}><Caption>Filled Container</Caption><Wizard variant="filled" steps={steps} currentStep={0} /></Stack>
+              <Stack spacing={2}><Caption>Simple Outline</Caption><Wizard variant="outline" steps={steps} currentStep={2} /></Stack>
+              <Stack spacing={2}><Caption>Minimalist</Caption><Wizard variant="minimal" steps={steps} currentStep={1} /></Stack>
+            </Stack>
+          );
+        },
+        usageCode: `<Wizard variant="glass" steps={...} />\n<Wizard variant="gradient" steps={...} />\n<Wizard variant="minimal" steps={...} />`
+      },
+      {
+        title: 'Step States',
+        render: () => {
+          const steps: any[] = [
+            { id: 1, title: 'Completed', status: 'completed' },
+            { id: 2, title: 'Active', status: 'active' },
+            { id: 3, title: 'Error State', status: 'error', description: 'Invalid data provided' },
+            { id: 4, title: 'Disabled', status: 'disabled' },
+            { id: 5, title: 'Inactive', status: 'inactive' }
+          ];
+          return <Wizard steps={steps} currentStep={1} />;
+        },
+        usageCode: `<Wizard \n  steps={[\n    { title: 'Done', status: 'completed' },\n    { title: 'Error', status: 'error' },\n    { title: 'Wait', status: 'disabled' }\n  ]} \n/>`
+      },
+      {
+        title: 'Sizes',
+        render: () => {
+          const steps = [{ title: 'Start' }, { title: 'Process' }, { title: 'Finish' }];
+          return (
+            <Stack spacing={8} className="w-full">
+              <Stack spacing={2}><Caption>Small (sm)</Caption><Wizard size="sm" steps={steps} currentStep={1} /></Stack>
+              <Stack spacing={2}><Caption>Medium (md)</Caption><Wizard size="md" steps={steps} currentStep={1} /></Stack>
+              <Stack spacing={2}><Caption>Large (lg)</Caption><Wizard size="lg" steps={steps} currentStep={1} /></Stack>
+            </Stack>
+          );
+        },
+        usageCode: `<Wizard size="sm" steps={...} />\n<Wizard size="lg" steps={...} />`
+      }
+
+    ],
+    props: [
+      { name: 'steps', type: 'WizardStep[]', default: '[]', desc: 'Array of step objects.' },
+      { name: 'currentStep', type: 'number', default: '0', desc: 'Active step index.' },
+      { name: 'orientation', type: '"horizontal" | "vertical"', default: '"horizontal"', desc: 'Layout direction.' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', desc: 'Visual scale.' },
+      { name: 'variant', type: '"default" | "minimal" | "filled" | "outline" | "glass" | "gradient"', default: '"default"', desc: 'Visual style.' },
+      { name: 'color', type: '"primary" | "secondary" | "success" | "warning" | "danger" | "neutral"', default: '"primary"', desc: 'Brand color theme.' },
+      { name: 'onStepClick', type: '(index: number) => void', default: '-', desc: 'Callback when a step is clicked.' }
+    ]
+  },
+
   // --- New App-Level Components ---
   'login-page': {
     id: 'login-page',
@@ -1159,28 +1338,7 @@ const docs: Record<string, ComponentDoc> = {
   }
 };
 
-const SyntaxHighlighter = ({ code, language = 'tsx' }: { code: string; language?: string }) => {
-    const [copied, setCopied] = useState(false);
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(code);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
-
-    return (
-        <div className="relative group">
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                <Button size="sm" variant="ghost" onClick={handleCopy} className="bg-neutral-800 text-neutral-300 hover:bg-neutral-700 hover:text-white">
-                    {copied ? 'Copied' : 'Copy'}
-                </Button>
-            </div>
-            <pre className="bg-neutral-900 text-neutral-100 p-4 rounded-md overflow-x-auto text-sm font-mono leading-relaxed max-h-[500px]">
-                <code>{code}</code>
-            </pre>
-        </div>
-    );
-};
 
 const InteractivePanel = ({ children, props, onChange }: { 
     children: (props: any) => React.ReactNode; 
@@ -1267,8 +1425,13 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
         { name: 'children', type: 'string', default: 'Status' },
     ],
     spinner: [
-        { name: 'size', type: 'select', default: 'md', options: ['sm', 'md', 'lg', 'xl'] },
-        { name: 'color', type: 'select', default: 'primary', options: ['primary', 'current', 'white', 'neutral'] },
+        { name: 'variant', type: 'select', default: 'border', options: ['border', 'ring', 'dots', 'pulse', 'bars', 'gradient'] },
+        { name: 'size', type: 'select', default: 'md', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
+        { name: 'color', type: 'select', default: 'primary', options: ['primary', 'secondary', 'success', 'warning', 'danger', 'neutral', 'white'] },
+        { name: 'placement', type: 'select', default: 'inline', options: ['inline', 'centered', 'fullscreen', 'overlay'] },
+        { name: 'label', type: 'string', default: '' },
+        { name: 'speed', type: 'select', default: 'normal', options: ['slow', 'normal', 'fast'] },
+        { name: 'thickness', type: 'select', default: 'normal', options: ['thin', 'normal', 'thick'] },
     ],
     modal: [
       { name: 'title', type: 'string', default: 'Interactive Modal' },
@@ -1284,6 +1447,19 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
     ],
     'crud-management': [
       { name: 'initialRole', type: 'select', default: 'Admin', options: ['Admin', 'Editor', 'Viewer'] },
+    ],
+    avatar: [
+      { name: 'variant', type: 'select', default: 'circle', options: ['circle', 'rounded', 'square'] },
+      { name: 'size', type: 'select', default: 'md', options: ['sm', 'md', 'lg', 'xl', '2xl'] },
+      { name: 'status', type: 'select', default: '', options: ['', 'online', 'offline', 'busy', 'away'] },
+      { name: 'fallback', type: 'string', default: 'U' },
+    ],
+    wizard: [
+      { name: 'orientation', type: 'select', default: 'horizontal', options: ['horizontal', 'vertical'] },
+      { name: 'size', type: 'select', default: 'md', options: ['sm', 'md', 'lg'] },
+      { name: 'variant', type: 'select', default: 'default', options: ['default', 'minimal', 'filled', 'outline', 'glass', 'gradient'] },
+      { name: 'color', type: 'select', default: 'primary', options: ['primary', 'secondary', 'success', 'warning', 'danger', 'neutral'] },
+      { name: 'currentStep', type: 'number', default: '1' },
     ]
   };
 
@@ -1313,6 +1489,22 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 max-w-6xl mx-auto">
+      <div className="px-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => window.location.hash = `#/components/${doc.category}`}
+          className="group -ml-3 text-neutral-500 hover:text-primary-600 transition-colors"
+          icon={
+            <Icon size="xs" className="group-hover:-translate-x-1 transition-transform">
+              <path d="M19 12H5M5 12L12 19M5 12L12 5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </Icon>
+          }
+        >
+          Back to Components
+        </Button>
+      </div>
+
       <header className="space-y-4 px-4">
         <div className="flex items-center gap-3">
           <Badge variant="secondary" className="uppercase tracking-wider text-[10px]">{doc.category}</Badge>
@@ -1352,13 +1544,15 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                                           if (componentId === 'tabs') return <Tabs variant={activeProps.variant} items={[{id: '1', label: 'Tab 1', content: 'Content 1'}, {id: '2', label: 'Tab 2', content: 'Content 2'}]} />;
                                           if (componentId === 'alert') return <Alert {...activeProps}>{activeProps.children}</Alert>;
                                           if (componentId === 'crud-management') return <UserManager {...activeProps} />;
+                                          if (componentId === 'avatar') return <Avatar {...activeProps} />;
+                                          if (componentId === 'wizard') return <Wizard steps={[{id: 1, title: 'Step 1', description: 'Setup'}, {id: 2, title: 'Step 2', description: 'Config'}, {id: 3, title: 'Step 3', description: 'Done'}]} {...activeProps} />;
                                           return doc.examples[0].render();
                                       })()}
                                   </div>
                                 </div>
 
                                 <div className="space-y-4">
-                                  <SyntaxHighlighter code={generateCode(componentId, activeProps)} />
+                                  <CodeBlock code={generateCode(componentId, activeProps)} showLineNumbers={false} />
                                 </div>
                               </div>
                             )}
@@ -1395,18 +1589,18 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                                        <Tabs 
                                          variant="pills"
                                          items={[
-                                             { id: 'usage', label: 'Usage Example', content: <SyntaxHighlighter code={example.usageCode} /> },
+                                             { id: 'usage', label: 'Usage Example', content: <CodeBlock code={example.usageCode} showLineNumbers={false} /> },
                                              { 
                                                id: 'source', 
                                                label: 'Implementation Source', 
                                                content: doc.implementationSource ? (
                                                  <div className="space-y-4">
                                                    <Text size="sm" className="px-4 text-neutral-400">Full React component implementation</Text>
-                                                   <SyntaxHighlighter code={doc.implementationSource} />
+                                                   <CodeBlock code={doc.implementationSource} />
                                                    {doc.cssSource && (
                                                      <>
                                                        <Text size="sm" className="px-4 text-neutral-400">CSS Module</Text>
-                                                       <SyntaxHighlighter code={doc.cssSource} />
+                                                       <CodeBlock code={doc.cssSource} language="css" />
                                                      </>
                                                    )}
                                                  </div>
@@ -1440,12 +1634,12 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                      <div className="p-6 lg:p-10 space-y-8">
                        <div className="space-y-8">
                           <div className="space-y-4">
-                             <SyntaxHighlighter code={doc.implementationSource} />
+                             <CodeBlock code={doc.implementationSource} />
                           </div>
                           
                           {doc.cssSource && (
                             <div className="space-y-4">
-                               <SyntaxHighlighter code={doc.cssSource} />
+                               <CodeBlock code={doc.cssSource} language="css" />
                             </div>
                           )}
                        </div>

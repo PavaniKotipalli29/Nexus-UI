@@ -65,8 +65,15 @@ export interface AvatarProps extends BaseProps {
   alt?: string;
   fallback?: string;
   size?: "sm" | "md" | "lg" | "xl" | "2xl";
-  shape?: "circle" | "rounded" | "square";
+  variant?: "circle" | "rounded" | "square";
   status?: "online" | "offline" | "busy" | "away";
+}
+
+export interface AvatarGroupProps extends BaseProps {
+  children: ReactNode;
+  size?: "sm" | "md" | "lg" | "xl";
+  limit?: number;
+  spacing?: number;
 }
 
 // Layout
@@ -332,7 +339,7 @@ export interface PortalProps {
 }
 `,
   primitives: `import React from 'react';
-import { BaseProps, ComponentVariant, ComponentSize, TextProps, HeadingProps, BadgeProps, ButtonProps, AvatarProps, BoxProps, FlexProps, IconProps, LabelVariant, LabelProps, CaptionProps, CodeProps, BlockquoteProps } from '../../types';
+import { BaseProps, ComponentVariant, ComponentSize, TextProps, HeadingProps, BadgeProps, ButtonProps, AvatarProps, AvatarGroupProps, BoxProps, FlexProps, IconProps, LabelProps, CaptionProps, CodeProps, BlockquoteProps } from '../../types';
 
 export const Button: React.FC<ButtonProps> = ({
   children,
@@ -533,25 +540,26 @@ export const Label: React.FC<LabelProps> = ({
   weight = 'medium',
   align = 'left',
 }) => {
-  const baseStyles = 'inline-flex items-center gap-2 font-medium transition-all duration-200';
+  const baseStyles = 'inline-flex items-center gap-2 font-medium transition-all duration-200 rounded-md';
   
   const variants = {
-    default: 'text-neutral-700 dark:text-neutral-300',
-    subtle: 'text-neutral-500 dark:text-neutral-400',
-    primary: 'text-primary-600 dark:text-primary-400',
-    success: 'text-green-600 dark:text-green-400',
-    warning: 'text-yellow-600 dark:text-yellow-400',
-    danger: 'text-red-600 dark:text-red-400',
-    info: 'text-blue-600 dark:text-blue-400',
-    outline: 'px-2 py-0.5 border border-neutral-300 dark:border-neutral-700 rounded text-neutral-600 dark:text-neutral-400',
-    ghost: 'px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded text-neutral-600 dark:text-neutral-400',
-    gradient: 'text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-accent-600 font-bold',
+    default: 'text-neutral-700 dark:text-neutral-300 bg-transparent',
+    subtle: 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 border border-transparent',
+    primary: 'bg-primary-600 text-white hover:bg-primary-700 shadow-sm',
+    success: 'bg-green-600 text-white hover:bg-green-700 shadow-sm',
+    warning: 'bg-yellow-500 text-white hover:bg-yellow-600 shadow-sm',
+    danger: 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
+    destructive: 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
+    info: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
+    outline: 'bg-transparent border border-primary-600 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-950/20',
+    ghost: 'bg-transparent text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800',
+    gradient: 'bg-gradient-to-r from-primary-600 to-accent-600 text-white shadow-md font-bold',
   };
 
   const sizes = {
-    sm: 'text-xs',
-    md: 'text-sm',
-    lg: 'text-base',
+    sm: 'px-2.5 py-1 text-xs',
+    md: 'px-3.5 py-1.5 text-sm',
+    lg: 'px-5 py-2.5 text-base',
   };
 
   const weights = {
@@ -561,7 +569,7 @@ export const Label: React.FC<LabelProps> = ({
     bold: 'font-bold',
   };
 
-  const disabledStyles = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
+  const statusStyles = disabled ? 'opacity-50 cursor-not-allowed grayscale-[0.5]' : 'cursor-pointer';
 
   return (
     <label
@@ -572,18 +580,18 @@ export const Label: React.FC<LabelProps> = ({
         \${sizes[size]} 
         \${weights[weight as keyof typeof weights]} 
         text-\${align} 
-        \${disabledStyles} 
+        \${statusStyles} 
         \${className}
       #BACKTICK_ESCAPE#}
     >
       {isLoading && (
-        <svg className="animate-spin h-3 w-3 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <svg className="animate-spin h-3.5 w-3.5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
       )}
       {children}
-      {required && <span className="text-red-500 ml-0.5">*</span>}
+      {required && <span className="text-red-500 ml-0.5 font-bold">*</span>}
     </label>
   );
 };
@@ -655,6 +663,108 @@ export const Badge: React.FC<BadgeProps> = ({
       {icon && <span className="opacity-70">{icon}</span>}
       {children}
     </span>
+  );
+};
+
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt = 'Avatar',
+  fallback,
+  size = 'md',
+  className = '',
+  status,
+  variant = 'circle'
+}) => {
+  const sizes = {
+    sm: 'w-8 h-8 text-xs',
+    md: 'w-10 h-10 text-sm',
+    lg: 'w-12 h-12 text-base',
+    xl: 'w-16 h-16 text-lg',
+    '2xl': 'w-24 h-24 text-2xl',
+  };
+
+  const variants = {
+    circle: 'rounded-full',
+    rounded: 'rounded-lg',
+    square: 'rounded-none'
+  };
+
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-neutral-500',
+    busy: 'bg-red-500',
+    away: 'bg-yellow-500'
+  };
+
+  const statusSizes = {
+    sm: 'w-2 h-2',
+    md: 'w-2.5 h-2.5',
+    lg: 'w-3 h-3',
+    xl: 'w-3.5 h-3.5',
+    '2xl': 'w-4 h-4'
+  };
+
+  return (
+    <div className={\`relative inline-block \${className}\`}>
+      <div 
+        className={\`
+          flex items-center justify-center 
+          overflow-hidden bg-neutral-100 dark:bg-neutral-800 
+          border-2 border-white dark:border-neutral-900 
+          font-medium text-neutral-600 dark:text-neutral-400 
+          \${sizes[size]} 
+          \${variants[variant]}
+        \`}
+      >
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <span className="leading-none select-none">
+            {fallback || (alt ? alt.charAt(0).toUpperCase() : '?')}
+          </span>
+        )}
+      </div>
+      {status && (
+        <span 
+          className={\`
+            absolute bottom-0 right-0 block 
+            rounded-full ring-2 ring-white dark:ring-neutral-900 
+            \${statusColors[status]}
+            \${statusSizes[size]}
+            \${variant === 'circle' ? 'translate-x-[5%] translate-y-[5%]' : 'translate-x-1/2 translate-y-1/2'}
+          \`} 
+        />
+      )}
+    </div>
+  );
+};
+
+export const AvatarGroup: React.FC<AvatarGroupProps> = ({ children, size = 'md', limit, spacing = -8, className = '' }) => {
+  const childrenArray = React.Children.toArray(children);
+  const excess = limit ? childrenArray.length - limit : 0;
+  const displayChildren = limit ? childrenArray.slice(0, limit) : childrenArray;
+
+  return (
+    <div className={\`flex items-center \${className}\`} style={{ gap: spacing }}>
+      {displayChildren.map((child, index) => {
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child as React.ReactElement<any>, { 
+            key: index,
+            size,
+            className: \`ring-2 ring-white dark:ring-neutral-950 \${child.props.className || ''}\`
+          });
+        }
+        return child;
+      })}
+      {excess > 0 && (
+        <div 
+          className="relative inline-flex items-center justify-center font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 border-2 border-white dark:border-neutral-950 rounded-full"
+          style={{ width: size === 'sm' ? 32 : size === 'md' ? 40 : size === 'lg' ? 48 : 64, height: size === 'sm' ? 32 : size === 'md' ? 40 : size === 'lg' ? 48 : 64 }}
+        >
+          <span className="text-xs">+{excess}</span>
+        </div>
+      )}
+    </div>
   );
 };`,
   layout: `import React from 'react';
@@ -744,29 +854,246 @@ import { SpinnerProps, SkeletonProps } from '../../types';
 
 export const Spinner: React.FC<SpinnerProps> = ({
   size = 'md',
+  variant = 'border',
   color = 'primary',
+  placement = 'inline',
+  label,
+  speed = 'normal',
+  thickness = 'normal',
   className = ''
 }) => {
   const sizes = {
-    sm: 'w-4 h-4 border-2',
-    md: 'w-8 h-8 border-3',
-    lg: 'w-12 h-12 border-4',
-    xl: 'w-16 h-16 border-4'
+    xs: 'w-3 h-3',
+    sm: 'w-4 h-4',
+    md: 'w-8 h-8',
+    lg: 'w-12 h-12',
+    xl: 'w-16 h-16',
   };
 
   const colors = {
-    current: 'border-current',
-    primary: 'border-primary-600 text-primary-200',
-    white: 'border-white text-white/30',
-    neutral: 'border-neutral-600 text-neutral-200'
+    primary: 'text-primary-600',
+    secondary: 'text-neutral-600 dark:text-neutral-400',
+    success: 'text-green-600',
+    warning: 'text-yellow-600',
+    danger: 'text-red-600',
+    neutral: 'text-neutral-900 dark:text-neutral-100',
+    white: 'text-white'
+  };
+
+  const thicknessMap = {
+    thin: 'border',
+    normal: 'border-2',
+    thick: 'border-4'
+  };
+
+  const speedMap = {
+    slow: 'duration-[2s]',
+    normal: 'duration-1000',
+    fast: 'duration-500'
+  };
+
+  const renderSpinner = () => {
+    switch (variant) {
+      case 'dots':
+        return (
+          <div className="flex gap-1">
+            {[0, 1, 2].map((i) => (
+              <div 
+                key={i}
+                className={\`rounded-full bg-current \${size === 'xs' ? 'w-1 h-1' : size === 'sm' ? 'w-1.5 h-1.5' : 'w-2 h-2'} animate-bounce\`} 
+                style={{ animationDelay: \`\${i * 0.15}s\` }}
+              />
+            ))}
+          </div>
+        );
+      case 'pulse':
+        return <div className={\`rounded-full bg-current animate-ping \${sizes[size]}\`} />;
+      case 'bars':
+        return (
+          <div className={\`flex items-end gap-0.5 \${sizes[size]}\`}>
+            {[0, 1, 2, 3].map((i) => (
+              <div 
+                key={i}
+                className={\`bg-current flex-1 animate-pulse\`} 
+                style={{ height: '100%', animationDelay: \`\${i * 0.1}s\`, animationDuration: '0.8s' }}
+              />
+            ))}
+          </div>
+        );
+      case 'ring':
+        return (
+          <div className={\`relative \${sizes[size]}\`}>
+            <div className={\`absolute inset-0 rounded-full border-current opacity-20 \${thicknessMap[thickness]}\`} />
+            <div className={\`absolute inset-0 rounded-full border-t-current animate-spin \${speedMap[speed]} \${thicknessMap[thickness]}\`} />
+          </div>
+        );
+      case 'gradient':
+        return (
+          <div 
+            className={\`rounded-full animate-spin \${speedMap[speed]} \${sizes[size]}\`}
+            style={{ 
+              background: \`conic-gradient(from 0deg, transparent, currentColor)\`,
+              WebkitMask: \`radial-gradient(farthest-side, transparent calc(100% - 4.5px), black calc(100% - 4px))\`
+            }}
+          />
+        );
+      case 'border':
+      default:
+        return (
+          <div 
+            className={\`animate-spin rounded-full border-t-transparent border-current \${speedMap[speed]} \${sizes[size]} \${thicknessMap[thickness]}\`} 
+            role="status"
+          />
+        );
+    }
+  };
+
+  const containerClasses = {
+    inline: 'inline-flex',
+    centered: 'flex items-center justify-center w-full',
+    fullscreen: 'fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/80 dark:bg-black/80',
+    overlay: 'absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/40 dark:bg-black/40 backdrop-blur-[1px]'
   };
 
   return (
-    <div 
-      className={\`animate-spin rounded-full border-t-transparent \${sizes[size]} \${colors[color]} \${className}\`} 
-      role="status"
-    >
-      <span className="sr-only">Loading...</span>
+    <div className={\`\${containerClasses[placement]} \${className}\`}>
+      <div className={\`flex flex-col items-center gap-3 \${colors[color]}\`}>
+        {renderSpinner()}
+        {label && (
+          <span className={\`text-sm font-medium animate-pulse\`}>
+            {label}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+};`,
+  wizard: `import React from 'react';
+import { WizardProps, WizardStep, WizardStepStatus } from '../../types';
+import { Icon } from './Primitives';
+
+export const Wizard: React.FC<WizardProps> = ({
+  steps,
+  currentStep = 0,
+  orientation = 'horizontal',
+  variant = 'default',
+  size = 'md',
+  color = 'primary',
+  onStepClick,
+  className = ''
+}) => {
+  const isHorizontal = orientation === 'horizontal';
+
+  const sizes = {
+    sm: { dot: 'w-8 h-8', text: 'text-xs', line: isHorizontal ? 'h-0.5' : 'w-0.5' },
+    md: { dot: 'w-10 h-10', text: 'text-sm', line: isHorizontal ? 'h-0.5' : 'w-0.5' },
+    lg: { dot: 'w-12 h-12', text: 'text-base', line: isHorizontal ? 'h-1' : 'w-1' },
+  };
+
+  const colors: Record<string, any> = {
+    primary: 'primary',
+    secondary: 'violet',
+    success: 'green',
+    warning: 'yellow',
+    danger: 'red',
+    neutral: 'neutral'
+  };
+
+  const brandColor = colors[color] || 'primary';
+
+  const getStatusStyles = (status: WizardStepStatus, index: number) => {
+    const isActive = index === currentStep;
+    const isCompleted = index < currentStep;
+    const effectiveStatus = steps[index].status || (isActive ? 'active' : isCompleted ? 'completed' : 'inactive');
+
+    const styles = {
+      active: {
+        dot: \`ring-4 ring-\${brandColor}-500/20 bg-\${brandColor}-600 text-white shadow-lg shadow-\${brandColor}-500/30 scale-110\`,
+        line: \`bg-\${brandColor}-600\`,
+        text: \`text-\${brandColor}-900 dark:text-\${brandColor}-100 font-bold\`
+      },
+      completed: {
+        dot: 'bg-green-600 text-white',
+        line: 'bg-green-600',
+        text: 'text-neutral-900 dark:text-neutral-100 font-medium'
+      },
+      error: {
+        dot: 'bg-red-600 text-white animate-shake',
+        line: 'bg-red-600',
+        text: 'text-red-900 dark:text-red-400 font-medium'
+      },
+      disabled: {
+        dot: 'bg-neutral-200 dark:bg-neutral-800 text-neutral-400 cursor-not-allowed opacity-50',
+        line: 'bg-neutral-100 dark:bg-neutral-900',
+        text: 'text-neutral-400'
+      },
+      inactive: {
+        dot: 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500 border-2 border-neutral-200 dark:border-neutral-700',
+        line: 'bg-neutral-200 dark:border-neutral-800',
+        text: 'text-neutral-500'
+      }
+    };
+    return styles[effectiveStatus];
+  };
+
+  const getVariantStyles = () => {
+    switch (variant) {
+      case 'filled': return 'bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 p-8 rounded-3xl shadow-sm';
+      case 'outline': return 'border-2 border-neutral-100 dark:border-neutral-800 p-8 rounded-3xl';
+      case 'glass': return 'backdrop-blur-2xl bg-white/60 dark:bg-neutral-950/60 border border-white/40 dark:border-white/10 p-8 rounded-3xl shadow-2xl ring-1 ring-black/5';
+      case 'gradient': return \`bg-gradient-to-br from-\${brandColor}-50/50 to-neutral-50 dark:from-\${brandColor}-950/20 dark:to-neutral-950/20 p-8 rounded-3xl border border-\${brandColor}-200/50 dark:border-\${brandColor}-800/50 shadow-inner\`;
+      case 'minimal': return 'p-0 bg-transparent border-none';
+      default: return 'py-4';
+    }
+  };
+
+  return (
+    <div className={\`w-full transition-all duration-300 \${getVariantStyles()} \${className}\`}>
+      <div className={\`flex \${isHorizontal ? 'flex-row items-start' : 'flex-col gap-10'}\`}>
+        {steps.map((step, index) => {
+          const styles = getStatusStyles(step.status || 'inactive', index);
+          const isLast = index === steps.length - 1;
+          return (
+            <React.Fragment key={step.id || index}>
+              <div className={\`flex \${isHorizontal ? 'flex-col items-center flex-1 text-center px-4' : 'flex-row items-center gap-6'} group cursor-pointer relative z-10\`} onClick={() => onStepClick?.(index)}>
+                <div className="relative">
+                  <div className={\`flex items-center justify-center rounded-full transition-all duration-500 font-bold \${sizes[size].dot} \${styles.dot} group-hover:scale-110 active:scale-95\`}>
+                    {step.status === 'completed' || (index < currentStep && !step.status) ? (
+                      <Icon size="sm"><path d="M5 13l4 4L19 7" strokeWidth="3" /></Icon>
+                    ) : step.status === 'error' ? (
+                      <Icon size="sm"><path d="M6 18L18 6M6 6l12 12" strokeWidth="3" /></Icon>
+                    ) : (
+                      step.icon || (index + 1)
+                    )}
+                  </div>
+                </div>
+                <div className={\`\${isHorizontal ? 'mt-4' : ''} flex flex-col \${isHorizontal ? 'items-center' : 'items-start'}\`}>
+                  <h4 className={\`\${sizes[size].text} \${styles.text} transition-colors duration-300\`}>{step.title}</h4>
+                  {step.description && <p className={\`text-xs mt-1 text-neutral-500 dark:text-neutral-400 max-w-[200px] line-clamp-2 \${isHorizontal ? 'text-center' : 'text-left'}\`}>{step.description}</p>}
+                </div>
+                {!isLast && !isHorizontal && (
+                  <div 
+                    className="absolute z-[-1] overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-800" 
+                    style={{ 
+                      left: size === 'sm' ? '15px' : size === 'lg' ? '23px' : '19px',
+                      top: size === 'sm' ? '32px' : size === 'lg' ? '48px' : '40px',
+                      bottom: '-40px',
+                      width: size === 'lg' ? '4px' : '2px'
+                    }}
+                  >
+                    <div className={\`w-full h-full transition-all duration-700 ease-in-out \${styles.line}\`} style={{ height: index < currentStep ? '100%' : '0%' }} />
+                  </div>
+                )}
+              </div>
+              {!isLast && isHorizontal && (
+                <div className={\`flex-1 \${sizes[size].line} mt-[20px] -mx-[50%] z-0 border-none relative overflow-hidden bg-neutral-100 dark:bg-neutral-800 rounded-full\`}>
+                  <div className={\`h-full transition-all duration-700 ease-in-out \${styles.line}\`} style={{ width: index < currentStep ? '100%' : '0%' }} />
+                </div>
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
     </div>
   );
 };`,

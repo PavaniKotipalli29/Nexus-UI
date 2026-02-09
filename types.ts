@@ -76,7 +76,7 @@ export interface HeadingProps extends TypographyProps {
   level?: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
-export type LabelVariant = "default" | "subtle" | "primary" | "success" | "warning" | "danger" | "info" | "outline" | "ghost" | "gradient";
+export type LabelVariant = "default" | "subtle" | "primary" | "success" | "warning" | "danger" | "info" | "outline" | "ghost" | "gradient" | "destructive";
 
 export interface LabelProps extends BaseProps {
   variant?: LabelVariant;
@@ -117,8 +117,15 @@ export interface AvatarProps extends BaseProps {
   alt?: string;
   fallback?: string;
   size?: "sm" | "md" | "lg" | "xl" | "2xl";
-  shape?: "circle" | "rounded" | "square";
+  variant?: "circle" | "rounded" | "square";
   status?: "online" | "offline" | "busy" | "away";
+}
+
+export interface AvatarGroupProps extends BaseProps {
+  children: ReactNode;
+  size?: "sm" | "md" | "lg" | "xl";
+  limit?: number;
+  spacing?: number;
 }
 
 // Layout
@@ -178,8 +185,13 @@ export interface IconProps extends BaseProps {
 
 // Feedback
 export interface SpinnerProps extends BaseProps {
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  color?: 'current' | 'primary' | 'white' | 'neutral';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  variant?: 'border' | 'ring' | 'dots' | 'pulse' | 'bars' | 'gradient';
+  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'neutral' | 'white';
+  placement?: 'inline' | 'centered' | 'fullscreen' | 'overlay';
+  label?: string;
+  speed?: 'slow' | 'normal' | 'fast';
+  thickness?: 'thin' | 'normal' | 'thick';
 }
 
 export interface SkeletonProps extends BaseProps {
@@ -354,6 +366,30 @@ export interface BreadcrumbItem {
 export interface BreadcrumbsProps extends BaseProps {
   items: BreadcrumbItem[];
   separator?: ReactNode;
+}
+
+export type WizardStepStatus = "inactive" | "active" | "completed" | "error" | "disabled";
+export type WizardOrientation = "horizontal" | "vertical";
+export type WizardVariant = "default" | "minimal" | "filled" | "outline" | "glass" | "gradient";
+export type WizardSize = "sm" | "md" | "lg";
+
+export interface WizardStep {
+  id: string | number;
+  title: string;
+  description?: string;
+  icon?: ReactNode;
+  status?: WizardStepStatus;
+}
+
+export interface WizardProps extends BaseProps {
+  steps: WizardStep[];
+  currentStep?: number;
+  orientation?: WizardOrientation;
+  variant?: WizardVariant;
+  size?: WizardSize;
+  color?: "primary" | "secondary" | "success" | "warning" | "danger" | "neutral";
+  onStepClick?: (index: number) => void;
+  isLazy?: boolean;
 }
 
 export interface Step {

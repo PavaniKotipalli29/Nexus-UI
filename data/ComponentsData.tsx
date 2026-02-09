@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { 
-  Button, Badge, Text, Heading, Icon, Avatar, Spinner, IconButton, SplitButton, HamburgerButton, Box, Flex,
+  Button, Badge, Text, Heading, Icon, Avatar, AvatarGroup, Spinner, IconButton, SplitButton, HamburgerButton, Box, Flex,
   Label, Caption, Code, Blockquote
 } from '../components/ui/Primitives';
 import { Card, Stack, Container } from '../components/ui/Layout';
@@ -101,25 +101,49 @@ export const components: ComponentItem[] = [
     name: 'Label',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    variants: 24,
-    description: 'A versatile label component with multiple variants, sizes, and states.',
+    variants: 30,
+    description: 'A versatile label component with multiple variants, sizes, and states, matching button aesthetics.',
     preview: (
       <Stack spacing={4} className="w-full px-6">
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 justify-center">
           <Label variant="primary">Primary</Label>
           <Label variant="success">Success</Label>
           <Label variant="warning">Warning</Label>
           <Label variant="danger">Danger</Label>
+          <Label variant="info">Info</Label>
         </div>
-        <div className="flex gap-4 items-center">
-          <Label isLoading>Loading</Label>
-          <Label required>Required</Label>
-          <Label disabled>Disabled</Label>
+        <div className="flex flex-wrap gap-2 justify-center">
+          <Label variant="outline">Outline</Label>
+          <Label variant="ghost">Ghost</Label>
+          <Label variant="subtle">Subtle</Label>
+          <Label variant="gradient">Gradient</Label>
+        </div>
+        <div className="flex flex-wrap gap-4 items-center justify-center">
+          <Label size="sm" variant="primary">Small</Label>
+          <Label size="md" variant="primary">Medium</Label>
+          <Label size="lg" variant="primary">Large</Label>
+        </div>
+        <div className="flex flex-wrap gap-4 items-center justify-center">
+          <Label isLoading variant="secondary">Loading</Label>
+          <Label required variant="secondary">Required</Label>
+          <Label disabled variant="secondary">Disabled</Label>
         </div>
       </Stack>
     ),
-    code: `<Label variant="primary">Username</Label>\n<Label isLoading>Uploading...</Label>\n<Label required>Email</Label>`,
-    info: 'A robust label component supporting 10 variants, 3 sizes, and various interactive states like loading, disabled, and required.'
+    code: `// Variants
+<Label variant="primary">Primary</Label>
+<Label variant="outline">Outline</Label>
+<Label variant="gradient">Premium</Label>
+
+// Sizes
+<Label size="sm">Small</Label>
+<Label size="lg">Large</Label>
+
+// States
+<Label isLoading>Processing...</Label>
+<Label required>Required Field</Label>
+<Label disabled>Inactive</Label>`,
+    info: 'A robust label component supporting 10 premium variants, 3 responsive sizes, and interactive states. Designed to provide clear context for form elements and UI metadata.'
   },
   {
     id: 'badge',
@@ -151,11 +175,57 @@ export const components: ComponentItem[] = [
     name: 'Avatar',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    variants: 5,
-    description: 'Visual representation of a user.',
-    preview: <Avatar />,
-    code: '<Avatar src="/user.jpg" />',
-    info: 'Displays user profile photos or initials.'
+    variants: 12,
+    description: 'Visual representation of a user, supporting groups and status indicators.',
+    preview: (
+      <Stack spacing={6} className="w-full px-6 items-center">
+        <Flex gap={4}>
+          <Avatar src="https://i.pravatar.cc/150?u=1" variant="circle" />
+          <Avatar src="https://i.pravatar.cc/150?u=2" variant="rounded" />
+          <Avatar src="https://i.pravatar.cc/150?u=3" variant="square" />
+        </Flex>
+        <Flex gap={4} align="center">
+          <Avatar fallback="SM" size="sm" />
+          <Avatar fallback="MD" size="md" />
+          <Avatar fallback="LG" size="lg" />
+          <Avatar fallback="XL" size="xl" />
+        </Flex>
+        <Flex gap={4}>
+          <Avatar src="https://i.pravatar.cc/150?u=4" status="online" />
+          <Avatar src="https://i.pravatar.cc/150?u=5" status="busy" />
+          <Avatar src="https://i.pravatar.cc/150?u=6" status="away" />
+          <Avatar fallback="OFF" status="offline" />
+        </Flex>
+        <AvatarGroup limit={3}>
+          <Avatar src="https://i.pravatar.cc/150?u=7" />
+          <Avatar src="https://i.pravatar.cc/150?u=8" />
+          <Avatar src="https://i.pravatar.cc/150?u=9" />
+          <Avatar src="https://i.pravatar.cc/150?u=10" />
+          <Avatar src="https://i.pravatar.cc/150?u=11" />
+        </AvatarGroup>
+      </Stack>
+    ),
+    code: `// Variants
+<Avatar variant="circle" src="..." />
+<Avatar variant="rounded" fallback="JD" />
+<Avatar variant="square" src="..." />
+
+// Sizes
+<Avatar size="sm" fallback="S" />
+<Avatar size="xl" fallback="XL" />
+
+// Status
+<Avatar status="online" src="..." />
+<Avatar status="busy" fallback="B" />
+
+// Avatar Group
+<AvatarGroup limit={3}>
+  <Avatar src="..." />
+  <Avatar src="..." />
+  <Avatar src="..." />
+  <Avatar src="..." />
+</AvatarGroup>`,
+    info: 'Displays user profile photos or initials. Supports 3 shapes, 4 sizes, status indicators, and grouped displays with verification limits.'
   },
   {
     id: 'spinner',
@@ -347,6 +417,26 @@ export const components: ComponentItem[] = [
     preview: <div className="text-center py-6 scale-90 border rounded bg-neutral-50 dark:bg-neutral-900 w-full"><Heading level={3}>Title</Heading><Button className="mt-2" size="sm">Get Started</Button></div>,
     code: '<HeroSection />',
     info: 'Premium hero section with CTA.'
+  },
+
+  {
+    id: 'wizard',
+    name: 'Wizard',
+    category: 'Composite',
+    subCategory: 'Organisms / Patterns',
+    variants: 6,
+    description: 'Multi-step process indicator with various visual styles.',
+    preview: <div className="w-full flex items-center justify-center gap-2 scale-75 overflow-hidden">
+      <div className="flex items-center gap-2">
+        <div className="w-6 h-6 rounded-full bg-primary-600 flex items-center justify-center text-[10px] text-white font-bold">1</div>
+        <div className="w-8 h-0.5 bg-primary-600" />
+        <div className="w-6 h-6 rounded-full border-2 border-primary-600 flex items-center justify-center text-[10px] text-primary-600 font-bold">2</div>
+        <div className="w-8 h-0.5 bg-neutral-200" />
+        <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center text-[10px] text-neutral-400 font-bold">3</div>
+      </div>
+    </div>,
+    code: '<Wizard steps={steps} currentStep={1} />',
+    info: 'Professional multi-step navigation for complex flows.'
   },
 
   // --- APP-LEVEL (Templates / Pages) ---
