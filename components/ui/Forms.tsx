@@ -309,9 +309,12 @@ export const ErrorMessage: React.FC<{ children: React.ReactNode }> = ({ children
   </p>
 );
 
-export const FormField: React.FC<{ label?: string; htmlFor?: string; error?: string; required?: boolean; children: React.ReactNode }> = ({ label, htmlFor, error, required, children }) => (
+export const FormField: React.FC<{ label?: string; htmlFor?: string; error?: string; required?: boolean; rightElement?: React.ReactNode; children: React.ReactNode }> = ({ label, htmlFor, error, required, rightElement, children }) => (
   <div className="w-full">
-    {label && <Label htmlFor={htmlFor} required={required}>{label}</Label>}
+    <div className="flex justify-between items-center mb-1">
+      {label && <Label htmlFor={htmlFor} required={required}>{label}</Label>}
+      {rightElement}
+    </div>
     {children}
     {error && <ErrorMessage>{error}</ErrorMessage>}
   </div>
@@ -664,7 +667,7 @@ export const DatePicker: React.FC<{ label?: string }> = ({ label }) => {
       label={label} 
       type="date" 
       className="appearance-none" 
-      icon={<Icon size="sm"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></Icon>} 
+      leftIcon={<Icon size="sm"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></Icon>} 
     />
   );
 };
@@ -675,7 +678,7 @@ export const TimePicker: React.FC<{ label?: string }> = ({ label }) => {
       label={label} 
       type="time" 
       className="appearance-none"
-      icon={<Icon size="sm"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></Icon>} 
+      leftIcon={<Icon size="sm"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></Icon>} 
     />
   );
 };

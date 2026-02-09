@@ -50,7 +50,8 @@ export const ThemeToggle: React.FC<{ className?: string }> = ({ className = '' }
 export const CopyToClipboard: React.FC<{ text: string, children?: ReactNode }> = ({ text, children }) => {
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = async () => {
+  const handleCopy = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
@@ -63,15 +64,18 @@ export const CopyToClipboard: React.FC<{ text: string, children?: ReactNode }> =
   return (
     <div className="relative inline-block" onClick={handleCopy}>
       {children || (
-        <button className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium border border-neutral-200 dark:border-neutral-800 rounded bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition">
+        <button 
+          className="flex items-center gap-2 px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider border border-white/10 rounded-md bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all duration-200 backdrop-blur-sm shadow-sm active:scale-95"
+          title="Copy to clipboard"
+        >
           {copied ? (
              <>
-               <span className="text-green-600 dark:text-green-400"><Icon size="sm"><path d="M5 13l4 4L19 7" /></Icon></span>
-               <span>Copied!</span>
+               <span className="text-green-400"><Icon size="xs"><path d="M5 13l4 4L19 7" strokeWidth="3" /></Icon></span>
+               <span className="text-green-400">Copied!</span>
              </>
           ) : (
              <>
-               <span className="text-neutral-500"><Icon size="sm"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></Icon></span>
+               <span className="text-white/50"><Icon size="xs"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></Icon></span>
                <span>Copy</span>
              </>
           )}
@@ -85,8 +89,13 @@ export const CopyToClipboard: React.FC<{ text: string, children?: ReactNode }> =
 export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'tsx', showLineNumbers = true, className = '' }) => {
   return (
     <div className={`relative bg-neutral-900 dark:bg-black text-neutral-100 rounded-lg overflow-hidden border border-neutral-800 ${className}`}>
-      <div className="flex items-center justify-between px-4 py-2 border-b border-neutral-800 bg-neutral-900/50">
-        <span className="text-xs font-mono text-neutral-500 uppercase">{language}</span>
+      <div className="flex items-center justify-between px-4 py-2 border-b border-white/5 bg-black/40 backdrop-blur-md">
+        <div className="flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
+          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
+          <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
+          <span className="ml-2 text-[10px] font-bold font-mono text-white/30 uppercase tracking-widest">{language}</span>
+        </div>
         <CopyToClipboard text={code} />
       </div>
       <div className="overflow-x-auto p-4">

@@ -64,6 +64,7 @@ const navGroups = [
           { name: 'User Profile Card', id: 'user-profile-card' },
           { name: 'Checkout Summary', id: 'checkout-summary' },
           { name: 'Multi-step Form', id: 'multi-step-form' },
+          { name: 'Wizard', id: 'wizard' },
           { name: 'Settings Panel', id: 'settings-panel' },
           { name: 'Comments Section', id: 'comments-section' },
           { name: 'Activity Feed', id: 'activity-feed' },

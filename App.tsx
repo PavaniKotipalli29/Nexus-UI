@@ -54,8 +54,9 @@ const App: React.FC = () => {
       return <FaqPage />;
     }
 
-    if (currentPath === '#/components') {
-      return <ComponentsGalleryPage />;
+    if (currentPath === '#/components' || currentPath.startsWith('#/components/')) {
+      const category = currentPath.split('/')[2] || null;
+      return <ComponentsGalleryPage initialCategory={category as any} />;
     }
 
 

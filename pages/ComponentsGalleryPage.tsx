@@ -7,8 +7,23 @@ import { Card } from '../components/ui/Layout';
 
 import { components, Category } from '../data/ComponentsData';
 
-export const ComponentsGalleryPage: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = React.useState<Category | null>(null);
+export const ComponentsGalleryPage: React.FC<{ initialCategory?: Category | null }> = ({ initialCategory = null }) => {
+  const [selectedCategory, setSelectedCategory] = React.useState<Category | null>(initialCategory);
+
+  // Sync state with prop if it changes
+  React.useEffect(() => {
+    setSelectedCategory(initialCategory);
+  }, [initialCategory]);
+
+  const handleCategorySelect = (catId: Category) => {
+    setSelectedCategory(catId);
+    window.location.hash = `#/components/${catId}`;
+  };
+
+  const handleBackToCategories = () => {
+    setSelectedCategory(null);
+    window.location.hash = '#/components';
+  };
 
   const categories: { id: Category; name: string; description: string; count: number; icon: React.ReactNode }[] = [
     { 
@@ -66,7 +81,7 @@ export const ComponentsGalleryPage: React.FC = () => {
             
             {selectedCategory && (
               <button 
-                onClick={() => setSelectedCategory(null)}
+                onClick={handleBackToCategories}
                 className="mt-8 flex items-center gap-2 text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors group"
               >
                 <Icon size="xs" className="transition-transform group-hover:-translate-x-1 rotate-180"><path d="M9 5l7 7-7 7" /></Icon>
@@ -86,7 +101,7 @@ export const ComponentsGalleryPage: React.FC = () => {
                 <Card 
                   key={cat.id}
                   interactive
-                  onClick={() => setSelectedCategory(cat.id)}
+                  onClick={() => handleCategorySelect(cat.id)}
                   className="p-8 group hover:border-primary-500 transition-all duration-300 relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 p-8 opacity-[0.03] dark:opacity-[0.05] scale-[4] group-hover:scale-[4.5] transition-transform duration-500 text-primary-600">
