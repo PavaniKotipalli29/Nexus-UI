@@ -8,6 +8,7 @@ import { ContactPage } from './pages/ContactPage';
 import { ComponentPage } from './pages/ComponentPage';
 import { ComponentsGalleryPage } from './pages/ComponentsGalleryPage';
 import { FaqPage } from './pages/FaqPage';
+import { Orbit } from './components/ui/Orbit';
 
 
 // Simple Hash-based Router
@@ -56,6 +57,45 @@ const App: React.FC = () => {
 
     if (currentPath === '#/components') {
       return <ComponentsGalleryPage />;
+    }
+
+    if (currentPath === '#/orbit') {
+      return (
+        <div className="flex items-center justify-center min-h-[70vh] p-20">
+          <div className="w-[500px] h-[500px] border border-dashed border-neutral-300 dark:border-neutral-700 rounded-full flex items-center justify-center">
+            <Orbit 
+              radius={160} 
+              speed={12} 
+              direction="clockwise"
+              itemSize={64}
+              keepUpright={true}
+              pauseOnHover={true}
+              borderRadius={16}
+            >
+              <img 
+                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=128&h=128&fit=crop" 
+                alt="User 1" 
+                className="w-full h-full object-cover border-2 border-primary-500 rounded-2xl shadow-lg"
+              />
+              <img 
+                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&h=128&fit=crop" 
+                alt="User 2" 
+                className="w-full h-full object-cover border-2 border-secondary-500 rounded-2xl shadow-lg"
+              />
+              <img 
+                src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=128&h=128&fit=crop" 
+                alt="User 3" 
+                className="w-full h-full object-cover border-2 border-accent-500 rounded-2xl shadow-lg"
+              />
+              <img 
+                src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=128&h=128&fit=crop" 
+                alt="User 4" 
+                className="w-full h-full object-cover border-2 border-neutral-500 rounded-2xl shadow-lg"
+              />
+            </Orbit>
+          </div>
+        </div>
+      );
     }
 
 
