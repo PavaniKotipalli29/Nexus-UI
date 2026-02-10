@@ -12,13 +12,13 @@ import { motion, useReducedMotion, useAnimation, useAnimationFrame, useMotionVal
  */
 
 interface OrbitProps {
-    radius: number
-    speed: number
-    direction: "clockwise" | "anticlockwise"
-    itemSize: number
-    keepUpright: boolean
-    pauseOnHover: boolean
-    borderRadius: number
+    radius?: number
+    speed?: number
+    direction?: "clockwise" | "anticlockwise"
+    itemSize?: number
+    keepUpright?: boolean
+    pauseOnHover?: boolean
+    borderRadius?: number
     children?: React.ReactNode
 }
 
@@ -27,7 +27,7 @@ export function Orbit(props: OrbitProps) {
         radius = 150,
         speed = 10,
         direction = "clockwise",
-        itemSize = 60,
+        itemSize = 80,
         keepUpright = true,
         pauseOnHover = false,
         borderRadius = 0,

@@ -15,6 +15,7 @@ import { Navbar } from '../components/navigation/Navbar';
 import { AuthFlow } from '../components/ui/AuthFlow';
 import { UserManager } from '../components/ui/CRUDManager';
 import { AdminDashboard, StatCard, MiniChart, AdvancedTable } from '../components/ui/Dashboard';
+import { Orbit } from '../components/ui/Orbit';
 
 // Import full source codes
 import { SOURCES } from '../data/ComponentSources';
@@ -657,6 +658,64 @@ const docs: Record<string, ComponentDoc> = {
       }
     ],
     props: []
+  },
+  orbit: {
+    id: 'orbit',
+    name: 'Orbit',
+    category: 'Reusable',
+    subCategory: 'Molecules',
+    description: 'A decorative animation component where elements revolve around a center point.',
+    implementationSource: SOURCES.orbit,
+    examples: [
+      {
+        title: 'Team Orbit',
+        description: 'Perfect for showcasing team members or contributors.',
+        render: () => (
+          <div className="w-full h-64 flex items-center justify-center overflow-hidden bg-neutral-50 dark:bg-neutral-900/50 rounded-xl relative border border-dashed border-neutral-200 dark:border-neutral-800">
+            <Orbit radius={80} speed={6} direction="clockwise" itemSize={50} keepUpright={true} pauseOnHover={true} borderRadius={50}>
+              <Avatar src="https://i.pravatar.cc/150?u=1" variant="circle" className="ring-2 ring-primary-500 shadow-xl" />
+              <Avatar src="https://i.pravatar.cc/150?u=2" variant="circle" className="ring-2 ring-accent-500 shadow-xl" />
+              <Avatar src="https://i.pravatar.cc/150?u=3" variant="circle" className="ring-2 ring-indigo-500 shadow-xl" />
+              <Avatar src="https://i.pravatar.cc/150?u=4" variant="circle" className="ring-2 ring-emerald-500 shadow-xl" />
+              <Avatar src="https://i.pravatar.cc/150?u=5" variant="circle" className="ring-2 ring-pink-500 shadow-xl" />
+            </Orbit>
+            <div className="absolute w-12 h-12 bg-white dark:bg-neutral-800 rounded-full flex items-center justify-center shadow-lg z-10 border border-neutral-100 dark:border-neutral-700">
+              <div className="w-8 h-8 bg-primary-600 rounded-full animate-pulse" />
+            </div>
+          </div>
+        ),
+        usageCode: `<Orbit radius={80} speed={6} direction="clockwise" keepUpright={true} pauseOnHover={true}>
+  <Avatar src="user1.jpg" />
+  <Avatar src="user2.jpg" />
+  <Avatar src="user3.jpg" />
+</Orbit>`
+      },
+      {
+        title: 'Basic Shapes',
+        render: () => (
+          <div className="w-full h-48 flex items-center justify-center overflow-hidden bg-neutral-50 dark:bg-neutral-900/50 rounded-xl relative">
+            <Orbit radius={50} speed={4} direction="anticlockwise" itemSize={30} keepUpright={false} pauseOnHover={false}>
+              <div className="w-full h-full bg-primary-500 rounded" />
+              <div className="w-full h-full bg-accent-500 rounded-full" />
+              <div className="w-full h-full bg-emerald-500 rotate-45" />
+            </Orbit>
+          </div>
+        ),
+        usageCode: `<Orbit radius={50} speed={4} direction="anticlockwise" keepUpright={false}>
+  <div className="w-6 h-6 bg-primary-500" />
+  <div className="w-6 h-6 bg-accent-500 rounded-full" />
+</Orbit>`
+      }
+    ],
+    props: [
+      { name: 'radius', type: 'number', default: '150', desc: 'Distance from center to item centers in pixels.' },
+      { name: 'speed', type: 'number', default: '10', desc: 'Time for one full rotation in seconds.' },
+      { name: 'direction', type: '"clockwise" | "anticlockwise"', default: '"clockwise"', desc: 'Rotation direction.' },
+      { name: 'itemSize', type: 'number', default: '80', desc: 'The square dimension of the item container.' },
+      { name: 'keepUpright', type: 'boolean', default: 'true', desc: 'If true, items remain upright while revolving.' },
+      { name: 'pauseOnHover', type: 'boolean', default: 'false', desc: 'Pauses animation when cursor enters the container.' },
+      { name: 'borderRadius', type: 'number', default: '0', desc: 'Border radius of the item wrappers.' }
+    ]
   },
 
   // --- 3D Components ---

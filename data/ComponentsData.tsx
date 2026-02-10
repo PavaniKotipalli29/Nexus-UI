@@ -23,6 +23,7 @@ import {
 } from '../components/ui/Patterns';
 import { AuthFlow } from '../components/ui/AuthFlow';
 import { UserManager } from '../components/ui/CRUDManager';
+import { Orbit } from '../components/ui/Orbit';
 
 export type Category = 'Atomic' | 'Reusable' | 'Composite' | 'App-level';
 
@@ -382,6 +383,39 @@ export const components: ComponentItem[] = [
     preview: <div className="w-full px-4"><div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded p-2 text-xs">Note: Success notification.</div></div>,
     code: '<Alert variant="info">Message</Alert>',
     info: 'Shows status updates or warnings.'
+  },
+  {
+    id: 'orbit',
+    name: 'Orbit',
+    category: 'Reusable',
+    subCategory: 'Molecules',
+    variants: 7,
+    description: 'A decorative animation component where elements revolve around a center point.',
+    preview: (
+      <div className="w-full h-48 flex items-center justify-center overflow-hidden bg-neutral-50 dark:bg-neutral-900/50 rounded-xl relative">
+        <Orbit radius={60} speed={8} direction="clockwise" itemSize={44} keepUpright={true} pauseOnHover={true} borderRadius={50}>
+          <Avatar src="https://i.pravatar.cc/150?u=11" variant="circle" className="ring-2 ring-primary-500 shadow-lg" />
+          <Avatar src="https://i.pravatar.cc/150?u=22" variant="circle" className="ring-2 ring-accent-500 shadow-lg" />
+          <Avatar src="https://i.pravatar.cc/150?u=33" variant="circle" className="ring-2 ring-indigo-500 shadow-lg" />
+          <Avatar src="https://i.pravatar.cc/150?u=44" variant="circle" className="ring-2 ring-emerald-500 shadow-lg" />
+        </Orbit>
+        <div className="absolute w-10 h-10 bg-white dark:bg-neutral-800 rounded-full flex items-center justify-center shadow-inner z-10 border border-neutral-100 dark:border-neutral-700">
+          <div className="w-6 h-6 bg-primary-600 rounded-full animate-pulse" />
+        </div>
+      </div>
+    ),
+    code: `<Orbit 
+  radius={120} 
+  speed={10} 
+  direction="clockwise" 
+  itemSize={60} 
+  keepUpright={true}
+>
+  <Avatar src="..." />
+  <Avatar src="..." />
+  <Avatar src="..." />
+</Orbit>`,
+    info: 'Premium orbital animation system for displaying revolving elements with automated rotations. Perfect for showcasing team members, technology stacks, or featured items. Supports configurable radius, speed, direction, and item orientation. Features automatic pause-on-hover and smart reduced-motion support.'
   },
 
   // --- COMPOSITE (Organisms / Patterns) ---

@@ -65,10 +65,10 @@ const App: React.FC = () => {
         <div className="flex items-center justify-center min-h-[70vh] p-20">
           <div className="w-[500px] h-[500px] border border-dashed border-neutral-300 dark:border-neutral-700 rounded-full flex items-center justify-center">
             <Orbit 
-              radius={160} 
+              radius={180} 
               speed={12} 
               direction="clockwise"
-              itemSize={64}
+              itemSize={96}
               keepUpright={true}
               pauseOnHover={true}
               borderRadius={16}
