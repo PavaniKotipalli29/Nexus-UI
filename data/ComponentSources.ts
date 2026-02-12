@@ -2414,7 +2414,137 @@ export function Orbit(props: OrbitProps) {
                 })}
             </motion.div>
         </div>
-    )
+    );
+}
+`,
+  targetCursor: `import React, { useEffect, useState, useRef } from "react";
+import { 
+    motion, 
+    useSpring, 
+    useMotionValue, 
+    useReducedMotion,
+    AnimatePresence,
+} from "framer-motion";
+
+export function TargetCursor({
+    color = "#8B5CF6",
+    padding = 8,
+    stiffness = 400,
+    className = "",
+}) {
+    const shouldReduceMotion = useReducedMotion();
+    const [isVisible, setIsVisible] = useState(false);
+    const [isHovering, setIsHovering] = useState(false);
+    const [isClicked, setIsClicked] = useState(false);
+    const [hoverType, setHoverType] = useState(null);
+
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+    const targetWidth = useMotionValue(24);
+    const targetHeight = useMotionValue(24);
+
+    const springConfig = { damping: 35, stiffness, mass: 0.5 };
+    const cursorX = useSpring(mouseX, springConfig);
+    const cursorY = useSpring(mouseY, springConfig);
+    const width = useSpring(targetWidth, springConfig);
+    const height = useSpring(targetHeight, springConfig);
+
+    useEffect(() => {
+        if (shouldReduceMotion) return;
+        document.body.style.cursor = "none";
+        const style = document.createElement("style");
+        style.innerHTML = "* { cursor: none !important; }";
+        document.head.appendChild(style);
+
+        const handleMouseMove = (e) => {
+            if (!isVisible) setIsVisible(true);
+            const target = e.target.closest('[data-cursor-target="true"]');
+            
+            if (target) {
+                const rect = target.getBoundingClientRect();
+                mouseX.set(rect.left + rect.width / 2);
+                mouseY.set(rect.top + rect.height / 2);
+                targetWidth.set(rect.width + padding * 2);
+                targetHeight.set(rect.height + padding * 2);
+                setIsHovering(true);
+                setHoverType(target.getAttribute("data-cursor-type") || "default");
+            } else {
+                mouseX.set(e.clientX);
+                mouseY.set(e.clientY);
+                targetWidth.set(24);
+                targetHeight.set(24);
+                setIsHovering(false);
+                setHoverType(null);
+            }
+        };
+
+        const handleMouseDown = () => setIsClicked(true);
+        const handleMouseUp = () => setIsClicked(false);
+        const handleMouseLeave = () => setIsVisible(false);
+        const handleMouseEnter = () => setIsVisible(true);
+
+        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("mousedown", handleMouseDown);
+        window.addEventListener("mouseup", handleMouseUp);
+        document.body.addEventListener("mouseleave", handleMouseLeave);
+        document.body.addEventListener("mouseenter", handleMouseEnter);
+
+        return () => {
+            document.body.style.cursor = "auto";
+            document.head.removeChild(style);
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("mousedown", handleMouseDown);
+            window.removeEventListener("mouseup", handleMouseUp);
+            document.body.removeEventListener("mouseleave", handleMouseLeave);
+            document.body.removeEventListener("mouseenter", handleMouseEnter);
+        };
+    }, [mouseX, mouseY, targetWidth, targetHeight, isVisible, shouldReduceMotion, padding]);
+
+    if (shouldReduceMotion) return null;
+
+    return (
+        <div className={#BACKTICK_ESCAPE#fixed inset-0 pointer-events-none z-[9999] overflow-hidden \${className}#BACKTICK_ESCAPE#}>
+            <motion.div
+                animate={{
+                    rotate: isHovering ? 0 : 360,
+                }}
+                transition={{
+                    rotate: isHovering 
+                        ? { type: "spring", stiffness: 300, damping: 30 } 
+                        : { duration: 8, repeat: Infinity, ease: "linear" }
+                }}
+                style={{ x: cursorX, y: cursorY, width: width, height: height, translateX: "-50%", translateY: "-50%", opacity: isVisible ? 1 : 0 }}
+                className="relative flex items-center justify-center p-0"
+            >
+                <div className="absolute inset-0">
+                    <motion.div animate={{ scale: isClicked ? 0.8 : 1 }} style={{ borderColor: color }} className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2" />
+                    <motion.div animate={{ scale: isClicked ? 0.8 : 1 }} style={{ borderColor: color }} className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2" />
+                    <motion.div animate={{ scale: isClicked ? 0.8 : 1 }} style={{ borderColor: color }} className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2" />
+                    <motion.div animate={{ scale: isClicked ? 0.8 : 1 }} style={{ borderColor: color }} className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2" />
+                </div>
+                <motion.div animate={{ scale: isHovering ? 0 : 1, opacity: isHovering ? 0 : 1 }} style={{ backgroundColor: color }} className="w-1 h-1 rounded-full shadow-[0_0_8px_rgba(255,255,240,0.6)]" />
+                <AnimatePresence>
+                    {isHovering && (
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.05 }} exit={{ opacity: 0 }} style={{ backgroundColor: color }} className="absolute inset-0 rounded-sm" />
+                    )}
+                </AnimatePresence>
+                <AnimatePresence>
+                    {isHovering && hoverType && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: height.get() / 2 + 15 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            className="absolute pointer-events-none whitespace-nowrap"
+                        >
+                            <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#8B5CF6] opacity-80">
+                                {hoverType}
+                            </span>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </motion.div>
+        </div>
+    );
 }
 `
 };

@@ -16,6 +16,7 @@ import { AuthFlow } from '../components/ui/AuthFlow';
 import { UserManager } from '../components/ui/CRUDManager';
 import { AdminDashboard, StatCard, MiniChart, AdvancedTable } from '../components/ui/Dashboard';
 import { Orbit } from '../components/ui/Orbit';
+import { TargetCursor } from '../components/ui/TargetCursor';
 
 // Import full source codes
 import { SOURCES } from '../data/ComponentSources';
@@ -715,6 +716,54 @@ const docs: Record<string, ComponentDoc> = {
       { name: 'keepUpright', type: 'boolean', default: 'true', desc: 'If true, items remain upright while revolving.' },
       { name: 'pauseOnHover', type: 'boolean', default: 'false', desc: 'Pauses animation when cursor enters the container.' },
       { name: 'borderRadius', type: 'number', default: '0', desc: 'Border radius of the item wrappers.' }
+    ]
+  },
+  'target-cursor': {
+    id: 'target-cursor',
+    name: 'Target Cursor',
+    category: 'Reusable',
+    subCategory: 'Molecules',
+    description: 'A high-end experimental cursor with integrated magnetic snapping, aperture organic geometry, and momentum-based velocity distortion.',
+    implementationSource: SOURCES.targetCursor,
+    examples: [
+      {
+        title: 'Magnetic Synergy',
+        description: 'Move close to the buttons to see the cursor "snap" towards their center.',
+        render: () => (
+          <div className="w-full flex items-center justify-center gap-12 py-20 bg-neutral-900 rounded-3xl overflow-hidden relative">
+            <TargetCursor stiffness={300} padding={12} />
+            <div 
+              data-cursor-target="true" 
+              data-cursor-type="magnet"
+              className="group relative w-32 h-32 flex items-center justify-center cursor-none"
+            >
+              <div className="absolute inset-0 bg-primary-500/10 rounded-2xl border border-primary-500/30 group-hover:bg-primary-500/20 transition-all duration-300" />
+              <div className="z-10 text-center">
+                <Icon size="md" className="text-primary-400 mb-1"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></Icon>
+                <Text weight="bold" size="sm" className="text-primary-100">MAGNETIC</Text>
+              </div>
+            </div>
+            <div 
+              data-cursor-target="true" 
+              data-cursor-type="info"
+              className="group relative w-32 h-32 flex items-center justify-center cursor-none"
+            >
+              <div className="absolute inset-0 bg-white/5 rounded-full border border-white/10 group-hover:bg-white/10 transition-all duration-300" />
+              <div className="z-10 text-center">
+                <Icon size="md" className="text-neutral-400 mb-1"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></Icon>
+                <Text weight="bold" size="sm" className="text-neutral-300">INFO</Text>
+              </div>
+            </div>
+          </div>
+        ),
+        usageCode: `<TargetCursor padding={12} stiffness={300} />\n\n<div data-cursor-target="true" data-cursor-type="magnet">Magnetic Target</div>`
+      }
+    ],
+    props: [
+      { name: 'color', type: 'string', default: '"var(--primary-500)"', desc: 'Primary brand color.' },
+      { name: 'padding', type: 'number', default: '8', desc: 'Padding around the element when snapped.' },
+      { name: 'stiffness', type: 'number', default: '400', desc: 'Spring stiffness for the cursor movement.' },
+      { name: 'className', type: 'string', default: '""', desc: 'Container class.' }
     ]
   },
 
@@ -1513,6 +1562,10 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
       { name: 'status', type: 'select', default: '', options: ['', 'online', 'offline', 'busy', 'away'] },
       { name: 'fallback', type: 'string', default: 'U' },
     ],
+    'target-cursor': [
+      { name: 'magneticStrength', type: 'number', default: '0.4' },
+      { name: 'hoverScale', type: 'number', default: '1.6' },
+    ],
     wizard: [
       { name: 'orientation', type: 'select', default: 'horizontal', options: ['horizontal', 'vertical'] },
       { name: 'size', type: 'select', default: 'md', options: ['sm', 'md', 'lg'] },
@@ -1605,6 +1658,19 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                                           if (componentId === 'crud-management') return <UserManager {...activeProps} />;
                                           if (componentId === 'avatar') return <Avatar {...activeProps} />;
                                           if (componentId === 'wizard') return <Wizard steps={[{id: 1, title: 'Step 1', description: 'Setup'}, {id: 2, title: 'Step 2', description: 'Config'}, {id: 3, title: 'Step 3', description: 'Done'}]} {...activeProps} />;
+                                          if (componentId === 'wizard') return <Wizard steps={[{id: 1, title: 'Step 1', description: 'Setup'}, {id: 2, title: 'Step 2', description: 'Config'}, {id: 3, title: 'Step 3', description: 'Done'}]} {...activeProps} />;
+                                          if (componentId === 'target-cursor') return (
+                                            <div className="relative h-64 w-full border border-dashed rounded flex flex-col items-center justify-center bg-neutral-50 dark:bg-neutral-900/50">
+                                              <TargetCursor {...activeProps} />
+                                              <Text tone="muted" className="mb-8">Hover the target below</Text>
+                                              <div 
+                                                data-cursor-target="true" 
+                                                className="w-24 h-24 bg-primary-500 rounded-full flex items-center justify-center shadow-lg cursor-none"
+                                              >
+                                                <Icon size="md" className="text-white"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></Icon>
+                                              </div>
+                                            </div>
+                                          );
                                           return doc.examples[0].render();
                                       })()}
                                   </div>

@@ -417,6 +417,34 @@ export const components: ComponentItem[] = [
 </Orbit>`,
     info: 'Premium orbital animation system for displaying revolving elements with automated rotations. Perfect for showcasing team members, technology stacks, or featured items. Supports configurable radius, speed, direction, and item orientation. Features automatic pause-on-hover and smart reduced-motion support.'
   },
+  {
+    id: 'target-cursor',
+    name: 'Target Cursor',
+    category: 'Reusable',
+    subCategory: 'Molecules',
+    variants: 3,
+    description: 'A high-end reticle-style cursor that snaps to element boundaries with precision corner brackets and fluid animations. Designed for clean, technical interfaces.',
+    preview: (
+      <div className="w-full h-56 flex items-center justify-center bg-neutral-900 rounded-xl relative overflow-hidden group border border-neutral-800 shadow-2xl">
+        <div className="text-center z-10">
+          <Text variant="caption" className="mb-4 text-neutral-500 uppercase tracking-widest font-bold">Interactive Reticle Demo</Text>
+          <div className="flex gap-6">
+            <div data-cursor-target="true" data-cursor-type="action" className="w-14 h-14 bg-primary-500/10 border border-primary-500/50 rounded-2xl flex items-center justify-center cursor-none hover:bg-primary-500/20 transition-colors">
+              <Icon size="sm" className="text-primary-400"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></Icon>
+            </div>
+            <div data-cursor-target="true" data-cursor-type="info" className="w-14 h-14 bg-white/5 border border-white/20 rounded-2xl flex items-center justify-center cursor-none hover:bg-white/10 transition-colors">
+              <Icon size="sm" className="text-neutral-400"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" /></Icon>
+            </div>
+          </div>
+        </div>
+        {/* Soft atmospheric background elements */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary-600/10 blur-[60px]" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-accent-600/10 blur-[60px]" />
+      </div>
+    ),
+    code: '<TargetCursor padding={8} stiffness={400} />',
+    info: 'A precision reticle cursor system that automatically snaps to elements marked with data-cursor-target. It adjusts its dimensions to match the target element and features smooth, high-frequency spring physics.'
+  },
 
   // --- COMPOSITE (Organisms / Patterns) ---
   {
@@ -505,6 +533,9 @@ export const components: ComponentItem[] = [
               <div className="h-8 w-full bg-white/5 rounded" />
               <div className="h-8 w-full bg-white/5 rounded" />
             </div>
+            <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-violet-500 opacity-80">
+              Dashboard
+            </span>
           </div>
           <div className="flex-1 flex flex-col">
             <div className="h-16 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between px-8">
