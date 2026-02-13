@@ -1,0 +1,385 @@
+/* Wizard.module.css */
+
+/* --- Variables --- */
+.wizard {
+  --wizard-primary: #6366f1; /* Indigo 500 */
+  --wizard-primary-glow: rgba(99, 102, 241, 0.4);
+  --wizard-bg: #ffffff;
+  --wizard-text: #171717;
+  --wizard-text-muted: #737373;
+  --wizard-line-inactive: #e5e5e5;
+  --wizard-line-active: var(--wizard-primary);
+  --wizard-step-bg: #f5f5f5;
+  --wizard-step-size: 2.5rem;
+  --transition-speed: 0.3s;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Dark Mode Support via class or system preference usually handled by parent, 
+   but here we use a data-attribute or assume a .dark class on body/parent */
+:global(.dark) .wizard {
+  --wizard-bg: #171717;
+  --wizard-text: #f5f5f5;
+  --wizard-text-muted: #a3a3a3;
+  --wizard-line-inactive: #404040;
+  --wizard-step-bg: #262626;
+  --glass-bg: rgba(23, 23, 23, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* --- Container & Layout --- */
+.stepsContainer {
+  display: flex;
+  width: 100%;
+  position: relative;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.vertical {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0; /* Gap handled by vertical connector height/margin */
+}
+
+/* --- Step Item --- */
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+  flex: 0 0 auto; /* Don't grow, let content define size */
+  text-align: center;
+  cursor: pointer;
+  transition: opacity var(--transition-speed);
+  min-width: 80px; /* Ensure some width for labels */
+}
+
+.step.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.vertical .step {
+  flex-direction: row;
+  align-items: flex-start; /* Align with top of circle */
+  text-align: left;
+  width: 100%;
+  min-height: 80px; /* Ensure space for connector */
+}
+
+/* --- Connector Lines --- */
+/* Horizontal Line */
+.connector {
+  flex: 1 1 auto; /* Grow to fill space */
+  height: 2px;
+  background-color: var(--wizard-line-inactive);
+  margin-top: calc(var(--wizard-step-size) / 2); /* Align with center of circle */
+  transform: translateY(-50%);
+  margin-left: -5px; /* Slight overlap to prevent gaps */
+  margin-right: -5px;
+  z-index: 0;
+  position: relative;
+}
+
+/* Inner progress line */
+.connectorProgress {
+  height: 100%;
+  background-color: var(--wizard-line-active);
+  width: 0%;
+  transition: width 0.5s ease-in-out;
+  box-shadow: 0 0 10px var(--wizard-primary-glow);
+}
+
+/* Vertical Line */
+.verticalConnector {
+  position: absolute;
+  top: var(--wizard-step-size);
+  left: calc(var(--wizard-step-size) / 2);
+  width: 2px;
+  height: calc(100% - var(--wizard-step-size)); 
+  background-color: var(--wizard-line-inactive);
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+.verticalConnectorProgress {
+  width: 100%;
+  height: 0%; 
+  background-color: var(--wizard-line-active);
+  transition: height 0.5s ease-in-out;
+  box-shadow: 0 0 10px var(--wizard-primary-glow);
+}
+
+/* --- Step Circle --- */
+.circle {
+  width: var(--wizard-step-size);
+  height: var(--wizard-step-size);
+  border-radius: 50%;
+  background-color: var(--wizard-step-bg);
+  border: 2px solid var(--wizard-line-inactive);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--wizard-text-muted);
+  transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 2;
+  margin-bottom: 0.75rem;
+}
+
+.vertical .circle {
+  margin-bottom: 0;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+/* Active State */
+.step.active .circle {
+  border-color: var(--wizard-primary);
+  color: var(--wizard-primary);
+  box-shadow: 0 0 0 4px var(--wizard-primary-glow);
+  background-color: var(--wizard-bg);
+  transform: scale(1.1);
+}
+
+/* Completed State */
+.step.completed .circle {
+  background-color: var(--wizard-primary);
+  border-color: var(--wizard-primary);
+  color: #fff;
+}
+
+/* Icon support inside circle */
+.icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* --- Checkmark Animation --- */
+.checkmark {
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke: white;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  animation: drawCheck 0.3s ease-in-out forwards;
+}
+
+@keyframes drawCheck {
+  0% { stroke-dasharray: 20; stroke-dashoffset: 20; }
+  100% { stroke-dasharray: 20; stroke-dashoffset: 0; }
+}
+
+/* --- Labels --- */
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--wizard-text);
+  margin: 0;
+}
+
+.description {
+  font-size: 0.75rem;
+  color: var(--wizard-text-muted);
+  margin-top: 0.25rem;
+  max-width: 150px;
+}
+
+/* Color Overrides */
+.wizard[data-color="secondary"] { --wizard-primary: #737373; --wizard-primary-glow: rgba(115, 115, 115, 0.2); }
+.wizard[data-color="success"] { --wizard-primary: #10b981; --wizard-primary-glow: rgba(16, 185, 129, 0.2); }
+.wizard[data-color="warning"] { --wizard-primary: #f59e0b; --wizard-primary-glow: rgba(245, 158, 11, 0.2); }
+.wizard[data-color="danger"] { --wizard-primary: #ef4444; --wizard-primary-glow: rgba(239, 68, 68, 0.2); }
+.wizard[data-color="neutral"] { --wizard-primary: #404040; --wizard-primary-glow: rgba(64, 64, 64, 0.2); }
+
+/* --- Variants --- */
+
+/* Filled Variant */
+.filled .circle {
+  border: none;
+  background-color: var(--wizard-line-inactive);
+}
+
+.filled .step.active .circle {
+  background-color: var(--wizard-primary);
+  color: white;
+  box-shadow: 0 4px 12px var(--wizard-primary-glow);
+}
+
+.filled .step.completed .circle {
+  background-color: var(--wizard-primary);
+  opacity: 0.8;
+}
+
+/* Outline Variant */
+.outline .circle {
+  background-color: transparent;
+  border-width: 2px;
+}
+
+.outline .step.active .circle {
+  border-color: var(--wizard-primary);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.outline .step.active .circle::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background-color: var(--wizard-primary);
+}
+
+.outline .step.completed .circle {
+  border-color: var(--wizard-primary);
+  background-color: var(--wizard-primary);
+}
+
+/* Modern Gradient */
+.modern {
+  --wizard-primary: #ec4899; /* Pink 500 */
+  --wizard-primary-glow: rgba(236, 72, 153, 0.4);
+}
+
+.modern .step.active .circle {
+  border: double 2px transparent;
+  background-image: linear-gradient(var(--wizard-bg), var(--wizard-bg)), 
+                    linear-gradient(135deg, #6366f1, #ec4899);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  color: #ec4899;
+}
+
+.modern .step.completed .circle {
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  border: none;
+}
+
+.modern .connectorProgress,
+.modern .verticalConnectorProgress {
+  background: linear-gradient(90deg, #6366f1, #ec4899);
+}
+
+/* Minimal Clean */
+.minimal {
+  --wizard-step-size: 2rem;
+}
+
+.minimal .circle {
+  border-width: 1px;
+  background: transparent;
+}
+
+.minimal .step.active .circle {
+  background: var(--wizard-text);
+  color: var(--wizard-bg);
+  box-shadow: none;
+  border-color: var(--wizard-text);
+}
+
+.minimal .step.completed .circle {
+  background: var(--wizard-text);
+  border-color: var(--wizard-text);
+  color: var(--wizard-bg);
+}
+
+.minimal .connectorProgress {
+  background-color: var(--wizard-text);
+  box-shadow: none;
+}
+
+/* Glassmorphism Container (Optional wrapper style) */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .stepsContainer:not(.vertical) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .stepsContainer:not(.vertical) .step {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .stepsContainer:not(.vertical) .circle {
+    margin-right: 1rem;
+    margin-bottom: 0;
+  }
+
+  .stepsContainer:not(.vertical) .connector {
+    display: none; /* Hide horizontal connector on mobile */
+  }
+
+  /* We might want to show vertical lines on mobile even if orientation is horizontal */
+  .stepsContainer:not(.vertical) .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: var(--wizard-step-size);
+    left: calc(var(--wizard-step-size) / 2);
+    width: 2px;
+    height: 1.5rem; /* Gap size */
+    background-color: var(--wizard-line-inactive);
+    transform: translateX(-50%);
+    z-index: 0;
+  }
+  
+  .stepsContainer:not(.vertical) .step.completed:not(:last-child)::after {
+     background-color: var(--wizard-line-active);
+  }
+}
+
+/* --- Navigation Footer --- */
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--wizard-line-inactive);
+  width: 100%;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.vertical + .navigation {
+  margin-top: 2rem;
+  padding-left: calc(var(--wizard-step-size) + 1.5rem);
+  border-top: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

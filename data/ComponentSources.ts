@@ -1,4 +1,6 @@
-﻿export const SOURCES = {
+﻿import { SourceData } from '../types';
+
+export const SOURCES: SourceData = {
   types: `import React, { ReactNode } from "react";
 
 export type ComponentSize = "sm" | "md" | "lg";
@@ -968,135 +970,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
     </div>
   );
 };`,
-  wizard: `import React from 'react';
-import { WizardProps, WizardStep, WizardStepStatus } from '../../types';
-import { Icon } from './Primitives';
 
-export const Wizard: React.FC<WizardProps> = ({
-  steps,
-  currentStep = 0,
-  orientation = 'horizontal',
-  variant = 'default',
-  size = 'md',
-  color = 'primary',
-  onStepClick,
-  className = ''
-}) => {
-  const isHorizontal = orientation === 'horizontal';
-
-  const sizes = {
-    sm: { dot: 'w-8 h-8', text: 'text-xs', line: isHorizontal ? 'h-0.5' : 'w-0.5' },
-    md: { dot: 'w-10 h-10', text: 'text-sm', line: isHorizontal ? 'h-0.5' : 'w-0.5' },
-    lg: { dot: 'w-12 h-12', text: 'text-base', line: isHorizontal ? 'h-1' : 'w-1' },
-  };
-
-  const colors: Record<string, any> = {
-    primary: 'primary',
-    secondary: 'violet',
-    success: 'green',
-    warning: 'yellow',
-    danger: 'red',
-    neutral: 'neutral'
-  };
-
-  const brandColor = colors[color] || 'primary';
-
-  const getStatusStyles = (status: WizardStepStatus, index: number) => {
-    const isActive = index === currentStep;
-    const isCompleted = index < currentStep;
-    const effectiveStatus = steps[index].status || (isActive ? 'active' : isCompleted ? 'completed' : 'inactive');
-
-    const styles = {
-      active: {
-        dot: \`ring-4 ring-\${brandColor}-500/20 bg-\${brandColor}-600 text-white shadow-lg shadow-\${brandColor}-500/30 scale-110\`,
-        line: \`bg-\${brandColor}-600\`,
-        text: \`text-\${brandColor}-900 dark:text-\${brandColor}-100 font-bold\`
-      },
-      completed: {
-        dot: 'bg-green-600 text-white',
-        line: 'bg-green-600',
-        text: 'text-neutral-900 dark:text-neutral-100 font-medium'
-      },
-      error: {
-        dot: 'bg-red-600 text-white animate-shake',
-        line: 'bg-red-600',
-        text: 'text-red-900 dark:text-red-400 font-medium'
-      },
-      disabled: {
-        dot: 'bg-neutral-200 dark:bg-neutral-800 text-neutral-400 cursor-not-allowed opacity-50',
-        line: 'bg-neutral-100 dark:bg-neutral-900',
-        text: 'text-neutral-400'
-      },
-      inactive: {
-        dot: 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500 border-2 border-neutral-200 dark:border-neutral-700',
-        line: 'bg-neutral-200 dark:border-neutral-800',
-        text: 'text-neutral-500'
-      }
-    };
-    return styles[effectiveStatus];
-  };
-
-  const getVariantStyles = () => {
-    switch (variant) {
-      case 'filled': return 'bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 p-8 rounded-3xl shadow-sm';
-      case 'outline': return 'border-2 border-neutral-100 dark:border-neutral-800 p-8 rounded-3xl';
-      case 'glass': return 'backdrop-blur-2xl bg-white/60 dark:bg-neutral-950/60 border border-white/40 dark:border-white/10 p-8 rounded-3xl shadow-2xl ring-1 ring-black/5';
-      case 'gradient': return \`bg-gradient-to-br from-\${brandColor}-50/50 to-neutral-50 dark:from-\${brandColor}-950/20 dark:to-neutral-950/20 p-8 rounded-3xl border border-\${brandColor}-200/50 dark:border-\${brandColor}-800/50 shadow-inner\`;
-      case 'minimal': return 'p-0 bg-transparent border-none';
-      default: return 'py-4';
-    }
-  };
-
-  return (
-    <div className={\`w-full transition-all duration-300 \${getVariantStyles()} \${className}\`}>
-      <div className={\`flex \${isHorizontal ? 'flex-row items-start' : 'flex-col gap-10'}\`}>
-        {steps.map((step, index) => {
-          const styles = getStatusStyles(step.status || 'inactive', index);
-          const isLast = index === steps.length - 1;
-          return (
-            <React.Fragment key={step.id || index}>
-              <div className={\`flex \${isHorizontal ? 'flex-col items-center flex-1 text-center px-4' : 'flex-row items-center gap-6'} group cursor-pointer relative z-10\`} onClick={() => onStepClick?.(index)}>
-                <div className="relative">
-                  <div className={\`flex items-center justify-center rounded-full transition-all duration-500 font-bold \${sizes[size].dot} \${styles.dot} group-hover:scale-110 active:scale-95\`}>
-                    {step.status === 'completed' || (index < currentStep && !step.status) ? (
-                      <Icon size="sm"><path d="M5 13l4 4L19 7" strokeWidth="3" /></Icon>
-                    ) : step.status === 'error' ? (
-                      <Icon size="sm"><path d="M6 18L18 6M6 6l12 12" strokeWidth="3" /></Icon>
-                    ) : (
-                      step.icon || (index + 1)
-                    )}
-                  </div>
-                </div>
-                <div className={\`\${isHorizontal ? 'mt-4' : ''} flex flex-col \${isHorizontal ? 'items-center' : 'items-start'}\`}>
-                  <h4 className={\`\${sizes[size].text} \${styles.text} transition-colors duration-300\`}>{step.title}</h4>
-                  {step.description && <p className={\`text-xs mt-1 text-neutral-500 dark:text-neutral-400 max-w-[200px] line-clamp-2 \${isHorizontal ? 'text-center' : 'text-left'}\`}>{step.description}</p>}
-                </div>
-                {!isLast && !isHorizontal && (
-                  <div 
-                    className="absolute z-[-1] overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-800" 
-                    style={{ 
-                      left: size === 'sm' ? '15px' : size === 'lg' ? '23px' : '19px',
-                      top: size === 'sm' ? '32px' : size === 'lg' ? '48px' : '40px',
-                      bottom: '-40px',
-                      width: size === 'lg' ? '4px' : '2px'
-                    }}
-                  >
-                    <div className={\`w-full h-full transition-all duration-700 ease-in-out \${styles.line}\`} style={{ height: index < currentStep ? '100%' : '0%' }} />
-                  </div>
-                )}
-              </div>
-              {!isLast && isHorizontal && (
-                <div className={\`flex-1 \${sizes[size].line} mt-[20px] -mx-[50%] z-0 border-none relative overflow-hidden bg-neutral-100 dark:bg-neutral-800 rounded-full\`}>
-                  <div className={\`h-full transition-all duration-700 ease-in-out \${styles.line}\`} style={{ width: index < currentStep ? '100%' : '0%' }} />
-                </div>
-              )}
-            </React.Fragment>
-          );
-        })}
-      </div>
-    </div>
-  );
-};`,
   composite: `import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { 
@@ -1163,7 +1037,7 @@ export const AuthLayout: React.FC<{ children: ReactNode; title?: string; subtitl
     <div className="min-h-screen flex bg-neutral-50 dark:bg-neutral-950">
       <div className="flex-1 flex flex-col justify-center py-12 px-4 bg-white dark:bg-neutral-900 lg:w-[480px]">
         <div className="mx-auto w-full max-w-sm">
-          <div className="mb-8">{logo}{title && <Heading level={2} className="mt-6">{title}</Heading>}{subtitle && <Text color="muted" className="mt-2">{subtitle}</Text>}</div>
+          <div className="mb-8">{logo}{title && <Heading level={2} className="mt-6">{title}</Heading>}{subtitle && <Text tone="muted" className="mt-2">{subtitle}</Text>}</div>
           {children}
         </div>
       </div>
@@ -1387,7 +1261,7 @@ export const StatCard: React.FC<{
           </Badge>
         )}
       </div>
-      <Text color="muted" size="sm" className="font-medium uppercase tracking-wider">{stat.label}</Text>
+      <Text tone="muted" variant="body-sm" className="font-medium uppercase tracking-wider">{stat.label}</Text>
       <Heading level={2} className="mt-1 text-2xl font-bold">{stat.value}</Heading>
     </Card>
   );
@@ -1409,7 +1283,7 @@ export const MiniChart: React.FC<{
   if (data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-4 h-[60px] bg-neutral-50 dark:bg-neutral-800/50 rounded-lg border border-dashed border-neutral-200 dark:border-neutral-800">
-        <Text size="xs" color="muted">No data</Text>
+        <Text variant="caption" tone="muted">No data</Text>
       </div>
     );
   }
@@ -1527,12 +1401,12 @@ export const AdvancedTable: React.FC<{
             ) : data.length === 0 ? (
               <tr>
                 <td colSpan={columns.length + (onSelectionChange ? 2 : 1)} className="px-6 py-12 text-center">
-                  <Stack items="center" spacing={2}>
+                  <Stack align="center" spacing={2}>
                     <div className="p-3 bg-neutral-100 dark:bg-neutral-800 rounded-full text-neutral-400">
                       <Icon size="lg"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></Icon>
                     </div>
                     <Text className="font-semibold text-neutral-900 dark:text-neutral-100">No results found</Text>
-                    <Text color="muted" size="sm">Try adjusting your filters or search query</Text>
+                    <Text tone="muted" variant="body-sm">Try adjusting your filters or search query</Text>
                   </Stack>
                 </td>
               </tr>
@@ -1984,7 +1858,7 @@ export const UserManager: React.FC<{
       <Flex justify="between" align="center" className="flex-wrap gap-4 px-1">
         <div>
           <Heading level={2}>Team Management</Heading>
-          <Text color="muted">Configure roles and permissions for your organization.</Text>
+          <Text tone="muted">Configure roles and permissions for your organization.</Text>
         </div>
         <Tooltip content={!permissions.canCreate ? "You don't have permission to create users" : ""}>
           <Button 
@@ -2085,7 +1959,7 @@ export const UserManager: React.FC<{
                       </div>
                       <div>
                         <Text className="font-bold text-lg">No results found</Text>
-                        <Text color="muted">We couldn't find any members matching your criteria.</Text>
+                        <Text tone="muted">We couldn't find any members matching your criteria.</Text>
                       </div>
                     </Stack>
                   </td>
@@ -2106,14 +1980,14 @@ export const UserManager: React.FC<{
                         <Avatar name={user.name} size="sm" src={user.avatar} className="border-2 border-white dark:border-neutral-800 shadow-sm" />
                         <div>
                           <Text className="font-bold text-neutral-900 dark:text-neutral-100">{user.name}</Text>
-                          <Text size="xs" color="muted">{user.email}</Text>
+                          <Text variant="caption" tone="muted">{user.email}</Text>
                         </div>
                       </Flex>
                     </td>
                     <td className="px-6 py-4">
                       <Flex gap={2} align="center">
                         <span className={\`w-2 h-2 rounded-full \${user.role === 'Admin' ? 'bg-indigo-500' : user.role === 'Editor' ? 'bg-emerald-500' : 'bg-neutral-400'}\`} />
-                        <Text size="sm" weight="medium">{user.role}</Text>
+                        <Text variant="body-sm" weight="medium">{user.role}</Text>
                       </Flex>
                     </td>
                     <td className="px-6 py-4">
@@ -2125,7 +1999,7 @@ export const UserManager: React.FC<{
                       </Badge>
                     </td>
                     <td className="px-6 py-4">
-                      <Text size="sm" color="muted">{user.lastActive}</Text>
+                      <Text variant="body-sm" tone="muted">{user.lastActive}</Text>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <Flex gap={1} justify="end" className="opacity-0 group-hover:opacity-100 transition-opacity">
@@ -2159,7 +2033,7 @@ export const UserManager: React.FC<{
           </table>
         </div>
         <div className="p-4 border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/30 flex items-center justify-between">
-          <Text size="sm" color="muted">Showing <span className="font-semibold text-neutral-900 dark:text-neutral-100">{paginatedUsers.length}</span> of <span className="font-semibold text-neutral-900 dark:text-neutral-100">{totalItems}</span> members</Text>
+          <Text variant="body-sm" tone="muted">Showing <span className="font-semibold text-neutral-900 dark:text-neutral-100">{paginatedUsers.length}</span> of <span className="font-semibold text-neutral-900 dark:text-neutral-100">{totalItems}</span> members</Text>
           <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={setCurrentPage} />
         </div>
       </div>
@@ -2216,10 +2090,10 @@ export const UserManager: React.FC<{
             </div>
 
             {isDirty && (
-              <Alert variant="warning" size="sm" className="mb-2">
+              <Alert variant="warning" className="mb-2">
                 <Flex align="center" gap={2}>
                   <Icon size="xs"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></Icon>
-                  <Text size="xs">You have unsaved changes</Text>
+                  <Text variant="caption">You have unsaved changes</Text>
                 </Flex>
               </Alert>
             )}
@@ -2252,7 +2126,7 @@ export const UserManager: React.FC<{
           </div>
           <div className="space-y-2">
             <Text className="font-bold text-lg">Are you absolutely sure?</Text>
-            <Text color="muted">
+            <Text tone="muted">
               You are about to remove <span className="font-bold text-neutral-900 dark:text-neutral-100">{userToDelete?.name}</span> from the organization. They will lose all access to shared projects.
             </Text>
           </div>
@@ -2426,17 +2300,30 @@ import {
     AnimatePresence,
 } from "framer-motion";
 
+export interface TargetCursorProps {
+    /** Primary brand color */
+    color?: string;
+    /** Padding around the element when snapped */
+    padding?: number;
+    /** Transition smoothing */
+    stiffness?: number;
+    /** Custom class for the wrapper */
+    className?: string;
+}
+
 export function TargetCursor({
-    color = "#8B5CF6",
+    color = "#8B5CF6", // Violet
     padding = 8,
     stiffness = 400,
     className = "",
-}) {
+}: TargetCursorProps) {
     const shouldReduceMotion = useReducedMotion();
+    
+    // State
     const [isVisible, setIsVisible] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
-    const [hoverType, setHoverType] = useState(null);
+    const [hoverType, setHoverType] = useState<string | null>(null);
 
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
@@ -2536,7 +2423,10 @@ export function TargetCursor({
                             exit={{ opacity: 0, y: 10 }}
                             className="absolute pointer-events-none whitespace-nowrap"
                         >
-                            <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#8B5CF6] opacity-80">
+                            <span 
+                                className="text-[10px] uppercase font-bold tracking-[0.2em] opacity-80"
+                                style={{ color: color }}
+                            >
                                 {hoverType}
                             </span>
                         </motion.div>
@@ -2814,5 +2704,788 @@ function StickyItem({
     );
 }
 `,
+  magicBentoJSX: `import React, { useRef, useState, MouseEvent, useEffect } from 'react';
+import styles from './MagicBento.module.css';
+import { Heading, Text } from '../Primitives';
+
+export interface BentoItem {
+  id: string;
+  title: string;
+  description: string;
+  icon?: React.ReactNode;
+  span?: 1 | 2 | 3;
+  image?: string;
+  className?: string;
+  titleColor?: string;
+  descriptionColor?: string;
+}
+
+export interface MagicBentoProps {
+  items: BentoItem[];
+  className?: string;
+  spotlightColor?: string;
+  spotlightSize?: number;
+  variant?: 'default' | 'minimal' | 'hero';
+  clickEffect?: boolean;
+  enableStars?: boolean;
+  borderColor?: string;
+  backgroundColor?: string;
+  gap?: string;
+}
+
+const BentoCard: React.FC<{ 
+  item: BentoItem; 
+  spotlightColor?: string; 
+  spotlightSize?: number;
+  variant?: string;
+  clickEffect?: boolean;
+  borderColor?: string;
+  backgroundColor?: string;
+}> = ({ 
+  item, 
+  spotlightColor = 'rgba(0, 0, 0, 0.1)', 
+  spotlightSize = 400,
+  variant = 'default',
+  clickEffect = false,
+  borderColor,
+  backgroundColor
+}) => {
+  const divRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const [ripples, setRipples] = useState<{ x: number; y: number; id: number }[]>([]);
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (!divRef.current) return;
+
+    const rect = divRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    setPosition({ x, y });
+  };
+
+  const handleClick = (e: MouseEvent<HTMLDivElement>) => {
+    if (!clickEffect || !divRef.current) return;
+
+    const rect = divRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+
+    setRipples(prev => [...prev, { x, y, id }]);
+    setTimeout(() => {
+      setRipples(prev => prev.filter(r => r.id !== id));
+    }, 600);
+  };
+
+  const spanClass = item.span === 2 ? styles.span2 : item.span === 3 ? styles.span3 : '';
+  const variantClass = variant === 'minimal' ? styles.minimal : variant === 'hero' ? styles.hero : '';
+
+  return (
+    <div
+      ref={divRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleClick}
+      className={\`\${styles.bentoCard} \${spanClass} \${variantClass} \${item.className || ''}\`}
+      style={{
+        '--mouse-x': \`\${position.x}px\`,
+        '--mouse-y': \`\${position.y}px\`,
+        '--spotlight-color': spotlightColor,
+        '--spotlight-size': \`\${spotlightSize}px\`,
+        '--card-border-color': borderColor,
+        '--card-bg-color': backgroundColor
+      } as React.CSSProperties}
+    >
+      <div className={styles.spotlight} />
+      
+      {clickEffect && ripples.map(ripple => (
+        <span 
+          key={ripple.id} 
+          className={styles.ripple} 
+          style={{ left: ripple.x, top: ripple.y }} 
+        />
+      ))}
+
+      <div className={styles.cardContent}>
+        {item.icon && <div className={styles.cardIcon}>{item.icon}</div>}
+        
+        <div className="mt-auto relative z-10">
+          <Heading 
+            level={variant === 'hero' ? 3 : 4} 
+            className="mb-2 !text-inherit"
+            style={{ color: item.titleColor }}
+          >
+            {item.title}
+          </Heading>
+          <Text 
+            size={variant === 'minimal' ? 'xs' : 'sm'} 
+            className="opacity-80 !text-inherit"
+            style={{ color: item.descriptionColor }}
+          >
+            {item.description}
+          </Text>
+        </div>
+
+        {item.image && (
+          <div className={\`\${styles.imageWrapper} \${variant === 'hero' ? styles.heroImage : ''}\`}>
+            <img src={item.image} alt="" className="w-full h-full object-cover" />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export const MagicBento: React.FC<MagicBentoProps> = ({ 
+  items, 
+  className = '', 
+  spotlightColor,
+  spotlightSize = 400,
+  variant = 'default',
+  clickEffect = false,
+  enableStars = false,
+  borderColor,
+  backgroundColor,
+  gap
+}) => {
+  return (
+    <div 
+      className={\`\${styles.bentoGrid} \${className} \${enableStars ? styles.hasStars : ''}\`}
+      style={{ gap: gap }}
+    >
+      {items.map((item) => (
+        <BentoCard 
+          key={item.id} 
+          item={item} 
+          spotlightColor={spotlightColor} 
+          spotlightSize={spotlightSize}
+          variant={variant}
+          clickEffect={clickEffect}
+          borderColor={borderColor}
+          backgroundColor={backgroundColor}
+        />
+      ))}
+    </div>
+  );
+};`,
+  magicBentoCSS: `.bentoGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .bentoGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .bentoGrid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.bentoCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  background-color: var(--card-bg-color, #E6E6FA); /* Lavender */
+  border: 1px solid var(--card-border-color, rgba(0, 0, 0, 0.1));
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s ease, background-color 0.4s ease;
+  color: #1a1a1a; /* Dark text */
+  cursor: pointer;
+  box-shadow: none !important;
+}
+
+.bentoCard:hover {
+  transform: translateY(-8px);
+  border-color: var(--spotlight-color, rgba(0, 0, 0, 0.2));
+  background-color: var(--card-bg-color, #f0f0ff);
+}
+
+.minimal { padding: 1.5rem; border-radius: 1rem; }
+.hero { padding: 4rem; }
+.hero .cardIcon { font-size: 3rem; margin-bottom: 2rem; }
+
+.spotlight {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  background: radial-gradient(
+    circle var(--spotlight-size, 400px) at var(--mouse-x) var(--mouse-y),
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.05) 30%,
+    transparent 80%
+  );
+  z-index: 1;
+  mix-blend-mode: normal;
+}
+
+.bentoCard:hover .spotlight { opacity: 1; }
+
+.bentoCard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle 300px at var(--mouse-x) var(--mouse-y), rgba(0, 0, 0, 0.03), transparent 100%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 0;
+}
+
+.bentoCard:hover::after { opacity: 1; }
+
+.ripple {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: ripple-animation 0.6s ease-out;
+  z-index: 5;
+}
+
+@keyframes ripple-animation {
+  from { width: 0; height: 0; opacity: 0.5; }
+  to { width: 500px; height: 500px; opacity: 0; }
+}
+
+.cardContent { position: relative; z-index: 10; display: flex; flex-direction: column; height: 100%; }
+.cardIcon { margin-bottom: 1.5rem; color: inherit; font-size: 1.75rem; }
+
+.imageWrapper {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  opacity: 0.15;
+  pointer-events: none;
+  mask-image: linear-gradient(to left, black, transparent);
+  -webkit-mask-image: linear-gradient(to left, black, transparent);
+  z-index: 0;
+  transition: opacity 0.3s ease;
+}
+
+.bentoCard:hover .imageWrapper { opacity: 0.25; }
+.heroImage { width: 70%; opacity: 0.1; }
+
+.hasStars::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.2) 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.span2 { grid-column: span 1; }
+@media (min-width: 768px) { .span2 { grid-column: span 2; } }
+.span3 { grid-column: span 1; }
+@media (min-width: 1024px) { .span3 { grid-column: span 3; } }`,
+  wizard: `import React, { useState, useEffect } from 'react';
+import styles from './Wizard.module.css';
+import { WizardProps, WizardStep } from '../../../types';
+
+export const Wizard: React.FC<WizardProps> = ({
+  steps,
+  currentStep = 0,
+  orientation = 'horizontal',
+  variant = 'default',
+  size = 'md',
+  color = 'primary',
+  onStepClick,
+  onStepChange,
+  showIcons = true,
+  allowStepClick = false,
+  animated = true,
+  className = '',
+  showNavigation = false,
+  onNext,
+  onBack,
+  nextLabel,
+  backLabel,
+  // ...other props
+}) => {
+  const isVertical = orientation === 'vertical';
+
+  const handleStepClick = (index: number) => {
+    if (allowStepClick && onStepClick) {
+      onStepClick(index);
+    }
+    if (allowStepClick && onStepChange) {
+        onStepChange(index);
+    }
+  };
+
+  const getVariantClass = () => {
+    switch (variant) {
+      case 'modern':
+      case 'modern-gradient':
+      case 'gradient': 
+        return styles.modern;
+      case 'minimal': 
+      case 'minimal-clean':
+        return styles.minimal;
+      case 'filled':
+        return styles.filled;
+      case 'outline':
+        return styles.outline;
+      default: return '';
+    }
+  };
+
+  const getSizeStyle = () => {
+      if (size === 'sm') return { '--wizard-step-size': '2rem', fontSize: '0.875rem' } as React.CSSProperties;
+      if (size === 'lg') return { '--wizard-step-size': '3.5rem', fontSize: '1.125rem' } as React.CSSProperties;
+      return {};
+  };
+
+  const getContainerClass = () => {
+      if (variant === 'glass') return styles.glass;
+      return '';
+  };
+
+  return (
+    <div 
+        className={[styles.wizard, getVariantClass(), getContainerClass(), className].filter(Boolean).join(' ')}
+        style={getSizeStyle()}
+        data-color={color}
+        role="tablist"
+        aria-orientation={orientation}
+    >
+      <div className={[styles.stepsContainer, isVertical ? styles.vertical : ''].filter(Boolean).join(' ')}>
+        {steps.map((step, index) => {
+          const isActive = index === currentStep;
+          const isCompleted = index < currentStep;
+          const isDisabled = step.status === 'disabled';
+          const isError = step.status === 'error';
+
+          let stepClass = styles.step;
+          if (isActive) stepClass += ' ' + styles.active;
+          if (isCompleted) stepClass += ' ' + styles.completed;
+          if (isDisabled) stepClass += ' ' + styles.disabled;
+          if (isError) stepClass += ' ' + styles.error;
+
+          return (
+            <React.Fragment key={step.id || index}>
+              <div 
+                className={stepClass}
+                onClick={() => !isDisabled && handleStepClick(index)}
+                role="tab"
+                aria-selected={isActive}
+                aria-disabled={isDisabled}
+                tabIndex={isDisabled ? -1 : 0}
+                onKeyDown={(e) => {
+                    if ((e.key === 'Enter' || e.key === ' ') && !isDisabled) {
+                        handleStepClick(index);
+                    }
+                }}
+              >
+                <div className={styles.circle}>
+                  {isCompleted ? (
+                    <svg className={styles.checkmark} viewBox="0 0 24 24">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  ) : isError ? (
+                     <span>!</span>
+                  ) : (
+                    step.icon && showIcons ? <span className={styles.icon}>{step.icon}</span> : (index + 1)
+                  )}
+                </div>
+
+                <div className={styles.content}>
+                  <div className={styles.title}>{step.title}</div>
+                  {step.description && (
+                    <div className={styles.description}>{step.description}</div>
+                  )}
+                </div>
+
+                {isVertical && index < steps.length - 1 && (
+                    <div className={styles.verticalConnector}>
+                        <div 
+                            className={styles.verticalConnectorProgress}
+                            style={{ height: isCompleted ? '100%': '0%' }}
+                        />
+                    </div>
+                )}
+              </div>
+              
+              {!isVertical && index < steps.length - 1 && (
+                   <div className={styles.connector}>
+                       <div 
+                         className={styles.connectorProgress} 
+                         style={{ width: isCompleted ? '100%' : '0%' }}
+                       />
+                   </div>
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
+    </div>
+  );
+};`,
+  wizardCSS: `/* Wizard.module.css */
+
+/* --- Variables --- */
+.wizard {
+  --wizard-primary: #6366f1; /* Indigo 500 */
+  --wizard-primary-glow: rgba(99, 102, 241, 0.4);
+  --wizard-bg: #ffffff;
+  --wizard-text: #171717;
+  --wizard-text-muted: #737373;
+  --wizard-line-inactive: #e5e5e5;
+  --wizard-line-active: var(--wizard-primary);
+  --wizard-step-bg: #f5f5f5;
+  --wizard-step-size: 2.5rem;
+  --transition-speed: 0.3s;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+}
+
+:global(.dark) .wizard {
+  --wizard-bg: #171717;
+  --wizard-text: #f5f5f5;
+  --wizard-text-muted: #a3a3a3;
+  --wizard-line-inactive: #404040;
+  --wizard-step-bg: #262626;
+  --glass-bg: rgba(23, 23, 23, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+.stepsContainer {
+  display: flex;
+  width: 100%;
+  position: relative;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.vertical {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+  flex: 0 0 auto;
+  text-align: center;
+  cursor: pointer;
+  transition: opacity var(--transition-speed);
+  min-width: 80px;
+}
+
+.step.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.vertical .step {
+  flex-direction: row;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  min-height: 80px;
+}
+
+.connector {
+  flex: 1 1 auto;
+  height: 2px;
+  background-color: var(--wizard-line-inactive);
+  margin-top: calc(var(--wizard-step-size) / 2);
+  transform: translateY(-50%);
+  margin-left: -5px;
+  margin-right: -5px;
+  z-index: 0;
+  position: relative;
+}
+
+.connectorProgress {
+  height: 100%;
+  background-color: var(--wizard-line-active);
+  width: 0%;
+  transition: width 0.5s ease-in-out;
+  box-shadow: 0 0 10px var(--wizard-primary-glow);
+}
+
+.verticalConnector {
+  position: absolute;
+  top: var(--wizard-step-size);
+  left: calc(var(--wizard-step-size) / 2);
+  width: 2px;
+  height: calc(100% - var(--wizard-step-size));
+  background-color: var(--wizard-line-inactive);
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+.verticalConnectorProgress {
+  width: 100%;
+  height: 0%;
+  background-color: var(--wizard-line-active);
+  transition: height 0.5s ease-in-out;
+  box-shadow: 0 0 10px var(--wizard-primary-glow);
+}
+
+.circle {
+  width: var(--wizard-step-size);
+  height: var(--wizard-step-size);
+  border-radius: 50%;
+  background-color: var(--wizard-step-bg);
+  border: 2px solid var(--wizard-line-inactive);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--wizard-text-muted);
+  transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 2;
+  margin-bottom: 0.75rem;
+}
+
+.vertical .circle {
+  margin-bottom: 0;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.step.active .circle {
+  border-color: var(--wizard-primary);
+  color: var(--wizard-primary);
+  box-shadow: 0 0 0 4px var(--wizard-primary-glow);
+  background-color: var(--wizard-bg);
+  transform: scale(1.1);
+}
+
+.step.completed .circle {
+  background-color: var(--wizard-primary);
+  border-color: var(--wizard-primary);
+  color: #fff;
+}
+
+.icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.checkmark {
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke: white;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  animation: drawCheck 0.3s ease-in-out forwards;
+}
+
+@keyframes drawCheck {
+  0% { stroke-dasharray: 20; stroke-dashoffset: 20; }
+  100% { stroke-dasharray: 20; stroke-dashoffset: 0; }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--wizard-text);
+  margin: 0;
+}
+
+.description {
+  font-size: 0.75rem;
+  color: var(--wizard-text-muted);
+  margin-top: 0.25rem;
+  max-width: 150px;
+}
+
+/* Color Overrides */
+.wizard[data-color="secondary"] { --wizard-primary: #737373; --wizard-primary-glow: rgba(115, 115, 115, 0.2); }
+.wizard[data-color="success"] { --wizard-primary: #10b981; --wizard-primary-glow: rgba(16, 185, 129, 0.2); }
+.wizard[data-color="warning"] { --wizard-primary: #f59e0b; --wizard-primary-glow: rgba(245, 158, 11, 0.2); }
+.wizard[data-color="danger"] { --wizard-primary: #ef4444; --wizard-primary-glow: rgba(239, 68, 68, 0.2); }
+.wizard[data-color="neutral"] { --wizard-primary: #404040; --wizard-primary-glow: rgba(64, 64, 64, 0.2); }
+
+/* --- Variants --- */
+
+/* Filled Variant */
+.filled .circle {
+  border: none;
+  background-color: var(--wizard-line-inactive);
+}
+
+.filled .step.active .circle {
+  background-color: var(--wizard-primary);
+  color: white;
+  box-shadow: 0 4px 12px var(--wizard-primary-glow);
+}
+
+.filled .step.completed .circle {
+  background-color: var(--wizard-primary);
+  opacity: 0.8;
+}
+
+/* Outline Variant */
+.outline .circle {
+  background-color: transparent;
+  border-width: 2px;
+}
+
+.outline .step.active .circle {
+  border-color: var(--wizard-primary);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.outline .step.active .circle::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background-color: var(--wizard-primary);
+}
+
+.outline .step.completed .circle {
+  border-color: var(--wizard-primary);
+  background-color: var(--wizard-primary);
+}
+
+/* Modern Gradient */
+.modern {
+  --wizard-primary: #ec4899; /* Pink 500 */
+  --wizard-primary-glow: rgba(236, 72, 153, 0.4);
+}
+
+.modern .step.active .circle {
+  border: double 2px transparent;
+  background-image: linear-gradient(var(--wizard-bg), var(--wizard-bg)), 
+                    linear-gradient(135deg, #6366f1, #ec4899);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  color: #ec4899;
+}
+
+.modern .step.completed .circle {
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  border: none;
+}
+
+.modern .connectorProgress,
+.modern .verticalConnectorProgress {
+  background: linear-gradient(90deg, #6366f1, #ec4899);
+}
+
+/* Minimal Clean */
+.minimal {
+  --wizard-step-size: 2rem;
+}
+
+.minimal .circle {
+  border-width: 1px;
+  background: transparent;
+}
+
+.minimal .step.active .circle {
+  background: var(--wizard-text);
+  color: var(--wizard-bg);
+  box-shadow: none;
+}
+
+.minimal .step.completed .circle {
+  background: var(--wizard-text);
+  border-color: var(--wizard-text);
+  color: var(--wizard-bg);
+}
+
+.minimal .connectorProgress {
+  background-color: var(--wizard-text);
+  box-shadow: none;
+}
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .stepsContainer:not(.vertical) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .stepsContainer:not(.vertical) .step {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .stepsContainer:not(.vertical) .circle {
+    margin-right: 1rem;
+    margin-bottom: 0;
+  }
+
+  .stepsContainer:not(.vertical) .connector {
+    display: none; /* Hide horizontal connector on mobile */
+  }
+
+  /* We might want to show vertical lines on mobile even if orientation is horizontal */
+  .stepsContainer:not(.vertical) .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: var(--wizard-step-size);
+    left: calc(var(--wizard-step-size) / 2);
+    width: 2px;
+    height: 1.5rem; /* Gap size */
+    background-color: var(--wizard-line-inactive);
+    transform: translateX(-50%);
+    z-index: 0;
+  }
+  
+  .stepsContainer:not(.vertical) .step.completed:not(:last-child)::after {
+     background-color: var(--wizard-line-active);
+  }
+}
+`
 };
 

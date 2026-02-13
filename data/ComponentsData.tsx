@@ -10,7 +10,7 @@ import {
   FormField, SearchInput, LoginForm, SignupForm, DatePicker, TimePicker 
 } from '../components/ui/Forms';
 import { 
-  Modal, Tooltip, Tabs, Alert, Toast, Pagination, Dropdown, Popover, Accordion, Table 
+  Modal, Tooltip, Tabs, Alert, Toast, Pagination, Dropdown, Popover, Accordion, Table, MagicBento, Wizard
 } from '../components/ui/Composite';
 import { 
   Breadcrumbs, Stepper 
@@ -518,19 +518,71 @@ export const components: ComponentItem[] = [
     name: 'Wizard',
     category: 'Composite',
     subCategory: 'Organisms / Patterns',
-    variants: 6,
-    description: 'Multi-step process indicator with various visual styles.',
-    preview: <div className="w-full flex items-center justify-center gap-2 scale-75 overflow-hidden">
-      <div className="flex items-center gap-2">
-        <div className="w-6 h-6 rounded-full bg-primary-600 flex items-center justify-center text-[10px] text-white font-bold">1</div>
-        <div className="w-8 h-0.5 bg-primary-600" />
-        <div className="w-6 h-6 rounded-full border-2 border-primary-600 flex items-center justify-center text-[10px] text-primary-600 font-bold">2</div>
-        <div className="w-8 h-0.5 bg-neutral-200" />
-        <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center text-[10px] text-neutral-400 font-bold">3</div>
+    variants: 8,
+    description: 'Advanced multi-step process indicator with premium visual styles, animations, and accessibility.',
+    preview: (
+      <div className="w-full scale-90 origin-top p-4">
+        <Wizard 
+          variant="modern"
+          currentStep={1}
+          steps={[
+            { id: 1, title: 'Account', description: 'Setup details', icon: <span className="text-xl">👤</span> },
+            { id: 2, title: 'Profile', description: 'Personal info', icon: <span className="text-xl">📝</span> },
+            { id: 3, title: 'Confirm', description: 'Review data', icon: <span className="text-xl">✅</span> },
+          ]}
+        />
       </div>
-    </div>,
-    code: '<Wizard steps={steps} currentStep={1} />',
-    info: 'Professional multi-step navigation for complex flows.'
+    ),
+    code: `<Wizard 
+  variant="modern" // 'default' | 'minimal' | 'glass' | 'gradient'
+  currentStep={1} 
+  onStepChange={(step) => console.log(step)}
+  steps={[
+    { title: 'Account', description: 'Setup details', icon: <UserIcon /> },
+    { title: 'Profile', description: 'Personal info', icon: <ProfileIcon /> },
+    { title: 'Confirm', description: 'Review data', icon: <CheckIcon /> },
+  ]} 
+/>`,
+    info: 'Professional multi-step navigation with 8 variants, glassmorphism support, and animated transitions.'
+  },
+  {
+    id: 'magic-bento',
+    name: 'Magic Bento',
+    category: 'Composite',
+    subCategory: 'Organisms / Patterns',
+    variants: 1,
+    description: 'A visually striking grid layout with mouse-tracking spotlight effects. Perfect for feature showcases and interactive bento-box style interfaces.',
+    preview: (
+      <div className="w-full scale-75 origin-top">
+        <MagicBento 
+          items={[
+            { id: '1', title: 'Analytics', description: 'Real-time data insights.', span: 2, icon: <span className="text-2xl">📊</span> },
+            { id: '2', title: 'Security', description: 'Enterprise-grade protection.', span: 1, icon: <span className="text-2xl">🛡️</span> },
+            { id: '3', title: 'Cloud', description: 'Scalable infrastructure.', span: 1, icon: <span className="text-2xl">☁️</span> },
+            { id: '4', title: 'AI Driven', description: 'Powered by machine learning.', span: 2, icon: <span className="text-2xl">🤖</span> },
+          ]}
+        />
+      </div>
+    ),
+    code: `<MagicBento 
+  items={[
+    { 
+      id: '1', 
+      title: 'Analytics', 
+      description: 'Real-time data', 
+      span: 2, 
+      icon: <span className="text-2xl">📊</span> 
+    },
+    { 
+      id: '2', 
+      title: 'Security', 
+      description: 'End-to-end encryption', 
+      span: 1 
+    },
+    // ...
+  ]} 
+/>`,
+    info: 'A visually striking grid layout with mouse-tracking spotlight effects. Perfect for feature showcases.'
   },
 
 

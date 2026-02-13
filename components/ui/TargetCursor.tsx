@@ -209,7 +209,10 @@ export function TargetCursor({
                             exit={{ opacity: 0, y: 10 }}
                             className="absolute pointer-events-none whitespace-nowrap"
                         >
-                            <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#8B5CF6] opacity-80">
+                            <span 
+                                className="text-[10px] uppercase font-bold tracking-[0.2em] opacity-80"
+                                style={{ color: color }}
+                            >
                                 {hoverType}
                             </span>
                         </motion.div>

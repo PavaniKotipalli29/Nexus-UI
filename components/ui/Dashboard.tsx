@@ -104,7 +104,7 @@ export const StatCard: React.FC<{
           </Badge>
         )}
       </div>
-      <Text color="muted" size="sm" className="font-medium uppercase tracking-wider">{stat.label}</Text>
+      <Text tone="muted" variant="body-sm" className="font-medium uppercase tracking-wider">{stat.label}</Text>
       <Heading level={2} className="mt-1 text-2xl font-bold">{stat.value}</Heading>
     </Card>
   );
@@ -126,7 +126,7 @@ export const MiniChart: React.FC<{
   if (data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-4 h-[60px] bg-neutral-50 dark:bg-neutral-800/50 rounded-lg border border-dashed border-neutral-200 dark:border-neutral-800">
-        <Text size="xs" color="muted">No data</Text>
+        <Text variant="caption" tone="muted">No data</Text>
       </div>
     );
   }
@@ -244,12 +244,12 @@ export const AdvancedTable: React.FC<{
             ) : data.length === 0 ? (
               <tr>
                 <td colSpan={columns.length + (onSelectionChange ? 2 : 1)} className="px-6 py-12 text-center">
-                  <Stack items="center" spacing={2}>
+                  <Stack align="center" spacing={2}>
                     <div className="p-3 bg-neutral-100 dark:bg-neutral-800 rounded-full text-neutral-400">
                       <Icon size="lg"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></Icon>
                     </div>
                     <Text className="font-semibold text-neutral-900 dark:text-neutral-100">No results found</Text>
-                    <Text color="muted" size="sm">Try adjusting your filters or search query</Text>
+                    <Text tone="muted" variant="body-sm">Try adjusting your filters or search query</Text>
                   </Stack>
                 </td>
               </tr>

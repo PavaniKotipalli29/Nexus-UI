@@ -5,7 +5,7 @@ import { Input, Checkbox, Switch, Textarea, Select, Radio, Slider, FormWrapper, 
 import { Spinner, Skeleton } from '../components/ui/Feedback';
 import { ProgressBar } from '../components/ui/progress/ProgressBar';
 import { ColorPalette, TypographyScale, SpacingScale, DesignTokens, MotionTokens, CSSReset, ThemeProviderInfo } from '../components/ui/Foundations';
-import { Modal, Drawer, Tooltip, Popover, Tabs, Accordion, Dropdown, Table, Pagination, Alert, Toast, NotificationBanner, EmptyState, Wizard } from '../components/ui/Composite';
+import { Modal, Drawer, Tooltip, Popover, Tabs, Accordion, Dropdown, Table, Pagination, Alert, Toast, NotificationBanner, EmptyState, Wizard, MagicBento } from '../components/ui/Composite';
 import { List, ListItem, ListItemIcon, ListItemText, ListDivider } from '../components/ui/list/List';
 import { Breadcrumbs, Stepper, CommandPalette } from '../components/ui/Navigation';
 import { AuthLayout, DashboardLayout, HeroSection, FeatureGrid, PricingSection, Footer, Page404, ErrorPage } from '../components/ui/Patterns';
@@ -1123,7 +1123,7 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Composite',
     subCategory: 'Organisms / Patterns',
     description: 'Summary statistics panel.',
-    examples: [{ title: 'Preview', render: () => <div className="grid grid-cols-3 gap-4 w-full"><Card className="text-center"><Text size="xs" color="muted">Users</Text><Heading level={4}>2.4k</Heading></Card><Card className="text-center"><Text size="xs" color="muted">Sales</Text><Heading level={4}>$12k</Heading></Card><Card className="text-center"><Text size="xs" color="muted">Orders</Text><Heading level={4}>156</Heading></Card></div>, usageCode: `<div className="grid grid-cols-3 gap-4">\n  <StatCard title="Users" value="2.4k" />\n  <StatCard title="Sales" value="$12k" />\n  <StatCard title="Orders" value="156" />\n</div>` }],
+    examples: [{ title: 'Preview', render: () => <div className="grid grid-cols-3 gap-4 w-full"><Card className="text-center"><Text variant="caption" tone="muted">Users</Text><Heading level={4}>2.4k</Heading></Card><Card className="text-center"><Text variant="caption" tone="muted">Sales</Text><Heading level={4}>$12k</Heading></Card><Card className="text-center"><Text variant="caption" tone="muted">Orders</Text><Heading level={4}>156</Heading></Card></div>, usageCode: `<div className="grid grid-cols-3 gap-4">\n  <StatCard title="Users" value="2.4k" />\n  <StatCard title="Sales" value="$12k" />\n  <StatCard title="Orders" value="156" />\n</div>` }],
     props: []
   },
   'user-profile-card': {
@@ -1132,7 +1132,7 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Composite',
     subCategory: 'Organisms / Patterns',
     description: 'Card displaying user information.',
-    examples: [{ title: 'Preview', render: () => <Card><Flex gap={4} align="center"><Avatar /><Stack><Heading level={4}>User Name</Heading><Text color="muted">Admin</Text></Stack></Flex></Card>, usageCode: `<UserProfileCard />` }],
+    examples: [{ title: 'Preview', render: () => <Card><Flex gap={4} align="center"><Avatar /><Stack><Heading level={4}>User Name</Heading><Text tone="muted">Admin</Text></Stack></Flex></Card>, usageCode: `<UserProfileCard />` }],
     props: []
   },
   'checkout-summary': {
@@ -1190,91 +1190,74 @@ const docs: Record<string, ComponentDoc> = {
     props: []
   },
 
-  'wizard': {
-    id: 'wizard',
-    name: 'Wizard',
+
+  'magic-bento': {
+    id: 'magic-bento',
+    name: 'Magic Bento',
     category: 'Composite',
     subCategory: 'Organisms / Patterns',
-    description: 'A professional multi-step indicator for complex workflows, supporting multiple orientations and premium visual styles.',
-    implementationSource: SOURCES.wizard,
+    description: 'A visually striking grid layout with mouse-tracking spotlight effects. Perfect for feature showcases and interactive bento-box style interfaces.',
+    implementationSource: SOURCES.magicBentoJSX,
+    cssSource: SOURCES.magicBentoCSS,
     examples: [
       {
-        title: 'Orientations',
-        render: () => {
-          const steps = [
-            { id: 1, title: 'Identity', description: 'Personal details' },
-            { id: 2, title: 'Security', description: 'Account safety' },
-            { id: 3, title: 'Finalize', description: 'Review & submit' }
-          ];
-          return (
-            <Stack spacing={12} className="w-full">
-              <Stack spacing={4}>
-                <Caption>Horizontal (Default)</Caption>
-                <Wizard steps={steps} currentStep={1} />
-              </Stack>
-              <Stack spacing={4}>
-                <Caption>Vertical</Caption>
-                <Wizard steps={steps} currentStep={1} orientation="vertical" />
-              </Stack>
-            </Stack>
-          );
-        },
-        usageCode: `<Wizard \n  orientation="vertical" \n  steps={[...]} \n  currentStep={1} \n/>`
+        title: 'Feature Showcase',
+        description: 'A typical bento grid with icons and varying spans.',
+        render: () => (
+          <MagicBento 
+            items={[
+              { id: '1', title: 'Analytics', description: 'Real-time data insights.', span: 2, icon: <span className="text-2xl">📊</span> },
+              { id: '2', title: 'Security', description: 'Enterprise-grade protection.', span: 1, icon: <span className="text-2xl">🛡️</span> },
+              { id: '3', title: 'Cloud', description: 'Scalable infrastructure.', span: 1, icon: <span className="text-2xl">☁️</span> },
+              { id: '4', title: 'AI Driven', description: 'Powered by machine learning.', span: 2, icon: <span className="text-2xl">🤖</span> },
+            ]}
+          />
+        ),
+        usageCode: `<MagicBento \n  items={[...]} \n/>`
       },
       {
-        title: 'Visual Styles',
-        render: () => {
-          const steps = [{ title: 'Step One' }, { title: 'Step Two' }, { title: 'Step Three' }];
-          return (
-            <Stack spacing={8} className="w-full">
-              <Stack spacing={2}><Caption>Glassmorphism (Premium)</Caption><Wizard variant="glass" steps={steps} currentStep={1} /></Stack>
-              <Stack spacing={2}><Caption>Gradient Flow</Caption><Wizard variant="gradient" steps={steps} currentStep={1} /></Stack>
-              <Stack spacing={2}><Caption>Filled Container</Caption><Wizard variant="filled" steps={steps} currentStep={0} /></Stack>
-              <Stack spacing={2}><Caption>Simple Outline</Caption><Wizard variant="outline" steps={steps} currentStep={2} /></Stack>
-              <Stack spacing={2}><Caption>Minimalist</Caption><Wizard variant="minimal" steps={steps} currentStep={1} /></Stack>
-            </Stack>
-          );
-        },
-        usageCode: `<Wizard variant="glass" steps={...} />\n<Wizard variant="gradient" steps={...} />\n<Wizard variant="minimal" steps={...} />`
+        title: 'Minimal Variant',
+        description: 'A cleaner, more compact layout for utility grids.',
+        render: () => (
+          <MagicBento 
+            variant="minimal"
+            items={[
+              { id: '1', title: 'Fast', description: 'Optimized performance.', span: 1, icon: '⚡' },
+              { id: '2', title: 'Secure', description: 'SSL encryption.', span: 1, icon: '🔒' },
+              { id: '3', title: 'Global', description: 'edge delivery.', span: 1, icon: '🌐' },
+            ]}
+          />
+        ),
+        usageCode: `<MagicBento \n  variant="minimal" \n  items={[...]} \n/>`
       },
       {
-        title: 'Step States',
-        render: () => {
-          const steps: any[] = [
-            { id: 1, title: 'Completed', status: 'completed' },
-            { id: 2, title: 'Active', status: 'active' },
-            { id: 3, title: 'Error State', status: 'error', description: 'Invalid data provided' },
-            { id: 4, title: 'Disabled', status: 'disabled' },
-            { id: 5, title: 'Inactive', status: 'inactive' }
-          ];
-          return <Wizard steps={steps} currentStep={1} />;
-        },
-        usageCode: `<Wizard \n  steps={[\n    { title: 'Done', status: 'completed' },\n    { title: 'Error', status: 'error' },\n    { title: 'Wait', status: 'disabled' }\n  ]} \n/>`
-      },
-      {
-        title: 'Sizes',
-        render: () => {
-          const steps = [{ title: 'Start' }, { title: 'Process' }, { title: 'Finish' }];
-          return (
-            <Stack spacing={8} className="w-full">
-              <Stack spacing={2}><Caption>Small (sm)</Caption><Wizard size="sm" steps={steps} currentStep={1} /></Stack>
-              <Stack spacing={2}><Caption>Medium (md)</Caption><Wizard size="md" steps={steps} currentStep={1} /></Stack>
-              <Stack spacing={2}><Caption>Large (lg)</Caption><Wizard size="lg" steps={steps} currentStep={1} /></Stack>
-            </Stack>
-          );
-        },
-        usageCode: `<Wizard size="sm" steps={...} />\n<Wizard size="lg" steps={...} />`
+        title: 'Hero / Marketing',
+        description: 'Large, bold sections for high-impact landing pages.',
+        render: () => (
+          <MagicBento 
+            variant="hero"
+            clickEffect
+            enableStars
+            items={[
+              { id: '1', title: 'Transform Your Workflow', description: 'The next generation of developer tools is here. Experience speed like never before.', span: 3, icon: '🚀' },
+              { id: '2', title: 'Seamless Integration', description: 'Connect with your favorite services in seconds.', span: 1, icon: '🔗' },
+              { id: '3', title: 'Built-in Security', description: 'Security is not an afterthought.', span: 2, icon: '🔐' },
+            ]}
+          />
+        ),
+        usageCode: `<MagicBento \n  variant="hero" \n  clickEffect \n  enableStars \n  items={[...]} \n/>`
       }
-
     ],
     props: [
-      { name: 'steps', type: 'WizardStep[]', default: '[]', desc: 'Array of step objects.' },
-      { name: 'currentStep', type: 'number', default: '0', desc: 'Active step index.' },
-      { name: 'orientation', type: '"horizontal" | "vertical"', default: '"horizontal"', desc: 'Layout direction.' },
-      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', desc: 'Visual scale.' },
-      { name: 'variant', type: '"default" | "minimal" | "filled" | "outline" | "glass" | "gradient"', default: '"default"', desc: 'Visual style.' },
-      { name: 'color', type: '"primary" | "secondary" | "success" | "warning" | "danger" | "neutral"', default: '"primary"', desc: 'Brand color theme.' },
-      { name: 'onStepClick', type: '(index: number) => void', default: '-', desc: 'Callback when a step is clicked.' }
+      { name: 'items', type: 'BentoItem[]', default: '[]', desc: 'Array of items to display.' },
+      { name: 'variant', type: "'default' | 'minimal' | 'hero'", default: "'default'", desc: 'Visual style preset.' },
+      { name: 'spotlightColor', type: 'string', default: '"rgba(0, 0, 0, 0.1)"', desc: 'Color of the spotlight effect.' },
+      { name: 'spotlightSize', type: 'number', default: '400', desc: 'Radius of the spotlight in pixels.' },
+      { name: 'clickEffect', type: 'boolean', default: 'false', desc: 'Enable ripple effect on click.' },
+      { name: 'enableStars', type: 'boolean', default: 'false', desc: 'Show animated/star background pattern.' },
+      { name: 'borderColor', type: 'string', default: '-', desc: 'Custom border color for cards.' },
+      { name: 'backgroundColor', type: 'string', default: '-', desc: 'Custom background color for cards.' },
+      { name: 'gap', type: 'string', default: '"1.5rem"', desc: 'Grid gap spacing.' }
     ]
   },
 
@@ -1553,7 +1536,7 @@ const docs: Record<string, ComponentDoc> = {
                                 <Icon size="lg"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></Icon>
                              </div>
                              <Heading level={2} className="mb-3">Fast Performance</Heading>
-                             <Text color="muted" size="lg">Optimized for speed with zero runtime overhead. Experience silky smooth interactions.</Text>
+                             <Text tone="muted" variant="body-lg">Optimized for speed with zero runtime overhead. Experience silky smooth interactions.</Text>
                         </div>
                     </div>
                     <div className="w-full h-full flex items-center justify-center p-4">
@@ -1562,7 +1545,7 @@ const docs: Record<string, ComponentDoc> = {
                                 <Icon size="lg"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></Icon>
                              </div>
                              <Heading level={2} className="mb-3">Secure by Design</Heading>
-                             <Text color="muted" size="lg">Enterprise-grade security features built-in directly. specific compliance ready.</Text>
+                             <Text tone="muted" variant="body-lg">Enterprise-grade security features built-in directly. specific compliance ready.</Text>
                         </div>
                     </div>
                     <div className="w-full h-full flex items-center justify-center p-4">
@@ -1571,7 +1554,7 @@ const docs: Record<string, ComponentDoc> = {
                                 <Icon size="lg"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></Icon>
                              </div>
                              <Heading level={2} className="mb-3">Real-time Analytics</Heading>
-                             <Text color="muted" size="lg">Track every metric with precision and ease. Visualize data in real-time.</Text>
+                             <Text tone="muted" variant="body-lg">Track every metric with precision and ease. Visualize data in real-time.</Text>
                         </div>
                     </div>
                     <div className="w-full h-full flex items-center justify-center p-4">
@@ -1580,7 +1563,7 @@ const docs: Record<string, ComponentDoc> = {
                                 <Icon size="lg"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></Icon>
                              </div>
                              <Heading level={2} className="mb-3">User Loved</Heading>
-                             <Text color="muted" size="lg">Designed with empathy for the best user experience. Award winning interface.</Text>
+                             <Text tone="muted" variant="body-lg">Designed with empathy for the best user experience. Award winning interface.</Text>
                         </div>
                     </div>
                 </ScrollStack>
@@ -1601,18 +1584,153 @@ const docs: Record<string, ComponentDoc> = {
       { name: 'scaleStrength', type: 'number', default: '0.05', desc: 'How much items scale down as they stack.' },
       { name: 'blurStrength', type: 'number', default: '10', desc: 'Blur amount for stacked items.' },
     ]
+  },
+  'wizard': {
+    id: 'wizard',
+    name: 'Wizard',
+    category: 'Composite',
+    subCategory: 'Organisms / Patterns',
+    description: 'A professional multi-step indicator for complex workflows, supporting multiple orientations and premium visual styles.',
+    implementationSource: SOURCES.wizard,
+    cssSource: SOURCES.wizardCSS,
+    examples: [
+      {
+        title: 'Orientations',
+        render: () => {
+          const steps = [
+            { id: 1, title: 'Identity', description: 'Personal details' },
+            { id: 2, title: 'Security', description: 'Account safety' },
+            { id: 3, title: 'Finalize', description: 'Review & submit' }
+          ];
+          return (
+            <Stack spacing={12} className="w-full">
+              <Stack spacing={4}>
+                <Caption>Horizontal (Default)</Caption>
+                <Wizard steps={steps} currentStep={1} />
+              </Stack>
+              <Stack spacing={4}>
+                <Caption>Vertical</Caption>
+                <Wizard steps={steps} currentStep={1} orientation="vertical" />
+              </Stack>
+            </Stack>
+          );
+        },
+        usageCode: `<Wizard \n  orientation="vertical" \n  steps={[...]} \n  currentStep={1} \n/>`
+      },
+      {
+        title: 'Visual Styles',
+        render: () => {
+          const steps = [{ title: 'Step One' }, { title: 'Step Two' }, { title: 'Step Three' }];
+          return (
+            <Stack spacing={8} className="w-full">
+              <Stack spacing={2}><Caption>Glassmorphism (Premium)</Caption><Wizard variant="glass" steps={steps} currentStep={1} /></Stack>
+              <Stack spacing={2}><Caption>Gradient Flow</Caption><Wizard variant="gradient" steps={steps} currentStep={1} /></Stack>
+              <Stack spacing={2}><Caption>Filled Container</Caption><Wizard variant="filled" steps={steps} currentStep={0} /></Stack>
+              <Stack spacing={2}><Caption>Simple Outline</Caption><Wizard variant="outline" steps={steps} currentStep={2} /></Stack>
+              <Stack spacing={2}><Caption>Minimalist</Caption><Wizard variant="minimal" steps={steps} currentStep={1} /></Stack>
+            </Stack>
+          );
+        },
+        usageCode: `<Wizard variant="glass" steps={...} />\n<Wizard variant="gradient" steps={...} />\n<Wizard variant="minimal" steps={...} />`
+      },
+      {
+        title: 'Step States',
+        render: () => {
+          const steps: any[] = [
+            { id: 1, title: 'Completed', status: 'completed' },
+            { id: 2, title: 'Active', status: 'active' },
+            { id: 3, title: 'Error State', status: 'error', description: 'Invalid data provided' },
+            { id: 4, title: 'Disabled', status: 'disabled' },
+            { id: 5, title: 'Inactive', status: 'inactive' }
+          ];
+          return <Wizard steps={steps} currentStep={1} />;
+        },
+        usageCode: `<Wizard \n  steps={[\n    { title: 'Done', status: 'completed' },\n    { title: 'Error', status: 'error' },\n    { title: 'Wait', status: 'disabled' }\n  ]} \n/>`
+      },
+      {
+        title: 'Complete Navigation Flow',
+        render: () => {
+          const [step, setStep] = useState(0);
+          const steps = [
+            { id: 1, title: 'Account', description: 'Enter credentials' },
+            { id: 2, title: 'Identity', description: 'Social security & ID' },
+            { id: 3, title: 'Billing', description: 'Payment methods' },
+            { id: 4, title: 'Review', description: 'Confirm your plan' }
+          ];
+          return (
+            <div className="w-full">
+              <Wizard 
+                steps={steps} 
+                currentStep={step} 
+                showNavigation 
+                onNext={() => setStep(s => Math.min(steps.length - 1, s + 1))}
+                onBack={() => setStep(s => Math.max(0, s - 1))}
+                onStepChange={setStep}
+                allowStepClick
+                variant="glass"
+                color="primary"
+              />
+              <div className="mt-8 p-6 bg-neutral-50 dark:bg-neutral-900/50 border border-dashed border-neutral-300 dark:border-neutral-700 rounded-xl text-center">
+                 <Text tone="muted">Currently viewing step: <Text weight="bold" tone="primary">{steps[step].title}</Text></Text>
+                 <Text size="sm" className="mt-1 opacity-70">{steps[step].description}</Text>
+              </div>
+            </div>
+          );
+        },
+        usageCode: `<Wizard \\n  showNavigation \\n  currentStep={step} \\n  onNext={() => setStep(s => s + 1)} \\n  onBack={() => setStep(s => s - 1)} \\n/>`
+      },
+      {
+        title: 'Sizes',
+        render: () => {
+          const steps = [{ title: 'Start' }, { title: 'Process' }, { title: 'Finish' }];
+          return (
+            <Stack spacing={8} className="w-full">
+              <Stack spacing={2}><Caption>Small (sm)</Caption><Wizard size="sm" steps={steps} currentStep={1} /></Stack>
+              <Stack spacing={2}><Caption>Medium (md)</Caption><Wizard size="md" steps={steps} currentStep={1} /></Stack>
+              <Stack spacing={2}><Caption>Large (lg)</Caption><Wizard size="lg" steps={steps} currentStep={1} /></Stack>
+            </Stack>
+          );
+        },
+        usageCode: `<Wizard size="sm" steps={...} />\n<Wizard size="lg" steps={...} />`
+      }
+    ],
+    props: [
+      { name: 'steps', type: 'WizardStep[]', default: '[]', desc: 'Array of step objects.' },
+      { name: 'currentStep', type: 'number', default: '0', desc: 'Active step index.' },
+      { name: 'orientation', type: '"horizontal" | "vertical"', default: '"horizontal"', desc: 'Layout direction.' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', desc: 'Visual scale.' },
+      { name: 'variant', type: '"default" | "minimal" | "filled" | "outline" | "glass" | "gradient"', default: '"default"', desc: 'Visual style.' },
+      { name: 'color', type: '"primary" | "secondary" | "success" | "warning" | "danger" | "neutral"', default: '"primary"', desc: 'Brand color theme.' },
+      { name: 'onStepClick', type: '(index: number) => void', default: '-', desc: 'Callback when a step is clicked.' },
+      { name: 'onStepChange', type: '(index: number) => void', default: '-', desc: 'Callback when step changes.' },
+      { name: 'showIcons', type: 'boolean', default: 'true', desc: 'Show/hide step icons.' },
+      { name: 'allowStepClick', type: 'boolean', default: 'false', desc: 'Allow clicking any step.' },
+      { name: 'showNavigation', type: 'boolean', default: 'false', desc: 'Show built-in Next/Back buttons.' },
+      { name: 'onNext', type: '() => void', default: '-', desc: 'Callback for Next button.' },
+      { name: 'onBack', type: '() => void', default: '-', desc: 'Callback for Back button.' },
+      { name: 'nextLabel', type: 'string', default: '"Next"', desc: 'Custom label for Next button.' },
+      { name: 'backLabel', type: 'string', default: '"Back"', desc: 'Custom label for Back button.' },
+      { name: 'animated', type: 'boolean', default: 'true', desc: 'Enable animations.' }
+    ]
   }
 };
 
 
 
 const InteractivePanel = ({ children, props, onChange }: { 
-    children: (props: any) => React.ReactNode; 
+    children: (props: any, setProp: (name: string, value: any) => void) => React.ReactNode; 
     props: { name: string; type: string; default: string; options?: string[] }[];
     onChange: (prop: string, value: any) => void;
 }) => {
     const [activeProps, setActiveProps] = useState<Record<string, any>>(
-        props.reduce((acc, p) => ({ ...acc, [p.name]: p.default === '-' ? '' : (p.default === 'true' ? true : (p.default === 'false' ? false : p.default)) }), {})
+        props.reduce((acc, p) => {
+            let value: any = p.default;
+            if (p.default === '-') value = '';
+            else if (p.default === 'true') value = true;
+            else if (p.default === 'false') value = false;
+            else if (!isNaN(Number(p.default)) && p.default.trim() !== '') value = Number(p.default);
+            return { ...acc, [p.name]: value };
+        }, {})
     );
 
     const handlePropChange = (name: string, value: any) => {
@@ -1623,18 +1741,24 @@ const InteractivePanel = ({ children, props, onChange }: {
     return (
         <div className="flex flex-col lg:flex-row gap-8 bg-neutral-50/50 dark:bg-neutral-900/50 p-6 rounded-lg min-h-[400px]">
             <div className="flex-1 flex items-center justify-center p-8 border border-neutral-200 dark:border-neutral-800 rounded-lg bg-white dark:bg-neutral-950 shadow-inner">
-                {children(activeProps)}
+                {children(activeProps, handlePropChange)}
             </div>
             <div className="w-full lg:w-72 space-y-6">
                 <Heading level={4} className="text-sm uppercase tracking-wider text-neutral-500">Interactive Props</Heading>
                 <Stack spacing={4}>
-                    {props.filter(p => p.options || p.type === 'boolean' || p.type === 'string').map(prop => (
+                    {props.filter(p => p.options || p.type === 'boolean' || p.type === 'string' || p.type === 'number').map(prop => (
                         <div key={prop.name} className="space-y-2">
                             <Label className="text-xs font-semibold">{prop.name}</Label>
                             {prop.type === 'boolean' ? (
                                 <Switch 
                                     checked={activeProps[prop.name]} 
                                     onChange={(val) => handlePropChange(prop.name, val)} 
+                                />
+                            ) : prop.type === 'number' ? (
+                                <Input 
+                                    type="number"
+                                    value={activeProps[prop.name]} 
+                                    onChange={(e) => handlePropChange(prop.name, Number(e.target.value))}
                                 />
                             ) : prop.options ? (
                                 <Select 
@@ -1721,27 +1845,67 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
       { name: 'fallback', type: 'string', default: 'U' },
     ],
     'target-cursor': [
-      { name: 'magneticStrength', type: 'number', default: '0.4' },
-      { name: 'hoverScale', type: 'number', default: '1.6' },
+      { name: 'color', type: 'string', default: '#8B5CF6' },
+      { name: 'padding', type: 'number', default: 8 },
+      { name: 'stiffness', type: 'number', default: 400 },
+    ],
+    orbit: [
+      { name: 'radius', type: 'number', default: 150 },
+      { name: 'speed', type: 'number', default: 10 },
+      { name: 'direction', type: 'select', default: 'clockwise', options: ['clockwise', 'anticlockwise'] },
+      { name: 'itemSize', type: 'number', default: 80 },
+      { name: 'keepUpright', type: 'boolean', default: true },
+      { name: 'pauseOnHover', type: 'boolean', default: false },
     ],
     wizard: [
       { name: 'orientation', type: 'select', default: 'horizontal', options: ['horizontal', 'vertical'] },
       { name: 'size', type: 'select', default: 'md', options: ['sm', 'md', 'lg'] },
       { name: 'variant', type: 'select', default: 'default', options: ['default', 'minimal', 'filled', 'outline', 'glass', 'gradient'] },
       { name: 'color', type: 'select', default: 'primary', options: ['primary', 'secondary', 'success', 'warning', 'danger', 'neutral'] },
-      { name: 'currentStep', type: 'number', default: '1' },
+      { name: 'currentStep', type: 'number', default: '0' },
+      { name: 'showNavigation', type: 'boolean', default: 'false' },
+      { name: 'nextLabel', type: 'string', default: '' },
+      { name: 'backLabel', type: 'string', default: '' },
     ],
     'scroll-stack': [
       { name: 'orientation', type: 'select', default: 'vertical', options: ['vertical', 'horizontal'] },
       { name: 'snap', type: 'boolean', default: 'false' },
       { name: 'scaleStrength', type: 'number', default: '0.05' },
       { name: 'blurStrength', type: 'number', default: '10' },
+    ],
+    'magic-bento': [
+      { name: 'variant', type: 'select', default: 'default', options: ['default', 'minimal', 'hero'] },
+      { name: 'enableStars', type: 'boolean', default: 'false' },
+      { name: 'clickEffect', type: 'boolean', default: 'false' },
+      { name: 'spotlightSize', type: 'number', default: '400' },
+      { name: 'gap', type: 'string', default: '1.5rem' },
     ]
   };
 
   const interactiveProps = interactivePropsMetadata[componentId];
 
   const generateCode = (componentId: string, activeProps: any) => {
+    if (componentId === 'wizard') {
+      const activeEntries = Object.entries(activeProps).filter(([key, value]) => {
+        const metadata = interactiveProps.find(p => p.name === key);
+        return value !== metadata?.default && key !== 'children';
+      });
+
+      const handlers = [];
+      if (activeProps.showNavigation) {
+        handlers.push('onNext={() => setCurrentStep(prev => prev + 1)}');
+        handlers.push('onBack={() => setCurrentStep(prev => prev - 1)}');
+      }
+
+      const propsStr = activeEntries.map(([key, value]) => {
+        if (typeof value === 'boolean') return value ? key : '';
+        if (typeof value === 'string') return `${key}="${value}"`;
+        return `${key}={${JSON.stringify(value)}}`;
+      }).filter(Boolean).concat(handlers).join('\n    ');
+
+      return `const [currentStep, setCurrentStep] = useState(${activeProps.currentStep || 0});\nconst steps = [\n  { id: 1, title: 'Step 1' },\n  { id: 2, title: 'Step 2' },\n  { id: 3, title: 'Step 3' }\n];\n\nreturn (\n  <Wizard \n    steps={steps} \n    currentStep={currentStep} \n    ${propsStr}\n  />\n);`;
+    }
+
     const propsString = Object.entries(activeProps)
       .filter(([key, value]) => {
         const metadata = interactiveProps.find(p => p.name === key);
@@ -1802,7 +1966,7 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                    {interactiveProps && (
                      <div className="space-y-8">
                         <InteractivePanel props={interactiveProps} onChange={() => {}}>
-                            {(activeProps) => (
+                            {(activeProps, setProp) => (
                               <div className="w-full space-y-8">
                                 <div className="flex flex-col lg:flex-row gap-8">
                                   <div className="flex-1 flex items-center justify-center p-12 border border-neutral-200 dark:border-neutral-800 rounded-2xl bg-white dark:bg-neutral-950 shadow-inner min-h-[400px]">
@@ -1821,8 +1985,6 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                                           if (componentId === 'alert') return <Alert {...activeProps}>{activeProps.children}</Alert>;
                                           if (componentId === 'crud-management') return <UserManager {...activeProps} />;
                                           if (componentId === 'avatar') return <Avatar {...activeProps} />;
-                                          if (componentId === 'wizard') return <Wizard steps={[{id: 1, title: 'Step 1', description: 'Setup'}, {id: 2, title: 'Step 2', description: 'Config'}, {id: 3, title: 'Step 3', description: 'Done'}]} {...activeProps} />;
-                                          if (componentId === 'wizard') return <Wizard steps={[{id: 1, title: 'Step 1', description: 'Setup'}, {id: 2, title: 'Step 2', description: 'Config'}, {id: 3, title: 'Step 3', description: 'Done'}]} {...activeProps} />;
                                           if (componentId === 'target-cursor') return (
                                             <div className="relative h-64 w-full border border-dashed rounded flex flex-col items-center justify-center bg-neutral-50 dark:bg-neutral-900/50">
                                               <TargetCursor {...activeProps} />
@@ -1836,14 +1998,45 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                                             </div>
                                           );
                                           if (componentId === 'scroll-stack') return (
-                                            <div className="h-[400px] w-full overflow-y-auto border border-neutral-200 dark:border-neutral-800 rounded-lg relative">
+                                            <div className="h-[400px] w-full border border-neutral-200 dark:border-neutral-800 rounded-lg relative overflow-hidden">
                                                 <ScrollStack {...activeProps}>
-                                                    <div className="w-full h-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-3xl font-bold text-slate-400">1</div>
-                                                    <div className="w-full h-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-3xl font-bold text-blue-500">2</div>
-                                                    <div className="w-full h-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-3xl font-bold text-indigo-500">3</div>
-                                                    <div className="w-full h-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-3xl font-bold text-purple-500">4</div>
+                                                    <div className="w-full h-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-3xl font-bold text-slate-400">Card 1</div>
+                                                    <div className="w-full h-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-3xl font-bold text-blue-500">Card 2</div>
+                                                    <div className="w-full h-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-3xl font-bold text-indigo-500">Card 3</div>
+                                                    <div className="w-full h-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-3xl font-bold text-purple-500">Card 4</div>
                                                 </ScrollStack>
                                             </div>
+                                          );
+                                          if (componentId === 'orbit') return (
+                                            <div className="h-96 w-full flex items-center justify-center">
+                                              <Orbit {...activeProps}>
+                                                 <div className="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white">1</div>
+                                                 <div className="w-12 h-12 bg-secondary-500 rounded-full flex items-center justify-center text-white">2</div>
+                                                 <div className="w-12 h-12 bg-success-500 rounded-full flex items-center justify-center text-white">3</div>
+                                                 <div className="w-12 h-12 bg-warning-500 rounded-full flex items-center justify-center text-white">4</div>
+                                              </Orbit>
+                                            </div>
+                                          );
+                                          if (componentId === 'wizard') {
+                                            const steps = [{id: 1, title: 'Step 1', description: 'Setup'}, {id: 2, title: 'Step 2', description: 'Config'}, {id: 3, title: 'Step 3', description: 'Done'}];
+                                            return (
+                                              <Wizard 
+                                                steps={steps} 
+                                                {...activeProps} 
+                                                onNext={() => setProp('currentStep', Math.min(steps.length - 1, activeProps.currentStep + 1))}
+                                                onBack={() => setProp('currentStep', Math.max(0, activeProps.currentStep - 1))}
+                                                onStepChange={(val) => setProp('currentStep', val)}
+                                              />
+                                            );
+                                          }
+                                          if (componentId === 'magic-bento') return (
+                                            <MagicBento 
+                                              items={[
+                                                { id: '1', title: 'Analytics', description: 'Real-time data insights.', span: 2, icon: <span className="text-2xl">📊</span> },
+                                                { id: '2', title: 'Security', description: 'Enterprise-grade protection.', span: 1, icon: <span className="text-2xl">🛡️</span> },
+                                              ]} 
+                                              {...activeProps} 
+                                            />
                                           );
                                           return doc.examples[0].render();
                                       })()}
@@ -1946,7 +2139,7 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                    ) : (
                      <div className="p-32 text-center text-white">
                         <Heading level={3} className="text-neutral-500">Source Code Unavailable</Heading>
-                        <Text color="muted" className="mt-2">This component uses a legacy implementation without direct source mapping.</Text>
+                        <Text tone="muted" className="mt-2">This component uses a legacy implementation without direct source mapping.</Text>
                      </div>
                    )}
                 </div>

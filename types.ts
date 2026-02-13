@@ -70,6 +70,10 @@ export interface TextProps extends BaseProps {
   tone?: TextTone;
   align?: TypographyAlign;
   truncate?: boolean;
+  /** @deprecated use variant */
+  size?: any;
+  /** @deprecated use tone */
+  color?: any;
 }
 
 export interface HeadingProps extends TypographyProps {
@@ -170,6 +174,8 @@ export interface StackProps extends BaseProps {
   spacing?: 0 | 1 | 2 | 3 | 4 | 6 | 8 | 10 | 12;
   align?: "start" | "center" | "end" | "stretch";
   justify?: "start" | "center" | "end" | "between";
+  /** @deprecated use align */
+  items?: any;
 }
 
 // Data Display
@@ -370,7 +376,7 @@ export interface BreadcrumbsProps extends BaseProps {
 
 export type WizardStepStatus = "inactive" | "active" | "completed" | "error" | "disabled";
 export type WizardOrientation = "horizontal" | "vertical";
-export type WizardVariant = "default" | "minimal" | "filled" | "outline" | "glass" | "gradient";
+export type WizardVariant = "default" | "minimal" | "filled" | "outline" | "glass" | "gradient" | "modern" | "minimal-clean";
 export type WizardSize = "sm" | "md" | "lg";
 
 export interface WizardStep {
@@ -379,6 +385,7 @@ export interface WizardStep {
   description?: string;
   icon?: ReactNode;
   status?: WizardStepStatus;
+  optional?: boolean;
 }
 
 export interface WizardProps extends BaseProps {
@@ -389,7 +396,16 @@ export interface WizardProps extends BaseProps {
   size?: WizardSize;
   color?: "primary" | "secondary" | "success" | "warning" | "danger" | "neutral";
   onStepClick?: (index: number) => void;
+  onStepChange?: (index: number) => void;
+  showIcons?: boolean;
+  allowStepClick?: boolean;
+  animated?: boolean;
   isLazy?: boolean;
+  showNavigation?: boolean;
+  onNext?: () => void;
+  onBack?: () => void;
+  nextLabel?: string;
+  backLabel?: string;
 }
 
 export interface Step {
@@ -458,3 +474,29 @@ export interface ScrollStackProps extends BaseProps {
   blurStrength?: number;
 }
 
+
+export interface SourceData {
+  types?: string;
+  primitives?: string;
+  layout?: string;
+  forms?: string;
+  feedback?: string;
+  progressBarJSX?: string;
+  progressBarCSS?: string;
+  composite?: string;
+  list?: string;
+  navigation?: string;
+  magicBento?: string;
+  magicBentoJSX?: string;
+  magicBentoCSS?: string;
+  wizard?: string;
+  wizardCSS?: string;
+  targetCursor?: string;
+  scrollStack?: string;
+  pillNav?: string;
+  orbit?: string;
+  patterns?: string;
+  authFlow?: string;
+  adminDashboard?: string;
+  crudManagement?: string;
+}
