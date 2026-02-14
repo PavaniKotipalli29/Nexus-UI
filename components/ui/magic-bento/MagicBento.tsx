@@ -37,6 +37,7 @@ const BentoCard: React.FC<{
   enableStars?: boolean;
   borderColor?: string;
   backgroundColor?: string;
+  starColor?: string;
 }> = ({ 
   item, 
   spotlightColor = 'rgba(0, 0, 0, 0.1)', 

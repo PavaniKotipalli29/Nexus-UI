@@ -348,7 +348,7 @@ export const LoginForm: React.FC<{
 
   return (
     <FormWrapper onSubmit={handleSubmit}>
-      {error && <Alert variant="error" className="mb-4">{error}</Alert>}
+      {error && <Alert variant="danger" className="mb-4">{error}</Alert>}
       <FormField label="Email" htmlFor="login-email" required>
         <Input
           id="login-email"
@@ -413,7 +413,7 @@ export const SignupForm: React.FC<{
 
   return (
     <FormWrapper onSubmit={handleSubmit}>
-      {error && <Alert variant="error" className="mb-4">{error}</Alert>}
+      {error && <Alert variant="danger" className="mb-4">{error}</Alert>}
       <FormField label="Full Name" htmlFor="signup-name" required>
         <Input
           id="signup-name"
@@ -486,7 +486,7 @@ export const ForgotPasswordForm: React.FC<{
 
   return (
     <FormWrapper onSubmit={() => onSubmit({ email })}>
-      {error && <Alert variant="error" className="mb-4">{error}</Alert>}
+      {error && <Alert variant="danger" className="mb-4">{error}</Alert>}
       <Text color="muted" className="mb-4 text-sm">Enter your email address and we'll send you a link to reset your password.</Text>
       <FormField label="Email" htmlFor="forgot-email" required>
         <Input
@@ -507,7 +507,7 @@ export const ForgotPasswordForm: React.FC<{
   );
 };
 
-export const ResetPasswordForm: React.FC<{ onSubmit: (data: any) => void }> = ({ onSubmit }) => {
+export const ResetPasswordForm: React.FC<{ onSubmit: (data: any) => void; isLoading?: boolean }> = ({ onSubmit, isLoading }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -519,7 +519,7 @@ export const ResetPasswordForm: React.FC<{ onSubmit: (data: any) => void }> = ({
       <FormField label="Confirm Password" htmlFor="reset-confirm" required>
         <Input id="reset-confirm" type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
       </FormField>
-      <Button type="submit" fullWidth>Reset Password</Button>
+      <Button type="submit" fullWidth isLoading={isLoading}>Reset Password</Button>
     </FormWrapper>
   );
 };
@@ -588,7 +588,7 @@ export const OTPVerification: React.FC<{
             type="text"
             maxLength={1}
             disabled={isLoading}
-            ref={(ref) => inputs.current[index] = ref}
+            ref={(ref) => { inputs.current[index] = ref; }}
             className={`w-12 h-14 text-center text-xl font-bold bg-white dark:bg-neutral-900 border rounded-lg outline-none transition-all duration-200
               ${error ? 'border-red-500 focus:ring-red-500/20' : 'border-neutral-300 dark:border-neutral-700 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10'}
               ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}
@@ -683,9 +683,15 @@ export const TimePicker: React.FC<{ label?: string }> = ({ label }) => {
   );
 };
 
-export const SearchInput: React.FC<{ placeholder?: string; onSearch: (val: string) => void }> = ({ placeholder = "Search...", onSearch }) => {
+export const SearchInput: React.FC<{ 
+  placeholder?: string; 
+  onSearch?: (val: string) => void;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
+}> = ({ placeholder = "Search...", onSearch, value, onChange, className = '' }) => {
   return (
-    <div className="relative">
+    <div className={`relative ${className}`}>
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
          <Icon size="sm" className="text-neutral-400"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></Icon>
       </div>
@@ -693,7 +699,11 @@ export const SearchInput: React.FC<{ placeholder?: string; onSearch: (val: strin
         type="text"
         className="block w-full pl-10 pr-3 py-2 border border-neutral-300 dark:border-neutral-700 rounded-md leading-5 bg-white dark:bg-neutral-900 placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition duration-150 ease-in-out"
         placeholder={placeholder}
-        onChange={(e) => onSearch(e.target.value)}
+        value={value}
+        onChange={(e) => {
+          onChange?.(e);
+          onSearch?.(e.target.value);
+        }}
       />
     </div>
   );

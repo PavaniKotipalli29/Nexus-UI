@@ -148,7 +148,7 @@ function PillNavItem({
                     layoutId="pill-nav-indicator"
                     className="absolute inset-0 bg-white dark:bg-neutral-700 shadow-sm rounded-lg -z-10"
                     initial={false}
-                    transition={TRANSITIONS[context.animationType]}
+                    transition={TRANSITIONS[context.animationType] as any}
                     style={{
                         originY: "0px" // Helps with some layout shifts
                     }}

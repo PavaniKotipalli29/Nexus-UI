@@ -11,6 +11,8 @@ import { FaqPage } from './pages/FaqPage';
 import { Orbit } from './components/ui/Orbit';
 
 
+import { ErrorBoundary } from './components/ui/ErrorBoundary';
+
 // Simple Hash-based Router
 const App: React.FC = () => {
   const [currentPath, setCurrentPath] = useState(window.location.hash || '#/');
@@ -130,6 +132,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 selection:bg-primary-100 selection:text-primary-900 transition-colors">
+
       <Navbar onToggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
       <div className="pt-16">
         {renderContent()}
@@ -137,5 +140,6 @@ const App: React.FC = () => {
     </div>
   );
 };
+
 
 export default App;

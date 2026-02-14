@@ -127,14 +127,13 @@ const ProductCard = ({
             {product.isNew && <Badge variant="primary">New Arrival</Badge>}
             {product.isSale && <Badge variant="danger">Sale</Badge>}
           </div>
-          <motion.div 
+          <div 
             className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2"
-            initial={false}
           >
             <Button size="sm" variant="primary" onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}>
               Add to Cart
             </Button>
-          </motion.div>
+          </div>
         </div>
         
         <div className="p-4 flex-1 flex flex-col gap-2">

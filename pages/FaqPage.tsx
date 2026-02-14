@@ -47,7 +47,7 @@ export const FaqPage: React.FC = () => {
 
       <Container className="py-16">
         <div className="max-w-3xl mx-auto">
-          <Stack gap={8}>
+          <Stack spacing={8}>
             {faqs.map((faq, index) => (
               <Card key={index} className="p-6 md:p-8">
                 <Heading level={4} className="mb-4 text-primary-600 dark:text-primary-400">

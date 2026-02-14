@@ -510,7 +510,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({ children, size = 'md',
           return React.cloneElement(child as React.ReactElement<any>, { 
             key: index,
             size,
-            className: `ring-2 ring-white dark:ring-neutral-950 ${child.props.className || ''}`
+            className: `ring-2 ring-white dark:ring-neutral-950 ${(child as React.ReactElement<any>).props.className || ''}`
           });
         }
         return child;

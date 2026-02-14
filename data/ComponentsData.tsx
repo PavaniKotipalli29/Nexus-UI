@@ -339,7 +339,7 @@ export const components: ComponentItem[] = [
     subCategory: 'Molecules',
     variants: 3,
     description: 'Enhanced input for searching.',
-    preview: <div className="w-full max-w-sm"><SearchInput placeholder="Search components..." /></div>,
+    preview: <div className="w-full max-w-sm"><SearchInput placeholder="Search components..." onSearch={() => {}} /></div>,
     code: '<SearchInput placeholder="Search..." />',
     info: 'Includes search icon and clear functionality.'
   },

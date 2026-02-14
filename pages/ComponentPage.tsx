@@ -20,6 +20,7 @@ import { TargetCursor } from '../components/ui/TargetCursor';
 import { ScrollStack } from '../components/ui/ScrollStack';
 import { PillNav } from '../components/ui/PillNav';
 import { EcommerceTemplate } from '../components/ui/Ecommerce';
+import { ErrorBoundary } from '../components/ui/ErrorBoundary';
 
 
 // Import full source codes
@@ -988,7 +989,7 @@ const docs: Record<string, ComponentDoc> = {
       {
         title: 'States',
         render: () => (
-          <Flex gap={6} wrap>
+          <Flex gap={6} wrap="wrap">
             <Label required>Required Field</Label>
             <Label isLoading>Loading State</Label>
             <Label disabled>Disabled Label</Label>
@@ -1041,7 +1042,7 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Reusable',
     subCategory: 'Molecules',
     description: 'Search input with icon.',
-    examples: [{ title: 'Basic', render: () => <SearchInput placeholder="Search components..." />, usageCode: `<SearchInput placeholder="..." />` }],
+    examples: [{ title: 'Basic', render: () => <SearchInput placeholder="Search components..." onSearch={() => {}} />, usageCode: `<SearchInput placeholder="..." onSearch={val => console.log(val)} />` }],
     props: []
   },
   'form-field': {
@@ -1050,7 +1051,7 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Reusable',
     subCategory: 'Molecules',
     description: 'Generic wrapper for form controls.',
-    examples: [{ title: 'Basic', render: () => <FormWrapper title="Account Settings"><Input label="Display Name" /></FormWrapper>, usageCode: `<FormWrapper title="...">\n  <Input label="..." />\n</FormWrapper>` }],
+    examples: [{ title: 'Basic', render: () => <FormWrapper onSubmit={() => {}}><Heading level={4} className="mb-4">Account Settings</Heading><Input label="Display Name" /></FormWrapper>, usageCode: `<FormWrapper onSubmit={...}>\n  <Heading>Account Settings</Heading>\n  <Input label="..." />\n</FormWrapper>` }],
     props: []
   },
   toast: {
@@ -1059,7 +1060,7 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Reusable',
     subCategory: 'Molecules',
     description: 'Floating notification message.',
-    examples: [{ title: 'Preview', render: () => <Toast message="Action successful!" type="success" />, usageCode: `<Toast message="..." type="success" />` }],
+    examples: [{ title: 'Preview', render: () => <Toast title="Action successful!" variant="success" onClose={() => {}} />, usageCode: `<Toast title="..." variant="success" />` }],
     props: []
   },
   pagination: {
@@ -1088,7 +1089,7 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Composite',
     subCategory: 'Organisms / Patterns',
     description: 'Advanced table with data mapping.',
-    examples: [{ title: 'Preview', render: () => <Table headers={['ID', 'User', 'Status']} rows={[['1', 'John Doe', <Badge variant="success">Active</Badge>]]} />, usageCode: `<Table headers={['ID', 'User']} rows={...} />` }],
+    examples: [{ title: 'Preview', render: () => <Table headers={['ID', 'User', 'Status']} data={[{id: '1', user: 'John Doe', status: 'Active'}]} renderRow={(row, i) => <tr key={i}><td className="p-4">{row.id}</td><td className="p-4">{row.user}</td><td className="p-4"><Badge variant="success">{row.status}</Badge></td></tr>} />, usageCode: `<Table headers={['ID', 'User']} data={rows} renderRow={...} />` }],
     props: []
   },
   'pricing-section': {
@@ -1097,7 +1098,7 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Composite',
     subCategory: 'Organisms / Patterns',
     description: 'Section showcasing pricing tiers.',
-    examples: [{ title: 'Section', render: () => <PricingSection />, usageCode: `<PricingSection />` }],
+    examples: [{ title: 'Section', render: () => <PricingSection title="Pricing" plans={[{ name: 'Startup', price: '$29', features: ['Core Features'], cta: 'Buy Now' }]} />, usageCode: `<PricingSection title="Pricing" plans={[{ name: 'Startup', price: '$29', ... }]} />` }],
     props: []
   },
   'hero-section': {
@@ -1106,7 +1107,7 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Composite',
     subCategory: 'Organisms / Patterns',
     description: 'Main landing page header.',
-    examples: [{ title: 'Section', render: () => <HeroSection />, usageCode: `<HeroSection />` }],
+    examples: [{ title: 'Section', render: () => <HeroSection title="Welcome" subtitle="SaaS Starter Kit" ctaPrimary={<Button>Get Started</Button>} />, usageCode: `<HeroSection title="Welcome" subtitle="..." />` }],
     props: []
   },
   'feature-grid': {
@@ -1115,7 +1116,7 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Composite',
     subCategory: 'Organisms / Patterns',
     description: 'Grid layout for product features.',
-    examples: [{ title: 'Section', render: () => <FeatureGrid />, usageCode: `<FeatureGrid />` }],
+    examples: [{ title: 'Section', render: () => <FeatureGrid title="Features" features={[{ title: 'Fast', description: 'Optimized', icon: <span>⚡</span> }]} />, usageCode: `<FeatureGrid title="Features" features={[{...}]} />` }],
     props: []
   },
   'dashboard-stats': {
@@ -1151,7 +1152,7 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Composite',
     subCategory: 'Organisms / Patterns',
     description: 'Form wizard with multiple steps.',
-    examples: [{ title: 'Preview', render: () => <Stepper steps={['Account', 'Profile', 'Billing']} currentStep={0} />, usageCode: `<Stepper steps={['1', '2']} />` }],
+    examples: [{ title: 'Preview', render: () => <Stepper steps={[{ title: 'Account', status: 'current' }, { title: 'Profile', status: 'upcoming' }, { title: 'Billing', status: 'upcoming' }]} />, usageCode: `<Stepper steps={[{ title: 'Account', status: 'current' }, ...]} />` }],
     props: []
   },
   'settings-panel': {
@@ -1160,7 +1161,7 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Composite',
     subCategory: 'Organisms / Patterns',
     description: 'Full app settings interface.',
-    examples: [{ title: 'Preview', render: () => <Box className="border rounded p-4"><Heading level={3}>Settings</Heading><Divider /><Stack spacing={4}><Switch label="Notifications" /><Button>Save</Button></Stack></Box>, usageCode: `<SettingsPanel />` }],
+    examples: [{ title: 'Preview', render: () => <Box className="border rounded p-4"><Heading level={3}>Settings</Heading><Divider /><Stack spacing={4}><Switch label="Notifications" checked={true} onChange={() => {}} /><Button>Save</Button></Stack></Box>, usageCode: `<SettingsPanel />` }],
     props: []
   },
   'comments-section': {
@@ -1269,7 +1270,7 @@ const docs: Record<string, ComponentDoc> = {
     category: 'App-level',
     subCategory: 'Templates / Pages',
     description: 'Complete user login screen layout.',
-    examples: [{ title: 'Page', render: () => <div className="h-96 scale-75 origin-top border"><AuthLayout title="Login"><LoginForm /></AuthLayout></div>, usageCode: `<LoginPage />` }],
+    examples: [{ title: 'Page', render: () => <div className="h-96 scale-75 origin-top border overflow-auto"><AuthLayout title="Login"><LoginForm onSubmit={() => {}} /></AuthLayout></div>, usageCode: `<LoginPage />` }],
     props: []
   },
   'signup-page': {
@@ -1278,7 +1279,7 @@ const docs: Record<string, ComponentDoc> = {
     category: 'App-level',
     subCategory: 'Templates / Pages',
     description: 'Complete user registration layout.',
-    examples: [{ title: 'Page', render: () => <div className="h-96 scale-75 origin-top border"><AuthLayout title="Register"><SignupForm /></AuthLayout></div>, usageCode: `<SignupPage />` }],
+    examples: [{ title: 'Page', render: () => <div className="h-96 scale-75 origin-top border overflow-auto"><AuthLayout title="Register"><SignupForm onSubmit={() => {}} /></AuthLayout></div>, usageCode: `<SignupPage />` }],
     props: []
   },
   'dashboard-page': {
@@ -1332,7 +1333,7 @@ const docs: Record<string, ComponentDoc> = {
     category: 'App-level',
     subCategory: 'Templates / Pages',
     description: 'Modular landing page for products.',
-    examples: [{ title: 'Page', render: () => <div className="h-96 scale-75 origin-top border"><HeroSection /></div>, usageCode: `<LandingPage />` }],
+    examples: [{ title: 'Page', render: () => <div className="h-96 scale-75 origin-top border overflow-auto"><HeroSection title="Landing Page" subtitle="Hero Section" /></div>, usageCode: `<LandingPage />` }],
     props: []
   },
   'checkout-page': {
@@ -1621,7 +1622,7 @@ const docs: Record<string, ComponentDoc> = {
       {
         title: 'Visual Styles',
         render: () => {
-          const steps = [{ title: 'Step One' }, { title: 'Step Two' }, { title: 'Step Three' }];
+          const steps = [{ id: 1, title: 'Step One' }, { id: 2, title: 'Step Two' }, { id: 3, title: 'Step Three' }];
           return (
             <Stack spacing={8} className="w-full">
               <Stack spacing={2}><Caption>Glassmorphism (Premium)</Caption><Wizard variant="glass" steps={steps} currentStep={1} /></Stack>
@@ -1683,7 +1684,7 @@ const docs: Record<string, ComponentDoc> = {
       {
         title: 'Sizes',
         render: () => {
-          const steps = [{ title: 'Start' }, { title: 'Process' }, { title: 'Finish' }];
+          const steps = [{ id: 1, title: 'Start' }, { id: 2, title: 'Process' }, { id: 3, title: 'Finish' }];
           return (
             <Stack spacing={8} className="w-full">
               <Stack spacing={2}><Caption>Small (sm)</Caption><Wizard size="sm" steps={steps} currentStep={1} /></Stack>
@@ -1741,16 +1742,17 @@ const docs: Record<string, ComponentDoc> = {
 
 const InteractivePanel = ({ children, props, onChange }: { 
     children: (props: any, setProp: (name: string, value: any) => void) => React.ReactNode; 
-    props: { name: string; type: string; default: string; options?: string[] }[];
+    props: { name: string; type: string; default: any; options?: string[] }[];
     onChange: (prop: string, value: any) => void;
 }) => {
     const [activeProps, setActiveProps] = useState<Record<string, any>>(
         props.reduce((acc, p) => {
             let value: any = p.default;
             if (p.default === '-') value = '';
-            else if (p.default === 'true') value = true;
-            else if (p.default === 'false') value = false;
-            else if (!isNaN(Number(p.default)) && p.default.trim() !== '') value = Number(p.default);
+            else if (p.default === 'true' || p.default === true) value = true;
+            else if (p.default === 'false' || p.default === false) value = false;
+            else if (typeof p.default === 'number') value = p.default;
+            else if (typeof p.default === 'string' && !isNaN(Number(p.default)) && p.default.trim() !== '') value = Number(p.default);
             return { ...acc, [p.name]: value };
         }, {})
     );
@@ -1868,16 +1870,16 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
     ],
     'target-cursor': [
       { name: 'color', type: 'string', default: '#8B5CF6' },
-      { name: 'padding', type: 'number', default: 8 },
-      { name: 'stiffness', type: 'number', default: 400 },
+      { name: 'padding', type: 'number', default: '8' },
+      { name: 'stiffness', type: 'number', default: '400' },
     ],
     orbit: [
-      { name: 'radius', type: 'number', default: 150 },
-      { name: 'speed', type: 'number', default: 10 },
+      { name: 'radius', type: 'number', default: '150' },
+      { name: 'speed', type: 'number', default: '10' },
       { name: 'direction', type: 'select', default: 'clockwise', options: ['clockwise', 'anticlockwise'] },
-      { name: 'itemSize', type: 'number', default: 80 },
-      { name: 'keepUpright', type: 'boolean', default: true },
-      { name: 'pauseOnHover', type: 'boolean', default: false },
+      { name: 'itemSize', type: 'number', default: '80' },
+      { name: 'keepUpright', type: 'boolean', default: 'true' },
+      { name: 'pauseOnHover', type: 'boolean', default: 'false' },
     ],
     wizard: [
       { name: 'orientation', type: 'select', default: 'horizontal', options: ['horizontal', 'vertical'] },
@@ -2062,12 +2064,14 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                                           );
                                           if (componentId === 'orbit') return (
                                             <div className="h-96 w-full flex items-center justify-center">
-                                              <Orbit {...activeProps}>
-                                                 <div className="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white">1</div>
-                                                 <div className="w-12 h-12 bg-secondary-500 rounded-full flex items-center justify-center text-white">2</div>
-                                                 <div className="w-12 h-12 bg-success-500 rounded-full flex items-center justify-center text-white">3</div>
-                                                 <div className="w-12 h-12 bg-warning-500 rounded-full flex items-center justify-center text-white">4</div>
-                                              </Orbit>
+                                              <ErrorBoundary>
+                                                <Orbit {...activeProps}>
+                                                   <div className="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white">1</div>
+                                                   <div className="w-12 h-12 bg-secondary-500 rounded-full flex items-center justify-center text-white">2</div>
+                                                   <div className="w-12 h-12 bg-success-500 rounded-full flex items-center justify-center text-white">3</div>
+                                                   <div className="w-12 h-12 bg-warning-500 rounded-full flex items-center justify-center text-white">4</div>
+                                                </Orbit>
+                                              </ErrorBoundary>
                                             </div>
                                           );
                                           if (componentId === 'wizard') {
@@ -2091,7 +2095,11 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                                               {...activeProps} 
                                             />
                                           );
-                                          return doc.examples[0].render();
+                                          return (
+                                            <ErrorBoundary>
+                                              {doc.examples[0].render()}
+                                            </ErrorBoundary>
+                                          );
                                       })()}
                                   </div>
                                 </div>

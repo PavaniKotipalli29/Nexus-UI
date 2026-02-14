@@ -11,6 +11,7 @@ export const LandingPage: React.FC = () => {
 
   return (
     <div className="pb-24">
+
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-20 pb-20 lg:pt-32 lg:pb-32 bg-gradient-to-b from-primary-50/50 to-white dark:from-neutral-900/50 dark:to-neutral-950">
         <Container>

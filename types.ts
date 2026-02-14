@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 
-export type ComponentSize = "sm" | "md" | "lg";
+export type ComponentSize = "xs" | "sm" | "md" | "lg";
 export type ComponentVariant =
   | "primary"
   | "secondary"
@@ -14,7 +14,7 @@ export type ComponentVariant =
 export interface ButtonProps extends BaseProps {
   variant?: ComponentVariant;
   size?: ComponentSize;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
   type?: "button" | "submit" | "reset";
   fullWidth?: boolean;
@@ -36,12 +36,13 @@ export interface IconButtonProps extends Omit<ButtonProps, 'leftIcon' | 'rightIc
 export interface BaseProps {
   children?: ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 // Primitives
 // Typography
 export type TypographyWeight = "regular" | "medium" | "semibold" | "bold";
-export type TypographyTone = "default" | "muted" | "subtle" | "destructive" | "success";
+export type TypographyTone = "default" | "muted" | "subtle" | "destructive" | "success" | "primary";
 export type TypographyAlign = "left" | "center" | "right";
 
 export interface TypographyProps extends BaseProps {
@@ -62,7 +63,7 @@ export type TextWeight = "light" | "regular" | "medium" | "semibold" | "bold";
 export type TextTone = 
   | "default" | "muted" | "subtle" 
   | "primary" | "success" | "warning" | "danger" 
-  | "disabled" | "inverse";
+  | "disabled" | "inverse" | "destructive";
 
 export interface TextProps extends BaseProps {
   variant?: TextVariant;
@@ -80,7 +81,7 @@ export interface HeadingProps extends TypographyProps {
   level?: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
-export type LabelVariant = "default" | "subtle" | "primary" | "success" | "warning" | "danger" | "info" | "outline" | "ghost" | "gradient" | "destructive";
+export type LabelVariant = "default" | "subtle" | "primary" | "secondary" | "success" | "warning" | "danger" | "info" | "outline" | "ghost" | "gradient" | "destructive";
 
 export interface LabelProps extends BaseProps {
   variant?: LabelVariant;
@@ -109,7 +110,7 @@ export interface BlockquoteProps extends TypographyProps {
 export type BadgeVariant = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | "outline";
 export type BadgeStyle = "solid" | "subtle" | "soft" | "pill";
 
-export interface BadgeProps extends BaseProps {
+export interface BadgeProps extends Omit<BaseProps, 'style'> {
   variant?: BadgeVariant;
   style?: BadgeStyle;
   icon?: ReactNode;
@@ -117,6 +118,7 @@ export interface BadgeProps extends BaseProps {
 }
 
 export interface AvatarProps extends BaseProps {
+  name?: string;
   src?: string;
   alt?: string;
   fallback?: string;
@@ -149,7 +151,7 @@ export interface BoxProps extends BaseProps {
   right?: string;
   bottom?: string;
   style?: React.CSSProperties;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLElement>;
 }
 
 export interface FlexProps extends BoxProps {
@@ -166,7 +168,7 @@ export interface ContainerProps extends BaseProps {
 export interface CardProps extends BaseProps {
   padding?: "none" | "sm" | "md" | "lg";
   interactive?: boolean;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
 export interface StackProps extends BaseProps {
@@ -214,6 +216,7 @@ export interface ProgressBarProps extends BaseProps {
   showLabel?: boolean;
   indeterminate?: boolean;
   label?: string;
+  labelPosition?: 'top' | 'right';
 }
 
 export type InputVariant = "default" | "filled" | "ghost" | "underline";
@@ -317,6 +320,7 @@ export interface DropdownProps extends BaseProps {
 
 export interface AlertProps extends BaseProps {
   variant?: "info" | "success" | "warning" | "danger";
+  size?: "sm" | "md" | "lg";
   title?: string;
   icon?: ReactNode;
   onClose?: () => void;
@@ -337,13 +341,14 @@ export interface ListProps extends BaseProps {
   component?: any;
 }
 
-export interface ListItemProps extends BaseProps {
+export interface ListItemProps extends BaseProps, Omit<React.HTMLAttributes<HTMLElement>, 'children' | 'className' | 'style' | 'onClick'> {
   variant?: "default" | "compact";
   onClick?: () => void;
   disabled?: boolean;
   selected?: boolean;
   href?: string;
   component?: any;
+  onKeyDown?: React.KeyboardEventHandler;
 }
 
 export interface ListItemIconProps extends BaseProps {
@@ -376,7 +381,7 @@ export interface BreadcrumbsProps extends BaseProps {
 
 export type WizardStepStatus = "inactive" | "active" | "completed" | "error" | "disabled";
 export type WizardOrientation = "horizontal" | "vertical";
-export type WizardVariant = "default" | "minimal" | "filled" | "outline" | "glass" | "gradient" | "modern" | "minimal-clean";
+export type WizardVariant = "default" | "minimal" | "filled" | "outline" | "glass" | "gradient" | "modern" | "minimal-clean" | "modern-gradient";
 export type WizardSize = "sm" | "md" | "lg";
 
 export interface WizardStep {
