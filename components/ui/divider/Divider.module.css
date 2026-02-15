@@ -1,0 +1,239 @@
+/* Divider.module.css */
+
+.divider {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  color: var(--neutral-400, #94a3b8); /* Darker default color for better visibility */
+  font-family: inherit;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+}
+
+/* Dark Mode Support */
+:global(.dark) .divider {
+  color: var(--neutral-600, #475569);
+}
+
+/* Explicit class blocks for CSS Modules Export */
+.solid { outline: none; }
+.dashed { outline: none; }
+.dotted { outline: none; }
+.gradient { outline: none; }
+.gradient-animated { outline: none; }
+.fade { outline: none; }
+.glass { outline: none; }
+.glow { outline: none; }
+.zigzag { outline: none; }
+
+/* Orientation: Horizontal */
+.horizontal {
+  display: flex; /* Ensure it stays a flex container if horizontal is missing? No, .divider is already flex. */
+  flex-direction: row;
+  height: auto;
+  min-height: 1px;
+  outline: none;
+}
+
+/* Orientation: Vertical */
+.vertical {
+  flex-direction: column;
+  width: auto;
+  min-width: 1px;
+  height: 100%;
+  min-height: 1em;
+  padding: 0 1rem;
+  outline: none;
+}
+
+/* Line Styles */
+.line {
+  flex: 1;
+  background-color: currentColor;
+  transition: all 0.2s ease-in-out;
+  min-height: 1px;
+  min-width: 1px;
+}
+
+.horizontal .line {
+  height: var(--divider-thickness, 1px);
+  width: 100%;
+}
+
+.vertical .line {
+  width: var(--divider-thickness, 1px);
+  height: 100%;
+}
+
+/* Variants */
+.solid .line {
+  opacity: 1;
+}
+
+.dashed .line {
+  background-image: linear-gradient(to right, currentColor 50%, transparent 50%);
+  background-size: 8px 100%;
+  background-color: transparent;
+}
+
+.vertical.dashed .line {
+  background-image: linear-gradient(to bottom, currentColor 50%, transparent 50%);
+  background-size: 100% 8px;
+}
+
+.dotted .line {
+  background-image: radial-gradient(circle, currentColor 25%, transparent 26%);
+  background-size: 4px 100%;
+  background-color: transparent;
+}
+
+.vertical.dotted .line {
+  background-image: radial-gradient(circle, currentColor 25%, transparent 26%);
+  background-size: 100% 4px;
+}
+
+/* Gradient Variant */
+.gradient .line {
+  border: none;
+  height: var(--divider-thickness, 1px);
+  background: linear-gradient(to right, transparent, var(--primary-500, #6366f1) 20%, var(--primary-500, #6366f1) 80%, transparent);
+}
+
+.vertical.gradient .line {
+  width: var(--divider-thickness, 1px);
+  background: linear-gradient(to bottom, transparent, var(--primary-500, #6366f1) 20%, var(--primary-500, #6366f1) 80%, transparent);
+}
+
+/* Animated Gradient */
+.gradient-animated .line {
+  border: none;
+  height: var(--divider-thickness, 2px);
+  background: linear-gradient(90deg, 
+    var(--primary-500, #6366f1), 
+    var(--secondary-500, #ec4899), 
+    var(--primary-500, #6366f1)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+.vertical.gradient-animated .line {
+  width: var(--divider-thickness, 2px);
+  background: linear-gradient(180deg, 
+    var(--primary-500, #6366f1), 
+    var(--secondary-500, #ec4899), 
+    var(--primary-500, #6366f1)
+  );
+  background-size: 100% 200%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* Label Styles */
+.label {
+  padding: 0 0.75rem;
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500;
+  color: #64748b; /* neutral-500 */
+  white-space: nowrap;
+}
+
+:global(.dark) .label {
+  color: #94a3b8; /* neutral-400 */
+}
+
+.vertical .label {
+  padding: 0.75rem 0;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+}
+
+/* Fade Variant */
+.fade .line {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, currentColor 20%, currentColor 80%, transparent);
+  opacity: 0.7; /* Slightly more opaque */
+}
+
+.vertical.fade .line {
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, currentColor 20%, currentColor 80%, transparent);
+}
+
+/* Glass Variant */
+.glass .line {
+  border: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  box-shadow: 
+    0 1px 0 rgba(255, 255, 255, 0.1),
+    0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+:global(.dark) .glass .line {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 1px 0 rgba(255, 255, 255, 0.05),
+    0 -1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.vertical.glass .line {
+  width: 1px;
+  height: 100%;
+  box-shadow: 
+    1px 0 0 rgba(255, 255, 255, 0.1),
+    -1px 0 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Glow Variant */
+.glow .line {
+  border-top-style: solid;
+  border-top-color: currentColor;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.vertical.glow .line {
+  border-left-style: solid;
+  border-left-color: currentColor;
+  box-shadow: 0 0 8px currentColor;
+}
+
+/* Zigzag Variant */
+.zigzag .line {
+  border: none;
+  height: var(--divider-thickness, 12px);
+  background: linear-gradient(135deg, currentColor 25%, transparent 25%) -6px 0,
+              linear-gradient(225deg, currentColor 25%, transparent 25%) -6px 0,
+              linear-gradient(315deg, currentColor 25%, transparent 25%),
+              linear-gradient(45deg, currentColor 25%, transparent 25%);
+  background-size: 12px 12px;
+  background-color: transparent;
+  opacity: 0.6;
+}
+
+.vertical.zigzag .line {
+  width: var(--divider-thickness, 12px);
+  background: linear-gradient(135deg, currentColor 25%, transparent 25%) 0 -6px,
+              linear-gradient(225deg, currentColor 25%, transparent 25%) 0 -6px,
+              linear-gradient(315deg, currentColor 25%, transparent 25%),
+              linear-gradient(45deg, currentColor 25%, transparent 25%);
+  background-size: 12px 12px;
+}
+
+.labelLeft {
+  padding-left: 0;
+}
+
+.labelRight {
+  padding-right: 0;
+}
