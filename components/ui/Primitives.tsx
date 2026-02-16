@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { BaseProps, ComponentVariant, ComponentSize, TextProps, HeadingProps, BadgeProps, ButtonProps, AvatarProps, AvatarGroupProps, BoxProps, FlexProps, IconProps, SpinnerProps, LabelProps, CaptionProps, CodeProps, BlockquoteProps } from '../../types';
 import { Spinner } from './Feedback';
 
@@ -118,6 +119,15 @@ export const Text: React.FC<TextProps> = ({
   tone = 'default',
   align = 'left',
   truncate = false,
+  gradient,
+  balanced,
+  decoration,
+  interactive,
+  hoverScale,
+  tapScale,
+  hoverOpacity,
+  hoverColor,
+  onClick,
   ...props
 }) => {
   // Map variants to HTML tags
@@ -131,6 +141,8 @@ export const Text: React.FC<TextProps> = ({
     if (variant === 'caption') return 'span';
     return 'p';
   }, [variant]);
+
+  const MotionComponent = React.useMemo(() => motion(Component as any), [Component]);
 
   const variantStyles = {
     'display-xl': 'text-5xl md:text-6xl tracking-tight leading-tight',
@@ -162,12 +174,27 @@ export const Text: React.FC<TextProps> = ({
     success: 'text-green-600 dark:text-green-400',
     warning: 'text-yellow-600 dark:text-yellow-400',
     danger: 'text-red-600 dark:text-red-400',
-    destructive: 'text-red-600 dark:text-red-400', // alias for danger
+    destructive: 'text-red-600 dark:text-red-400',
     disabled: 'text-neutral-300 dark:text-neutral-600',
     inverse: 'text-white dark:text-neutral-900',
   };
 
-  // Legacy support helper (mapped to new variants/tones where possible)
+  const getGradientStyles = () => {
+    if (!gradient) return '';
+    const gradientValue = typeof gradient === 'string' 
+      ? gradient 
+      : 'from-primary-600 via-accent-500 to-indigo-600';
+    return `bg-clip-text text-transparent bg-gradient-to-r ${gradientValue}`;
+  };
+
+  const decorationStyles = {
+    underline: 'underline underline-offset-4 decoration-current',
+    'line-through': 'line-through decoration-current',
+    none: '',
+  };
+
+  // Handle legacy props
+  const legacyProps = props as any;
   const legacySizeMap: Record<string, string> = {
     'xs': 'caption', 'sm': 'body-sm', 'base': 'body-md', 'lg': 'body-lg', 
     'xl': 'heading-md', '2xl': 'heading-lg', '3xl': 'heading-xl'
@@ -176,21 +203,41 @@ export const Text: React.FC<TextProps> = ({
     'error': 'danger', 'white': 'inverse'
   };
   
-  // Handle legacy props if they exist in rest props (casted to any to avoid TS errors for now)
-  const p = props as any;
-  const finalVariant = p.size ? legacySizeMap[p.size] || variant : variant;
-  const finalTone = p.color ? legacyColorMap[p.color] || p.color : tone;
+  const finalVariant = legacyProps.size ? legacySizeMap[legacyProps.size] || variant : variant;
+  const finalTone = legacyProps.color ? legacyColorMap[legacyProps.color] || legacyProps.color : tone;
+
+  const isActuallyInteractive = interactive || hoverScale || tapScale || hoverOpacity || hoverColor || onClick;
 
   const classes = [
     variantStyles[finalVariant as keyof typeof variantStyles],
     weights[weight as keyof typeof weights],
-    tones[finalTone as keyof typeof tones],
+    !gradient && tones[finalTone as keyof typeof tones],
+    getGradientStyles(),
     `text-${align}`,
     truncate ? 'truncate' : '',
+    balanced ? '[text-wrap:balance]' : '',
+    decoration && decorationStyles[decoration],
+    isActuallyInteractive ? 'cursor-pointer transition-colors duration-200' : '',
     className
   ].filter(Boolean).join(' ');
 
-  return <Component className={classes}>{children}</Component>;
+  return (
+    <MotionComponent 
+      className={classes}
+      onClick={onClick}
+      whileHover={isActuallyInteractive ? {
+        scale: hoverScale || 1.02,
+        opacity: hoverOpacity || 1,
+        color: hoverColor || undefined,
+      } : undefined}
+      whileTap={isActuallyInteractive ? {
+        scale: tapScale || 0.98,
+      } : undefined}
+      {...props}
+    >
+      {children}
+    </MotionComponent>
+  );
 };
 
 // Re-export Heading as a wrapper around Text for backward compatibility
@@ -198,20 +245,34 @@ export const Heading: React.FC<HeadingProps> = ({
   children,
   level = 1,
   weight = 'bold',
+  underlined,
+  className = '',
   ...props
 }) => {
   const mapLevelToVariant = {
     1: 'display-xl', 2: 'display-lg', 3: 'heading-xl', 
     4: 'heading-lg', 5: 'heading-md', 6: 'body-lg'
   };
+
   return (
-    <Text 
-      variant={mapLevelToVariant[level as keyof typeof mapLevelToVariant] as any} 
-      weight={weight} 
-      {...props} 
-    >
-      {children}
-    </Text>
+    <div className={`inline-block relative group ${className}`}>
+      <Text 
+        variant={mapLevelToVariant[level as keyof typeof mapLevelToVariant] as any} 
+        weight={weight} 
+        {...props} 
+      >
+        {children}
+      </Text>
+      {underlined && (
+        <motion.div
+          initial={{ width: 0 }}
+          whileInView={{ width: '100%' }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: "circOut", delay: 0.2 }}
+          className="h-1 bg-primary-600 dark:bg-primary-500 rounded-full mt-1"
+        />
+      )}
+    </div>
   );
 };
 

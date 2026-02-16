@@ -86,7 +86,7 @@ const docs: Record<string, ComponentDoc> = {
     name: 'Text',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    description: 'Text is the fundamental component for displaying body copy and small descriptions.',
+    description: 'Text is the fundamental component for displaying body copy and small descriptions, now with support for gradients and balanced wrapping.',
     implementationSource: SOURCES.primitives,
     examples: [
       {
@@ -99,13 +99,46 @@ const docs: Record<string, ComponentDoc> = {
           </Stack>
         ),
         usageCode: `<Text tone="muted">Secondary content</Text>`
+      },
+      {
+        title: 'Gradients & Balance',
+        render: () => (
+          <Stack spacing={4}>
+            <Text variant="display-lg" weight="bold" gradient>Premium Gradient Text</Text>
+            <Text variant="display-lg" weight="bold" gradient="from-purple-600 to-pink-500">Custom Gradient</Text>
+            <div className="max-w-xs p-4 border rounded-lg">
+              <Text balanced>This is a long sentence that would normally look awkward when it wraps, but with the balanced prop it looks much better.</Text>
+            </div>
+          </Stack>
+        ),
+        usageCode: `<Text gradient>Gradient Text</Text>\n<Text balanced>Balanced wrapping...</Text>`
+      },
+      {
+        title: 'Interactions',
+        render: () => (
+          <Stack spacing={4}>
+            <Text interactive hoverColor="#2563eb" weight="medium">Hover me for color change</Text>
+            <Text hoverScale={1.1} weight="medium" interactive>Hover me for scale 1.1</Text>
+            <Text tapScale={0.9} weight="medium" interactive>Tap/Click me for compression</Text>
+            <Text hoverOpacity={0.5} weight="medium" interactive>Hover for opacity</Text>
+          </Stack>
+        ),
+        usageCode: `<Text interactive hoverColor="blue">Color Shift</Text>\n<Text hoverScale={1.1} interactive>Scale Up</Text>`
       }
     ],
     props: [
       { name: 'variant', type: 'display | heading | body | label | caption | code', default: '"body-md"', desc: 'Typography variant.' },
-      { name: 'tone', type: 'default | muted | subtle | primary | success | warning | danger | inverse', default: '"default"', desc: 'Visual tone.' },
-      { name: 'weight', type: 'light | regular | medium | semibold | bold', default: '"regular"', desc: 'Font weight.' },
-      { name: 'align', type: 'left | center | right', default: '"left"', desc: 'Text alignment.' }
+      { name: 'tone', type: 'TextTone', default: '"default"', desc: 'Visual tone.' },
+      { name: 'weight', type: 'TextWeight', default: '"regular"', desc: 'Font weight.' },
+      { name: 'gradient', type: 'boolean | string', default: 'false', desc: 'Applies a background gradient to the text.' },
+      { name: 'balanced', type: 'boolean', default: 'false', desc: 'Uses text-wrap: balance for better typography.' },
+      { name: 'decoration', type: 'underline | line-through | none', default: '"none"', desc: 'Text decoration.' },
+      { name: 'interactive', type: 'boolean', default: 'false', desc: 'Enables default hover/tap effects.' },
+      { name: 'hoverScale', type: 'number', default: '1.02', desc: 'Scale factor on hover.' },
+      { name: 'tapScale', type: 'number', default: '0.98', desc: 'Scale factor on tap/click.' },
+      { name: 'hoverOpacity', type: 'number', default: '1', desc: 'Opacity on hover.' },
+      { name: 'hoverColor', type: 'string', default: '-', desc: 'Custom color on hover.' },
+      { name: 'onClick', type: '() => void', default: '-', desc: 'Click handler.' }
     ]
   },
   heading: {
@@ -113,24 +146,28 @@ const docs: Record<string, ComponentDoc> = {
     name: 'Heading',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    description: 'Headings for titles and subtitles.',
+    description: 'Headings for titles and subtitles, featuring premium animated underlines.',
     implementationSource: SOURCES.primitives,
     examples: [
       {
-        title: 'Levels',
+        title: 'Levels & Underline',
         render: () => (
-          <Stack spacing={4}>
-            <Heading level={1}>Heading 1</Heading>
-            <Heading level={2}>Heading 2</Heading>
-            <Heading level={3}>Heading 3</Heading>
+          <Stack spacing={6}>
+            <Heading level={1} underlined>Heading with Underline</Heading>
+            <Heading level={2} gradient hoverScale={1.05} interactive>Animated Gradient Title</Heading>
+            <Heading level={3} tapScale={0.95} interactive>Standard Heading</Heading>
           </Stack>
         ),
-        usageCode: `<Heading level={1}>Main Title</Heading>`
+        usageCode: `<Heading level={1} underlined interactive>Title</Heading>\n<Heading level={2} hoverScale={1.05} interactive>Scale Up</Heading>`
       }
     ],
     props: [
       { name: 'level', type: '1 | 2 | 3 | 4 | 5 | 6', default: '1', desc: 'Heading level.' },
-      { name: 'tone', type: '"default" | "muted" | "primary" | "destructive" | "success"', default: '"default"', desc: 'Visual tone.' }
+      { name: 'underlined', type: 'boolean', default: 'false', desc: 'Shows an animated underline.' },
+      { name: 'gradient', type: 'boolean | string', default: 'false', desc: 'Applies a gradient to the heading.' },
+      { name: 'interactive', type: 'boolean', default: 'false', desc: 'Enables default hover/tap effects.' },
+      { name: 'hoverScale', type: 'number', default: '1.02', desc: 'Scale factor on hover.' },
+      { name: 'tapScale', type: 'number', default: '0.98', desc: 'Scale factor on tap/click.' }
     ]
   },
   icon: {
@@ -408,18 +445,55 @@ const docs: Record<string, ComponentDoc> = {
     name: 'Checkbox',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    description: 'Allows multiple selection.',
+    description: 'A premium, animated checkbox component with support for multiple shapes and smooth path-drawing transitions.',
     implementationSource: SOURCES.forms,
     examples: [
       {
-        title: 'Basic',
-        render: () => <Checkbox label="Accept terms and conditions" />,
-        usageCode: `<Checkbox label="Accept terms and conditions" />`
+        title: 'Shapes',
+        description: 'Choose between square, squircle, and circle variants.',
+        render: () => (
+          <Flex gap={8}>
+            <Checkbox label="Square (Default)" variant="square" defaultChecked />
+            <Checkbox label="Squircle" variant="squircle" defaultChecked />
+            <Checkbox label="Circle" variant="circle" defaultChecked />
+          </Flex>
+        ),
+        usageCode: `<Checkbox variant="square" label="Default" />\n<Checkbox variant="squircle" label="Squircle" />\n<Checkbox variant="circle" label="Circle" />`
+      },
+      {
+        title: 'States',
+        render: () => (
+          <Flex gap={8}>
+            <Checkbox label="Unchecked" />
+            <Checkbox label="Checked" checked />
+            <Checkbox label="Disabled" disabled />
+            <Checkbox label="Disabled Checked" disabled checked />
+          </Flex>
+        ),
+        usageCode: `<Checkbox label="Unchecked" />\n<Checkbox checked />\n<Checkbox disabled />`
+      },
+      {
+        title: 'Interactions',
+        render: () => (
+          <Flex gap={8}>
+            <Checkbox label="Hover Scale" hoverScale={1.2} interactive defaultChecked />
+            <Checkbox label="Tap Compress" tapScale={0.8} interactive />
+            <Checkbox label="Custom Color" hoverColor="#f43f5e" interactive />
+          </Flex>
+        ),
+        usageCode: `<Checkbox hoverScale={1.2} interactive />\n<Checkbox tapScale={0.8} interactive />`
       }
     ],
     props: [
       { name: 'label', type: 'string', default: '-', desc: 'Label text.' },
-      { name: 'checked', type: 'boolean', default: 'false', desc: 'Checked state.' }
+      { name: 'variant', type: 'square | squircle | circle', default: 'square', desc: 'The shape of the checkbox.' },
+      { name: 'checked', type: 'boolean', default: 'false', desc: 'Controlled checked state.' },
+      { name: 'defaultChecked', type: 'boolean', default: 'false', desc: 'Initial checked state.' },
+      { name: 'onChange', type: '(e: ChangeEvent) => void', default: '-', desc: 'Change event handler.' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disabled state.' },
+      { name: 'interactive', type: 'boolean', default: 'false', desc: 'Enables hover/tap effects.' },
+      { name: 'hoverScale', type: 'number', default: '1.05', desc: 'Scale on hover.' },
+      { name: 'tapScale', type: 'number', default: '0.95', desc: 'Scale on tap.' }
     ]
   },
   radio: {
@@ -427,18 +501,55 @@ const docs: Record<string, ComponentDoc> = {
     name: 'Radio',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    description: 'Single selection from a group.',
+    description: 'A premium, animated radio component with smooth spring-based selection transitions and high-end visual feedback.',
     implementationSource: SOURCES.forms,
     examples: [
       {
-        title: 'Basic',
-        render: () => <Stack spacing={2}><Radio name="plan" label="Free Plan" /><Radio name="plan" label="Pro Plan" /></Stack>,
-        usageCode: `<Stack spacing={2}>\n  <Radio name="plan" label="Free Plan" />\n  <Radio name="plan" label="Pro Plan" />\n</Stack>`
+        title: 'Basic Usage',
+        description: 'Radio buttons allow single selection from a predefined set of options.',
+        render: () => (
+          <Stack spacing={3}>
+            <Radio name="plan-basic" label="Standard Plan" defaultChecked />
+            <Radio name="plan-basic" label="Premium Plan" />
+            <Radio name="plan-basic" label="Enterprise Plan" />
+          </Stack>
+        ),
+        usageCode: `<Stack spacing={3}>\n  <Radio name="plan" label="Standard" defaultChecked />\n  <Radio name="plan" label="Premium" />\n</Stack>`
+      },
+      {
+        title: 'States',
+        render: () => (
+          <Flex gap={8} wrap="wrap">
+            <Radio label="Checked" checked readOnly />
+            <Radio label="Unchecked" checked={false} readOnly />
+            <Radio label="Disabled" disabled />
+            <Radio label="Disabled Checked" disabled checked readOnly />
+          </Flex>
+        ),
+        usageCode: `<Radio label="Checked" checked />\n<Radio disabled />`
+      },
+      {
+        title: 'Interactions',
+        render: () => (
+          <Flex gap={8}>
+            <Radio label="Hover Scale" hoverScale={1.2} interactive checked readOnly />
+            <Radio label="Tap Compress" tapScale={0.8} interactive />
+            <Radio label="Custom Color" hoverColor="#10b981" interactive />
+          </Flex>
+        ),
+        usageCode: `<Radio hoverScale={1.2} interactive />\n<Radio tapScale={0.8} interactive />`
       }
     ],
     props: [
       { name: 'label', type: 'string', default: '-', desc: 'Label text.' },
-      { name: 'name', type: 'string', default: '-', desc: 'Group name.' }
+      { name: 'name', type: 'string', default: '-', desc: 'The group name for the radio buttons.' },
+      { name: 'checked', type: 'boolean', default: 'false', desc: 'Controlled checked state.' },
+      { name: 'defaultChecked', type: 'boolean', default: 'false', desc: 'Initial checked state.' },
+      { name: 'onChange', type: '(e: ChangeEvent) => void', default: '-', desc: 'Change event handler.' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disabled state.' },
+      { name: 'interactive', type: 'boolean', default: 'false', desc: 'Enables hover/tap effects.' },
+      { name: 'hoverScale', type: 'number', default: '1.05', desc: 'Scale on hover.' },
+      { name: 'tapScale', type: 'number', default: '0.95', desc: 'Scale on tap.' }
     ]
   },
   switch: {
@@ -446,20 +557,42 @@ const docs: Record<string, ComponentDoc> = {
     name: 'Switch',
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
-    description: 'Toggle between two states.',
+    description: 'A premium toggle component with smooth spring animations and multiple design variants.',
     implementationSource: SOURCES.forms,
     examples: [
       {
-        title: 'Basic',
+        title: 'Variants',
         render: () => {
-          const [checked, setChecked] = useState(false);
-          return <Switch label="Airplane Mode" checked={checked} onChange={setChecked} />;
+          const [s1, setS1] = useState(true);
+          const [s2, setS2] = useState(true);
+          const [s3, setS3] = useState(true);
+          return (
+            <Stack spacing={4}>
+              <Switch label="Default Style" checked={s1} onChange={setS1} variant="default" />
+              <Switch label="iOS Style" checked={s2} onChange={setS2} variant="ios" />
+              <Switch label="Slim Style" checked={s3} onChange={setS3} variant="slim" />
+            </Stack>
+          );
         },
-        usageCode: `const [checked, setChecked] = useState(false);\n<Switch label="Airplane Mode" checked={checked} onChange={setChecked} />`
+        usageCode: `<Switch variant="default" label="Default" />\n<Switch variant="ios" label="iOS" />\n<Switch variant="slim" label="Slim" />`
+      },
+      {
+        title: 'States',
+        render: () => (
+          <Flex gap={8}>
+            <Switch label="Disabled Off" checked={false} onChange={() => {}} disabled />
+            <Switch label="Disabled On" checked={true} onChange={() => {}} disabled />
+          </Flex>
+        ),
+        usageCode: `<Switch disabled label="Disabled" />`
       }
     ],
     props: [
-      { name: 'label', type: 'string', default: '-', desc: 'Label text.' }
+      { name: 'label', type: 'string', default: '-', desc: 'Label text.' },
+      { name: 'variant', type: 'default | ios | slim', default: 'default', desc: 'Design variant.' },
+      { name: 'checked', type: 'boolean', default: '-', desc: 'Controlled checked state.' },
+      { name: 'onChange', type: '(checked: boolean) => void', default: '-', desc: 'Change handler.' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disabled state.' }
     ]
   },
   slider: {

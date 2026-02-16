@@ -65,20 +65,33 @@ export type TextTone =
   | "primary" | "success" | "warning" | "danger" 
   | "disabled" | "inverse" | "destructive";
 
-export interface TextProps extends BaseProps {
+export interface InteractiveProps {
+  interactive?: boolean;
+  hoverScale?: number;
+  tapScale?: number;
+  hoverOpacity?: number;
+  hoverColor?: string;
+}
+
+export interface TextProps extends BaseProps, InteractiveProps {
   variant?: TextVariant;
   weight?: TextWeight;
   tone?: TextTone;
   align?: TypographyAlign;
   truncate?: boolean;
+  gradient?: boolean | string;
+  balanced?: boolean;
+  decoration?: "underline" | "line-through" | "none";
+  onClick?: React.MouseEventHandler<HTMLElement>;
   /** @deprecated use variant */
   size?: any;
   /** @deprecated use tone */
   color?: any;
 }
 
-export interface HeadingProps extends TypographyProps {
+export interface HeadingProps extends TextProps {
   level?: 1 | 2 | 3 | 4 | 5 | 6;
+  underlined?: boolean;
 }
 
 export type LabelVariant = "default" | "subtle" | "primary" | "secondary" | "success" | "warning" | "danger" | "info" | "outline" | "ghost" | "gradient" | "destructive";
@@ -248,18 +261,21 @@ export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElemen
   options: { label: string; value: string }[];
 }
 
-export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement>, InteractiveProps {
   label?: string;
+  variant?: "square" | "squircle" | "circle";
 }
 
-export interface RadioProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface RadioProps extends React.InputHTMLAttributes<HTMLInputElement>, InteractiveProps {
   label?: string;
+  variant?: "default" | "solid";
 }
 
-export interface SwitchProps {
+export interface SwitchProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onChange'> {
   checked: boolean;
   onChange: (checked: boolean) => void;
   label?: string;
+  variant?: "default" | "ios" | "slim";
 }
 
 export interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { BaseProps, InputProps, CheckboxProps, SwitchProps, TextareaProps, SelectProps, RadioProps, SliderProps } from '../../types';
 import { Button, Heading, Text, Icon, Box, Spinner, Label } from './Primitives';
 import { Stack, Card } from './Layout';
@@ -187,22 +188,107 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   label,
   id,
   className = '',
+  variant = 'square',
+  checked,
+  onChange,
+  disabled,
+  hoverScale,
+  tapScale,
+  hoverOpacity,
+  hoverColor,
+  interactive,
   ...props
 }) => {
+  const [internalChecked, setInternalChecked] = useState(checked || false);
+
+  useEffect(() => {
+    if (checked !== undefined) {
+      setInternalChecked(checked);
+    }
+  }, [checked]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (checked === undefined) {
+      setInternalChecked(e.target.checked);
+    }
+    onChange?.(e);
+  };
+
+  const getBorderRadius = () => {
+    switch (variant) {
+      case 'circle': return 'rounded-full';
+      case 'squircle': return 'rounded-[35%]';
+      default: return 'rounded-md';
+    }
+  };
+
   return (
-    <div className="flex items-center space-x-2">
-      <input
-        type="checkbox"
-        id={id}
-        className={`
-          h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-500
-          dark:border-neutral-700 dark:bg-neutral-900
-          ${className}
-        `}
-        {...props}
-      />
+    <div className={`flex items-center space-x-2.5 group ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
+      <div className="relative flex items-center justify-center">
+        <input
+          type="checkbox"
+          id={id}
+          checked={internalChecked}
+          onChange={handleChange}
+          disabled={disabled}
+          className="peer absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer disabled:cursor-not-allowed"
+          {...props}
+        />
+        
+        <motion.div
+          animate={{
+            backgroundColor: internalChecked ? 'var(--primary-600, #2563eb)' : 'transparent',
+            borderColor: internalChecked ? 'var(--primary-600, #2563eb)' : 'currentColor',
+            scale: internalChecked ? [1, 1.1, 1] : 1,
+          }}
+          whileHover={interactive || hoverScale || hoverOpacity || hoverColor ? {
+            scale: hoverScale || 1.05,
+            opacity: hoverOpacity || 1,
+          } : undefined}
+          whileTap={interactive || tapScale ? {
+            scale: tapScale || 0.95
+          } : undefined}
+          transition={{ duration: 0.2 }}
+          className={`
+            w-5 h-5 flex items-center justify-center border-2 
+            text-neutral-300 dark:text-neutral-700
+            ${getBorderRadius()}
+            transition-colors duration-200
+            peer-focus:ring-2 peer-focus:ring-primary-500/20
+            group-hover:border-primary-500
+            ${className}
+          `}
+          style={{
+            borderColor: (interactive || hoverColor) ? hoverColor : undefined
+          } as any}
+        >
+          <AnimatePresence>
+            {internalChecked && (
+              <motion.svg
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="w-3.5 h-3.5 text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M20 6L9 17L4 12" />
+              </motion.svg>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+      
       {label && (
-        <label htmlFor={id} className="text-sm font-medium text-neutral-700 dark:text-neutral-300 cursor-pointer">
+        <label 
+          htmlFor={id} 
+          className="text-sm font-medium text-neutral-700 dark:text-neutral-300 cursor-pointer select-none group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+        >
           {label}
         </label>
       )}
@@ -214,22 +300,91 @@ export const Radio: React.FC<RadioProps> = ({
   label,
   id,
   className = '',
+  checked,
+  onChange,
+  disabled,
+  hoverScale,
+  tapScale,
+  hoverOpacity,
+  hoverColor,
+  interactive,
   ...props
 }) => {
+  const [internalChecked, setInternalChecked] = useState(checked || false);
+
+  useEffect(() => {
+    if (checked !== undefined) {
+      setInternalChecked(checked);
+    }
+  }, [checked]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Radio buttons are slightly different: you can't uncheck them by clicking,
+    // so we only update if it's becoming checked.
+    if (checked === undefined && e.target.checked) {
+      setInternalChecked(true);
+    }
+    onChange?.(e);
+  };
+
   return (
-    <div className="flex items-center space-x-2">
-      <input
-        type="radio"
-        id={id}
-        className={`
-          h-4 w-4 border-neutral-300 text-primary-600 focus:ring-primary-500
-          dark:border-neutral-700 dark:bg-neutral-900
-          ${className}
-        `}
-        {...props}
-      />
+    <div className={`flex items-center space-x-2.5 group ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
+      <div className="relative flex items-center justify-center">
+        <input
+          type="radio"
+          id={id}
+          checked={internalChecked}
+          onChange={handleChange}
+          disabled={disabled}
+          className="peer absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer disabled:cursor-not-allowed"
+          {...props}
+        />
+        
+        <motion.div
+          animate={{
+            borderColor: internalChecked ? 'var(--primary-600, #2563eb)' : 'currentColor',
+            scale: internalChecked ? [1, 1.05, 1] : 1,
+            boxShadow: internalChecked ? '0 0 0 4px var(--primary-500/10, rgba(37, 99, 235, 0.1))' : 'none',
+          }}
+          whileHover={interactive || hoverScale || hoverOpacity || hoverColor ? {
+            scale: hoverScale || 1.05,
+            opacity: hoverOpacity || 1,
+          } : undefined}
+          whileTap={interactive || tapScale ? {
+            scale: tapScale || 0.95
+          } : undefined}
+          transition={{ duration: 0.2 }}
+          className={`
+            w-5 h-5 rounded-full border-2 flex items-center justify-center
+            text-neutral-300 dark:text-neutral-700
+            transition-colors duration-200
+            peer-focus:ring-2 peer-focus:ring-primary-500/20
+            group-hover:border-primary-500
+            ${className}
+          `}
+          style={{
+            borderColor: (interactive || hoverColor) ? hoverColor : undefined
+          } as any}
+        >
+          <AnimatePresence>
+            {internalChecked && (
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                className="w-2.5 h-2.5 rounded-full bg-primary-600 dark:bg-primary-500"
+              />
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+      
       {label && (
-        <label htmlFor={id} className="text-sm font-medium text-neutral-700 dark:text-neutral-300 cursor-pointer">
+        <label 
+          htmlFor={id} 
+          className="text-sm font-medium text-neutral-700 dark:text-neutral-300 cursor-pointer select-none group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+        >
           {label}
         </label>
       )}
@@ -240,27 +395,69 @@ export const Radio: React.FC<RadioProps> = ({
 export const Switch: React.FC<SwitchProps> = ({
   checked,
   onChange,
-  label
+  label,
+  variant = 'default',
+  disabled = false,
+  className = '',
+  ...props
 }) => {
+  const getContainerStyles = () => {
+    switch (variant) {
+      case 'ios':
+        return `h-7 w-12 border-0 ${checked ? 'bg-green-500' : 'bg-neutral-200 dark:bg-neutral-800'}`;
+      case 'slim':
+        return `h-4 w-10 border-0 ${checked ? 'bg-primary-600/50' : 'bg-neutral-300 dark:bg-neutral-700'}`;
+      default:
+        return `h-6 w-11 border-2 ${checked ? 'bg-primary-600 border-primary-600' : 'bg-neutral-200 dark:bg-neutral-700 border-transparent'}`;
+    }
+  };
+
+  const getThumbStyles = () => {
+    switch (variant) {
+      case 'ios':
+        return 'h-6 w-6 bg-white shadow-md';
+      case 'slim':
+        return `h-6 w-6 -mt-1 -ml-1 ${checked ? 'bg-primary-600' : 'bg-neutral-100 dark:bg-neutral-400'} shadow-sm`;
+      default:
+        return 'h-5 w-5 bg-white shadow-sm';
+    }
+  };
+
+  const thumbTransition = {
+    type: "spring",
+    stiffness: 700,
+    damping: 30
+  };
+
   return (
-    <div className="flex items-center space-x-3">
-      <button
+    <div className={`flex items-center space-x-3 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+      <motion.button
         type="button"
-        onClick={() => onChange(!checked)}
+        onClick={() => !disabled && onChange(!checked)}
+        whileTap={!disabled ? { scale: 0.95 } : {}}
         className={`
-          relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent 
+          relative inline-flex flex-shrink-0 cursor-pointer rounded-full 
           transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-          ${checked ? 'bg-primary-600' : 'bg-neutral-200 dark:bg-neutral-700'}
+          ${getContainerStyles()}
+          ${className}
         `}
+        disabled={disabled}
+        {...props}
       >
-        <span
+        <motion.span
+          layout
+          transition={thumbTransition}
+          animate={{
+            x: checked ? (variant === 'ios' ? 20 : variant === 'slim' ? 16 : 20) : 0,
+            scale: 1,
+          }}
           className={`
-            pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out
-            ${checked ? 'translate-x-5' : 'translate-x-0'}
+            pointer-events-none inline-block transform rounded-full ring-0 transition duration-200 ease-in-out
+            ${getThumbStyles()}
           `}
         />
-      </button>
-      {label && <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">{label}</span>}
+      </motion.button>
+      {label && <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300 select-none cursor-pointer" onClick={() => !disabled && onChange(!checked)}>{label}</span>}
     </div>
   );
 };
