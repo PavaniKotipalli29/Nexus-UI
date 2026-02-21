@@ -24,9 +24,31 @@ import { EcommerceTemplate } from '../components/ui/Ecommerce';
 import { ErrorBoundary } from '../components/ui/ErrorBoundary';
 import { Divider } from '../components/ui/divider';
 
+// Import standalone snippets as raw text for documentation
+import buttonSnippet from '../docs-snippets/button.tsx?raw';
+import textSnippet from '../docs-snippets/text.tsx?raw';
+import headingSnippet from '../docs-snippets/heading.tsx?raw';
+import iconSnippet from '../docs-snippets/icon.tsx?raw';
+import badgeSnippet from '../docs-snippets/badge.tsx?raw';
+import avatarSnippet from '../docs-snippets/avatar.tsx?raw';
+import checkboxSnippet from '../docs-snippets/checkbox.tsx?raw';
+import inputSnippet from '../docs-snippets/input.tsx?raw';
+import dividerSnippet from '../docs-snippets/divider.tsx?raw';
 
-// Import full source codes
-import { SOURCES } from '../data/ComponentSources';
+const snippetContent: Record<string, string> = {
+  button: buttonSnippet,
+  text: textSnippet,
+  heading: headingSnippet,
+  icon: iconSnippet,
+  badge: badgeSnippet,
+  avatar: avatarSnippet,
+  checkbox: checkboxSnippet,
+  input: inputSnippet,
+  divider: dividerSnippet,
+};
+
+
+
 
 export interface ComponentDoc {
   id: string;
@@ -34,8 +56,6 @@ export interface ComponentDoc {
   category: 'Atomic' | 'Reusable' | 'Composite' | 'App-level';
   subCategory?: string;
   description: string;
-  implementationSource?: string;
-  cssSource?: string;
   examples: {
     title: string;
     description?: string;
@@ -43,6 +63,7 @@ export interface ComponentDoc {
     usageCode: string;
   }[];
   props: { name: string; type: string; default: string; desc: string }[];
+  fullSource?: string;
 }
 
 
@@ -55,7 +76,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'Buttons allow users to take actions, and make choices, with a single tap.',
-    implementationSource: SOURCES.primitives,
     examples: [
       {
         title: 'Variants',
@@ -88,7 +108,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'Text is the fundamental component for displaying body copy and small descriptions, now with support for gradients and balanced wrapping.',
-    implementationSource: SOURCES.primitives,
     examples: [
       {
         title: 'Basic Usage',
@@ -148,7 +167,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'Headings for titles and subtitles, featuring premium animated underlines.',
-    implementationSource: SOURCES.primitives,
     examples: [
       {
         title: 'Levels & Underline',
@@ -177,7 +195,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'SVG icons with support for outline and solid variants.',
-    implementationSource: SOURCES.primitives,
     examples: [
       {
         title: 'Usage',
@@ -202,7 +219,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'Badges highlight the state or status of an object.',
-    implementationSource: SOURCES.primitives,
     examples: [
       {
         title: 'Variants',
@@ -243,7 +259,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'A versatile input component supporting multiple variants, states, and icon configurations.',
-    implementationSource: SOURCES.forms,
     examples: [
       {
         title: 'Variants',
@@ -311,7 +326,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'Multi-line text input.',
-    implementationSource: SOURCES.forms,
     examples: [
       {
         title: 'Basic',
@@ -330,7 +344,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'Dropdown selection input.',
-    implementationSource: SOURCES.forms,
     examples: [
       {
         title: 'Basic',
@@ -348,7 +361,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'Visual representation of a user, supporting groups and status indicators.',
-    implementationSource: SOURCES.primitives,
     examples: [
       {
         title: 'Variants',
@@ -415,7 +427,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'A primitive layout component for managing spacing, borders, and position.',
-    implementationSource: SOURCES.primitives,
     examples: [
       {
         title: 'Styling',
@@ -431,7 +442,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'A layout component based on Flexbox.',
-    implementationSource: SOURCES.primitives,
     examples: [
       {
         title: 'Row Layout',
@@ -447,7 +457,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'A premium, animated checkbox component with support for multiple shapes and smooth path-drawing transitions.',
-    implementationSource: SOURCES.forms,
     examples: [
       {
         title: 'Shapes',
@@ -503,7 +512,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'A premium, animated radio component with smooth spring-based selection transitions and high-end visual feedback.',
-    implementationSource: SOURCES.forms,
     examples: [
       {
         title: 'Basic Usage',
@@ -559,7 +567,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'A premium toggle component with smooth spring animations and multiple design variants.',
-    implementationSource: SOURCES.forms,
     examples: [
       {
         title: 'Variants',
@@ -602,7 +609,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'Select a value from a range.',
-    implementationSource: SOURCES.forms,
     examples: [
       {
         title: 'Basic',
@@ -620,7 +626,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'Indicates a loading state or ongoing process with multiple visual styles.',
-    implementationSource: SOURCES.feedback,
     examples: [
       {
         title: 'Variants',
@@ -678,8 +683,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'Visually separates content with support for various styles, text labels, and orientations.',
-    implementationSource: SOURCES.divider,
-    cssSource: SOURCES.dividerCSS,
     examples: [
       {
         title: 'With Text',
@@ -728,8 +731,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'Visual indicator of progress.',
-    implementationSource: SOURCES.progressBarJSX,
-    cssSource: SOURCES.progressBarCSS,
     examples: [
       {
         title: 'Basic',
@@ -749,7 +750,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Reusable',
     subCategory: 'Molecules',
     description: 'Container for grouped content.',
-    implementationSource: SOURCES.layout,
     examples: [
       {
         title: 'Basic',
@@ -775,7 +775,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Reusable',
     subCategory: 'Molecules',
     description: 'Vertical or horizontal stack.',
-    implementationSource: SOURCES.layout,
     examples: [
       {
         title: 'Vertical',
@@ -791,7 +790,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Reusable',
     subCategory: 'Molecules',
     description: 'Dialog window that requires user interaction.',
-    implementationSource: SOURCES.composite,
     examples: [
       {
         title: 'Example',
@@ -819,7 +817,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Reusable',
     subCategory: 'Molecules',
     description: 'Switch between different views.',
-    implementationSource: SOURCES.composite,
     examples: [
       {
         title: 'Basic',
@@ -840,7 +837,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Reusable',
     subCategory: 'Molecules',
     description: 'A decorative animation component where elements revolve around a center point.',
-    implementationSource: SOURCES.orbit,
     examples: [
       {
         title: 'Team Orbit',
@@ -898,7 +894,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Reusable',
     subCategory: 'Molecules',
     description: 'A high-end experimental cursor with integrated magnetic snapping, aperture organic geometry, and momentum-based velocity distortion.',
-    implementationSource: SOURCES.targetCursor,
     examples: [
       {
         title: 'Magnetic Synergy',
@@ -946,7 +941,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Reusable',
     subCategory: 'Molecules',
     description: 'A fluid navigation component with animated active state that magnetically glides between items. Supports keyboard navigation and multiple animation styles.',
-    implementationSource: SOURCES.pillNav,
     examples: [
       {
         title: 'Basic Usage',
@@ -1053,8 +1047,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Composite',
     subCategory: 'Organisms / Patterns',
     description: 'A professional, production-ready navigation sidebar with support for multiple variants, states, and responsive behavior. Built with a compound component pattern for maximum flexibility.',
-    implementationSource: SOURCES.sidebarJSX,
-    cssSource: SOURCES.sidebarCSS,
     examples: [
       {
          title: 'Default Sidebar',
@@ -1093,7 +1085,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Reusable',
     subCategory: 'Molecules',
     description: 'Displays a brief, important message for a user.',
-    implementationSource: SOURCES.composite,
     examples: [
       {
         title: 'Variants',
@@ -1109,7 +1100,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Reusable',
     subCategory: 'Molecules',
     description: 'Shows the current page location within a hierarchy.',
-    implementationSource: SOURCES.navigation,
     examples: [
       {
         title: 'Usage',
@@ -1125,7 +1115,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'App-level',
     subCategory: 'Templates / Pages',
     description: 'Layout for authentication pages.',
-    implementationSource: SOURCES.patterns,
     examples: [
        {
          title: 'Structure',
@@ -1148,7 +1137,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Atomic',
     subCategory: 'Foundation / Primitives',
     description: 'A comprehensive label component used for form elements, with support for various styles, weights, and interactive states.',
-    implementationSource: SOURCES.primitives,
     examples: [
       {
         title: 'Variants',
@@ -1387,8 +1375,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Composite',
     subCategory: 'Organisms / Patterns',
     description: 'A visually striking grid layout with mouse-tracking spotlight effects. Perfect for feature showcases and interactive bento-box style interfaces.',
-    implementationSource: SOURCES.magicBentoJSX,
-    cssSource: SOURCES.magicBentoCSS,
     examples: [
       {
         title: 'Feature Showcase',
@@ -1457,9 +1443,7 @@ const docs: Record<string, ComponentDoc> = {
     name: 'Landing Page (Modular)',
     category: 'App-level',
     subCategory: 'Templates / Pages',
-    description: 'A professional, production-ready navigation sidebar with support for multiple variants, states, and responsive behavior. Built with a compound component pattern for maximum flexibility.',
-    implementationSource: SOURCES.landingPageJSX,
-    cssSource: SOURCES.landingPageCSS,
+    description: 'A modular, high-conversion landing page template with customizable hero, features, and pricing sections.',
     examples: [
       {
         title: 'Default Landing Page',
@@ -1612,7 +1596,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'App-level',
     subCategory: 'Templates / Pages',
     description: 'A comprehensive authentication system that handles the entire user lifecycle from sign-in to security verification. It manages internal state for various steps and provides a seamless user experience.',
-    implementationSource: SOURCES.authFlow,
     examples: [
       {
         title: 'Complete Flow',
@@ -1667,7 +1650,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'App-level',
     subCategory: 'Templates / Pages',
     description: 'A complete, ready-to-use admin dashboard template featuring a collapsible sidebar, utility topbar, KPI cards with trend indicators, and an advanced data table.',
-    implementationSource: SOURCES.adminDashboard,
     examples: [
       {
         title: 'Complete Admin Layout',
@@ -1748,7 +1730,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'App-level',
     subCategory: 'Templates / Pages',
     description: 'A complete, production-ready user management system demonstrating full CRUD workflows and permission-aware UI.',
-    implementationSource: SOURCES.crudManagement,
     examples: [
       {
         title: 'User Management Dashboard',
@@ -1767,7 +1748,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Composite',
     subCategory: 'Organisms / Patterns',
     description: 'A premium scrolling presentation where cards stack and scale with a depth effect. Ideal for feature showcases or portfolios.',
-    implementationSource: SOURCES.scrollStack,
     examples: [
       {
         title: 'Nexus Stack',
@@ -1836,8 +1816,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'Composite',
     subCategory: 'Organisms / Patterns',
     description: 'A professional multi-step indicator for complex workflows, supporting multiple orientations and premium visual styles.',
-    implementationSource: SOURCES.wizard,
-    cssSource: SOURCES.wizardCSS,
     examples: [
       {
         title: 'Orientations',
@@ -1964,7 +1942,6 @@ const docs: Record<string, ComponentDoc> = {
     category: 'App-level',
     subCategory: 'Templates / Pages',
     description: 'A robust product-based marketplace template featuring filtering, advanced product details, cart with motion-driven interactions, and multi-step checkout.',
-    implementationSource: SOURCES.ecommerceTemplate,
     examples: [
       {
         title: 'Complete Marketplace View',
@@ -2055,7 +2032,7 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
     return (
       <Container size="md" className="py-20 text-center">
         <Heading level={2}>Component Documentation Coming Soon</Heading>
-        <Text className="mt-4 text-neutral-500">Full source code integration for "{componentId}" is being finalized.</Text>
+        <Text className="mt-4 text-neutral-500">The documentation for "{componentId}" is currently being prepared.</Text>
       </Container>
     );
   }
@@ -2440,9 +2417,9 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                        <div key={index} className="space-y-4">
                           <Heading level={3} className="text-xl">{example.title}</Heading>
                           {example.description && <Text>{example.description}</Text>}
-                          
+
                           <Card padding="none" className="overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-sm rounded-xl">
-                            <Tabs 
+                            <Tabs
                               items={[
                                 {
                                   id: 'preview',
@@ -2461,25 +2438,7 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                                        <Tabs 
                                          variant="pills"
                                          items={[
-                                             { id: 'usage', label: 'Usage Example', content: <CodeBlock code={example.usageCode} showLineNumbers={false} /> },
-                                             { 
-                                               id: 'source', 
-                                               label: 'Implementation Source', 
-                                               content: doc.implementationSource ? (
-                                                 <div className="space-y-4">
-                                                   <Text size="sm" className="px-4 text-neutral-400">Full React component implementation</Text>
-                                                   <CodeBlock code={doc.implementationSource} />
-                                                   {doc.cssSource && (
-                                                     <>
-                                                       <Text size="sm" className="px-4 text-neutral-400">CSS Module</Text>
-                                                       <CodeBlock code={doc.cssSource} language="css" />
-                                                     </>
-                                                   )}
-                                                 </div>
-                                               ) : (
-                                                 <div className="p-8 text-center text-neutral-500">Source code not available for this legacy pattern.</div>
-                                               )
-                                             }
+                                             { id: 'usage', label: 'Usage Example', content: <CodeBlock code={example.usageCode} showLineNumbers={false} /> }
                                          ]}
                                        />
                                     </div>
@@ -2497,34 +2456,37 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                 </div>
               )
             },
-            {
-              id: 'code',
-              label: 'Full Source Code',
+            ...(snippetContent[componentId] ? [{
+              id: 'full-source',
+              label: 'Full Source (Standalone)',
               content: (
-                <div className="bg-neutral-950 min-h-[500px]">
-                   {doc.implementationSource ? (
-                     <div className="p-6 lg:p-10 space-y-8">
-                       <div className="space-y-8">
-                          <div className="space-y-4">
-                             <CodeBlock code={doc.implementationSource} />
-                          </div>
-                          
-                          {doc.cssSource && (
-                            <div className="space-y-4">
-                               <CodeBlock code={doc.cssSource} language="css" />
-                            </div>
-                          )}
-                       </div>
-                     </div>
-                   ) : (
-                     <div className="p-32 text-center text-white">
-                        <Heading level={3} className="text-neutral-500">Source Code Unavailable</Heading>
-                        <Text tone="muted" className="mt-2">This component uses a legacy implementation without direct source mapping.</Text>
-                     </div>
-                   )}
+                <div className="p-0">
+                  <div className="bg-amber-50 dark:bg-amber-950/20 p-4 border-b border-amber-100 dark:border-amber-900/30 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center text-amber-600">
+                      <Icon size="xs"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></Icon>
+                    </div>
+                    <div>
+                      <Text weight="bold" size="sm" className="text-amber-800 dark:text-amber-200">Standalone Component</Text>
+                      <Text size="xs" className="text-amber-700/70 dark:text-amber-300/50">This file is fully self-contained. Copy and paste it directly into your project.</Text>
+                    </div>
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      className="ml-auto text-amber-700 hover:bg-amber-100 dark:text-amber-300 dark:hover:bg-amber-900/30"
+                      onClick={() => {
+                        navigator.clipboard.writeText(snippetContent[componentId]);
+                        alert('Source code copied to clipboard!');
+                      }}
+                    >
+                      Copy All
+                    </Button>
+                  </div>
+                  <div className="max-h-[800px] overflow-auto">
+                    <CodeBlock code={snippetContent[componentId] || ''} language="tsx" showLineNumbers={true} />
+                  </div>
                 </div>
               )
-            },
+            }] : []),
             {
               id: 'info',
               label: 'Information & API',

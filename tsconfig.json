@@ -20,6 +20,7 @@
     "allowJs": true,
     "jsx": "react-jsx",
     "paths": {
+      "nexus-ui": ["./src/index.ts"],
       "@/*": [
         "./*"
       ]

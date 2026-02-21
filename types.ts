@@ -496,38 +496,7 @@ export interface ScrollStackProps extends BaseProps {
 }
 
 
-export interface SourceData {
-  types?: string;
-  primitives?: string;
-  layout?: string;
-  forms?: string;
-  feedback?: string;
-  progressBarJSX?: string;
-  progressBarCSS?: string;
-  composite?: string;
-  list?: string;
-  navigation?: string;
-  magicBento?: string;
-  magicBentoJSX?: string;
-  magicBentoCSS?: string;
-  wizard?: string;
-  wizardCSS?: string;
-  targetCursor?: string;
-  scrollStack?: string;
-  pillNav?: string;
-  orbit?: string;
-  patterns?: string;
-  authFlow?: string;
-  adminDashboard?: string;
-  crudManagement?: string;
-  ecommerceTemplate?: string;
-  divider?: string;
-  dividerCSS?: string;
-  sidebarJSX?: string;
-  sidebarCSS?: string;
-  landingPageJSX?: string;
-  landingPageCSS?: string;
-}
+
 
 // E-commerce Types
 export interface Product {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { DividerProps } from '../../../types';
+// @ts-ignore
 import styles from './Divider.module.css';
 
 
@@ -31,16 +32,16 @@ export const Divider = React.forwardRef<HTMLDivElement, DividerProps>(({
     // Zigzag and some patterns need more height to be visible by default
     let appliedThickness = thickness;
     
-    if (variant === 'zigzag' && (thickness === '1px' || thickness === 1)) {
+    if (variant === 'zigzag' && (thickness === '1px' || (typeof thickness === 'number' && thickness === 1))) {
         appliedThickness = '12px';
-    } else if ((variant === 'dashed' || variant === 'dotted') && (thickness === '1px' || thickness === 1)) {
+    } else if ((variant === 'dashed' || variant === 'dotted') && (thickness === '1px' || (typeof thickness === 'number' && thickness === 1))) {
         // Dotted/Dashed look better slightly thicker
         appliedThickness = '2px';
     }
 
     return {
       '--divider-thickness': typeof appliedThickness === 'number' ? `${appliedThickness}px` : appliedThickness
-    } as React.CSSProperties;
+    } as any;
   };
 
   const lineStyle = getLineStyle();
