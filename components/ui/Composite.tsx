@@ -174,52 +174,7 @@ export const Popover: React.FC<PopoverProps> = ({ trigger, content, position = '
   );
 };
 
-// --- Tabs ---
-export const Tabs: React.FC<TabsProps> = ({ items, defaultTab, variant = 'line', className = '' }) => {
-  const [activeTab, setActiveTab] = useState(defaultTab || items[0]?.id);
-
-  const getVariantClasses = (isActive: boolean) => {
-    switch (variant) {
-      case 'line':
-        return isActive 
-          ? 'border-b-2 border-primary-600 text-primary-600 dark:text-primary-400' 
-          : 'border-b-2 border-transparent text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200';
-      case 'enclosed':
-        return isActive 
-          ? 'bg-white dark:bg-neutral-900 border border-b-0 border-neutral-200 dark:border-neutral-800 rounded-t-lg text-primary-600 dark:text-primary-400 -mb-[1px]' 
-          : 'bg-neutral-50 dark:bg-neutral-950 border border-transparent hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-t-lg text-neutral-500';
-      case 'pills':
-        return isActive 
-          ? 'bg-primary-600 text-white shadow-sm' 
-          : 'bg-transparent text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800';
-      default: return '';
-    }
-  };
-
-  return (
-    <div className={`w-full ${className}`}>
-      <div className={`flex gap-4 overflow-x-auto ${variant === 'line' ? 'border-b border-neutral-200 dark:border-neutral-800' : ''} ${variant === 'pills' ? 'gap-2' : ''}`}>
-        {items.map((item) => {
-          const isActive = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              data-state={isActive ? 'active' : 'inactive'}
-              className={`group px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${getVariantClasses(isActive)}`}
-            >
-              {item.label}
-            </button>
-          );
-        })}
-
-      </div>
-      <div className="py-6">
-        {items.find(i => i.id === activeTab)?.content}
-      </div>
-    </div>
-  );
-};
+export * from './Tabs';
 
 // --- Accordion ---
 export const Accordion: React.FC<AccordionProps> = ({ items, allowMultiple = false, className = '' }) => {

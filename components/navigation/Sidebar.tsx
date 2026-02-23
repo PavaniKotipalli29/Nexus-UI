@@ -32,7 +32,6 @@ const navGroups = [
       {
         title: 'Molecules',
         items: [
-          { name: 'InputField', id: 'input-field' },
           { name: 'SearchBar', id: 'search-bar' },
           { name: 'Dropdown', id: 'dropdown' },
           { name: 'Tabs', id: 'tabs' },
@@ -40,7 +39,6 @@ const navGroups = [
           { name: 'Toast', id: 'toast' },
           { name: 'Card', id: 'card' },
           { name: 'Modal', id: 'modal' },
-          { name: 'Alert', id: 'alert' },
           { name: 'Pagination', id: 'pagination' },
           { name: 'Breadcrumb', id: 'breadcrumb' },
           { name: 'ToggleGroup', id: 'toggle-group' },

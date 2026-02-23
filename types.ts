@@ -317,10 +317,48 @@ export interface PopoverProps extends BaseProps {
   position?: "top" | "bottom" | "left" | "right";
 }
 
+export type TabsVariant = 
+  | "line" 
+  | "underline" 
+  | "pills" 
+  | "card" 
+  | "vertical" 
+  | "icon-label" 
+  | "segmented" 
+  | "contained" 
+  | "ghost" 
+  | "enclosed";
+
+export interface TabItem {
+  id: string;
+  label: ReactNode;
+  content: ReactNode;
+  icon?: ReactNode;
+  disabled?: boolean;
+  badge?: string | number;
+  description?: string;
+}
+
 export interface TabsProps extends BaseProps {
-  items: { label: ReactNode; content: ReactNode; id: string }[];
+  items: TabItem[];
   defaultTab?: string;
-  variant?: "line" | "enclosed" | "pills";
+  activeTab?: string;
+  onChange?: (id: string) => void;
+  variant?: TabsVariant;
+  size?: "sm" | "md" | "lg";
+  animation?: "slide" | "fade" | "none";
+  indicatorColor?: string;
+  indicatorThickness?: number | string;
+  showIndicator?: boolean;
+  lazy?: boolean;
+  disabledTabs?: string[];
+  keepMounted?: boolean;
+  iconPosition?: "left" | "right" | "top";
+  rounded?: "none" | "sm" | "md" | "lg" | "full";
+  shadow?: "none" | "sm" | "md" | "lg";
+  bordered?: boolean;
+  fullWidth?: boolean;
+  listClassName?: string;
 }
 
 export interface AccordionProps extends BaseProps {
@@ -550,4 +588,14 @@ export interface DividerProps extends BaseProps {
   label?: ReactNode;
   labelPosition?: DividerLabelPosition;
   labelBackground?: string;
+}
+
+export interface SearchBarProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
+  variant?: string;
+  shape?: "pill" | "square" | "rounded";
+  size?: "sm" | "md" | "lg";
+  fullWidth?: boolean;
+  loading?: boolean;
+  showClear?: boolean;
+  iconPosition?: "left" | "right";
 }

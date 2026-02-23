@@ -23,6 +23,7 @@ import { PillNav } from '../components/ui/PillNav';
 import { EcommerceTemplate } from '../components/ui/Ecommerce';
 import { ErrorBoundary } from '../components/ui/ErrorBoundary';
 import { Divider } from '../components/ui/divider';
+import SearchBar from '../components/ui/SearchBar';
 
 // Import standalone snippets as raw text for documentation
 import buttonSnippet from '../docs-snippets/button.tsx?raw';
@@ -33,6 +34,8 @@ import checkboxSnippet from '../docs-snippets/checkbox.tsx?raw';
 import inputSnippet from '../docs-snippets/input.tsx?raw';
 import dividerSnippet from '../docs-snippets/divider.tsx?raw';
 import radioSnippet from '../docs-snippets/radio.tsx?raw';
+import searchBarSnippet from '../docs-snippets/search-bar.tsx?raw';
+import tabsSnippet from '../docs-snippets/tabs.tsx?raw';
 
 const snippetContent: Record<string, string> = {
   button: buttonSnippet,
@@ -43,6 +46,8 @@ const snippetContent: Record<string, string> = {
   input: inputSnippet,
   divider: dividerSnippet,
   radio: radioSnippet,
+  'search-bar': searchBarSnippet,
+  tabs: tabsSnippet,
 };
 
 
@@ -727,20 +732,170 @@ const docs: Record<string, ComponentDoc> = {
     name: 'Tabs',
     category: 'Reusable',
     subCategory: 'Molecules',
-    description: 'Switch between different views.',
+    description: 'A premium, feature-rich tabs component with 8 professional variants, advanced animations, and intensive interactive props.',
     examples: [
       {
-        title: 'Basic',
+        title: 'Modern Defaults',
+        description: 'Choose between standard underline and segmented control styles.',
         render: () => (
-          <Tabs items={[
-            { id: '1', label: 'Tab 1', content: <Text>Content 1</Text> },
-            { id: '2', label: 'Tab 2', content: <Text>Content 2</Text> },
-          ]} />
+          <Stack spacing={8} className="w-full">
+            <div>
+              <Text variant="label-md" tone="muted" className="mb-4">Underline (Default)</Text>
+              <Tabs items={[
+                { id: 'u1', label: 'Dashboard', content: <Text>Dashboard Overview</Text> },
+                { id: 'u2', label: 'Team', content: <Text>Team Settings</Text> },
+                { id: 'u3', label: 'Projects', content: <Text>Project List</Text> },
+              ]} />
+            </div>
+            <div>
+              <Text variant="label-md" tone="muted" className="mb-4">Segmented Control</Text>
+              <Tabs variant="segmented" fullWidth items={[
+                { id: 's1', label: 'Monthly', content: <Text className="py-4 font-bold">$19/mo</Text> },
+                { id: 's2', label: 'Yearly', content: <Text className="py-4 font-bold">$180/yr</Text> },
+              ]} />
+            </div>
+          </Stack>
         ),
-        usageCode: `<Tabs items={[\n  { id: '1', label: 'Tab 1', content: <Text>Content 1</Text> },\n  { id: '2', label: 'Tab 2', content: <Text>Content 2</Text> }\n]} />`
+        usageCode: `const items = [
+  { id: '1', label: 'Dashboard', content: <Dashboard /> },
+  { id: '2', label: 'Team', content: <Team /> },
+];
+
+<Tabs variant="underline" items={items} />
+<Tabs variant="segmented" fullWidth items={items} />`
+      },
+      {
+        title: 'Style Variants',
+        description: 'Professional variants for different UI needs.',
+        render: () => (
+          <Stack spacing={8} className="w-full">
+            <Flex gap={8} wrap="wrap">
+              <div className="flex-1 min-w-[200px]">
+                <Text variant="label-md" tone="muted" className="mb-4">Pills</Text>
+                <Tabs variant="pills" items={[
+                  { id: 'p1', label: 'Active', content: 'Active Items' },
+                  { id: 'p2', label: 'Closed', content: 'Closed Items' },
+                ]} />
+              </div>
+              <div className="flex-1 min-w-[200px]">
+                <Text variant="label-md" tone="muted" className="mb-4">Ghost</Text>
+                <Tabs variant="ghost" items={[
+                  { id: 'g1', label: 'Latest', content: 'Latest Updates' },
+                  { id: 'g2', label: 'Top', content: 'Top Rated' },
+                ]} />
+              </div>
+            </Flex>
+            <div>
+              <Text variant="label-md" tone="muted" className="mb-4">Contained</Text>
+              <Tabs variant="contained" items={[
+                { id: 'c1', label: 'Tab A', content: 'Content A' },
+                { id: 'c2', label: 'Tab B', content: 'Content B' },
+                { id: 'c3', label: 'Tab C', content: 'Content C' },
+              ]} />
+            </div>
+          </Stack>
+        ),
+        usageCode: `<Tabs variant="pills" size="sm" items={items} />
+<Tabs variant="ghost" indicatorColor="#f43f5e" items={items} />
+<Tabs variant="contained" items={items} />`
+      },
+      {
+        title: 'Vertical Sidebar',
+        description: 'Scales well with many tabs or complex descriptions.',
+        render: () => (
+          <div className="border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 min-w-[300px]">
+            <Tabs 
+              variant="vertical"
+              items={[
+                { id: 'v1', label: 'Account', description: 'Personal information', icon: <Icon size="xs"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></Icon>, content: 'Account Details' },
+                { id: 'v2', label: 'Security', description: 'Password and MFA', icon: <Icon size="xs"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></Icon>, content: 'Security Settings' },
+                { id: 'v3', label: 'Notifications', description: 'Alert preferences', icon: <Icon size="xs"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></Icon>, content: 'Notification Preferences' },
+              ]} 
+            />
+          </div>
+        ),
+        usageCode: `<Tabs 
+  variant="vertical" 
+  items={[
+    { id: '1', label: 'Account', description: 'Settings', icon: <UserIcon /> },
+    { id: '2', label: 'Security', description: 'Privacy', icon: <LockIcon /> }
+  ]} 
+/>`
+      },
+      {
+        title: 'Rich Content',
+        description: 'Use icons, badges, and top-aligned labels.',
+        render: () => (
+          <Tabs 
+            variant="icon-label"
+            iconPosition="top"
+            items={[
+              { id: 'r1', label: 'Orders', icon: <Icon size="xs"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></Icon>, badge: 2, content: 'Order History' },
+              { id: 'r2', label: 'Wishlist', icon: <Icon size="xs"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></Icon>, badge: 8, content: 'Saved Items' },
+              { id: 'r3', label: 'Wallet', icon: <Icon size="xs"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></Icon>, content: 'Payment Methods' },
+            ]} 
+          />
+        ),
+        usageCode: `<Tabs 
+  variant="icon-label" 
+  iconPosition="top" 
+  items={[
+    { id: '1', label: 'Home', icon: <HomeIcon />, badge: 3 },
+    { id: '2', label: 'User', icon: <UserIcon /> }
+  ]} 
+/>`
+      },
+      {
+        title: 'Sizes & States',
+        description: 'Control the physical size, disable specific tabs, and customize the active indicator.',
+        render: () => (
+          <Stack spacing={8} className="w-full">
+            <div>
+              <Text variant="label-md" tone="muted" className="mb-4">Small & Disabled Tabs</Text>
+              <Tabs 
+                size="sm" 
+                variant="pills" 
+                disabledTabs={['s2']}
+                items={[
+                  { id: 's1', label: 'Available', content: 'Item is available' },
+                  { id: 's2', label: 'Out of Stock', content: 'This should be disabled' },
+                  { id: 's3', label: 'Backorder', content: 'Items coming soon' },
+                ]} 
+              />
+            </div>
+            <div>
+              <Text variant="label-md" tone="muted" className="mb-4">Large with Custom Indicator</Text>
+              <Tabs 
+                size="lg" 
+                variant="underline" 
+                indicatorColor="#10b981" 
+                indicatorThickness={4}
+                items={[
+                  { id: 'l1', label: 'Success Metric', content: 'Showing green indicator' },
+                  { id: 'l2', label: 'Growth Data', content: 'Indicator is 4px thick' },
+                ]} 
+              />
+            </div>
+          </Stack>
+        ),
+        usageCode: `<Tabs size="sm" variant="pills" disabledTabs={['tab-id']} items={items} />
+<Tabs size="lg" indicatorColor="#10b981" indicatorThickness={4} items={items} />`
       }
     ],
-    props: []
+    props: [
+      { name: 'items', type: 'TabItem[]', default: '[]', desc: 'Array of tab items with id, label, and content.' },
+      { name: 'variant', type: 'underline | line | pills | card | vertical | icon-label | segmented | contained | ghost', default: 'underline', desc: 'Visual style of the tabs.' },
+      { name: 'size', type: 'sm | md | lg', default: 'md', desc: 'Physical size of the tabs and text.' },
+      { name: 'animation', type: 'slide | fade | none', default: 'slide', desc: 'Content transition animation.' },
+      { name: 'fullWidth', type: 'boolean', default: 'false', desc: 'Whether tabs should take up full width.' },
+      { name: 'iconPosition', type: 'left | right | top', default: 'left', desc: 'Position of the icon relative to the label.' },
+      { name: 'lazy', type: 'boolean', default: 'true', desc: 'If true, tabs are only rendered when selected.' },
+      { name: 'keepMounted', type: 'boolean', default: 'false', desc: 'If true, unselected tabs remain in the DOM.' },
+      { name: 'disabledTabs', type: 'string[]', default: '[]', desc: 'Array of tab IDs to disable.' },
+      { name: 'showIndicator', type: 'boolean', default: 'true', desc: 'Whether to show the active tab indicator.' },
+      { name: 'indicatorColor', type: 'string', default: 'primary-600', desc: 'Custom color for the active indicator.' },
+      { name: 'indicatorThickness', type: 'number | string', default: '2px', desc: 'Thickness of the line indicator.' }
+    ]
   },
   orbit: {
     id: 'orbit',
@@ -990,21 +1145,6 @@ const docs: Record<string, ComponentDoc> = {
       { name: 'showExpandOnHover', type: 'boolean', default: 'false', desc: 'Expand automatically on hover.' }
     ]
   },
-  alert: {
-    id: 'alert',
-    name: 'Alert',
-    category: 'Reusable',
-    subCategory: 'Molecules',
-    description: 'Displays a brief, important message for a user.',
-    examples: [
-      {
-        title: 'Variants',
-        render: () => <Stack spacing={4} className="w-full"><Alert variant="info" title="Information">Updates available.</Alert><Alert variant="success" title="Success">Settings saved.</Alert><Alert variant="danger" title="Error">Action failed.</Alert></Stack>,
-        usageCode: `<Alert variant="success" title="Success">Settings saved.</Alert>`
-      }
-    ],
-    props: [{ name: 'variant', type: 'info | success | warning | danger', default: 'info', desc: 'Alert style.' }]
-  },
   breadcrumbs: {
     id: 'breadcrumbs',
     name: 'Breadcrumbs',
@@ -1114,23 +1254,159 @@ const docs: Record<string, ComponentDoc> = {
   },
 
   // --- New Reusable Components ---
-  'input-field': {
-    id: 'input-field',
-    name: 'InputField',
-    category: 'Reusable',
-    subCategory: 'Molecules',
-    description: 'Input combined with Label and Error text.',
-    examples: [{ title: 'Basic', render: () => <Input label="Email" placeholder="you@example.com" />, usageCode: `<Input label="Email" placeholder="..." />` }],
-    props: []
-  },
   'search-bar': {
     id: 'search-bar',
     name: 'SearchBar',
     category: 'Reusable',
     subCategory: 'Molecules',
-    description: 'Search input with icon.',
-    examples: [{ title: 'Basic', render: () => <SearchInput placeholder="Search components..." onSearch={() => {}} />, usageCode: `<SearchInput placeholder="..." onSearch={val => console.log(val)} />` }],
-    props: []
+    description: 'A premium, standalone search component with support for multiple visual styles including Glass, Neumorphic, and Gradient effects.',
+    examples: [
+      {
+        title: 'Interactive Search Demo',
+        description: 'A fully functional search bar with data filtering logic. Perfect for copy-pasting as a starting point.',
+        render: () => {
+          const [searchInput, setSearchInput] = useState('');
+          const data = [
+            { id: 1, name: 'Devpulse' },
+            { id: 2, name: 'Linklinks' },
+            { id: 3, name: 'Centizu' },
+            { id: 4, name: 'Dynabox' },
+            { id: 5, name: 'Avaveo' },
+          ];
+          const filtered = data.filter(el => el.name.toLowerCase().includes(searchInput.toLowerCase()));
+
+          return (
+            <div className="w-full max-w-md mx-auto p-4 border rounded-xl bg-white dark:bg-neutral-900 shadow-sm">
+              <SearchBar 
+                variant="default" 
+                shape="pill" 
+                placeholder="Search names..." 
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                fullWidth
+              />
+              <ul className="mt-6 space-y-2">
+                {filtered.map(item => (
+                  <li key={item.id} className="px-4 py-2 border-b dark:border-neutral-800 last:border-0 text-sm flex items-center gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary-500" />
+                    {item.name}
+                  </li>
+                ))}
+                {filtered.length === 0 && <li className="text-neutral-500 text-center py-4 text-sm">No results found</li>}
+              </ul>
+            </div>
+          );
+        },
+        usageCode: `// Standalone Copy-Paste Example
+import React, { useState } from 'react';
+import { SearchBar } from 'nexus-ui';
+
+const SearchDemo = () => {
+  const [query, setQuery] = useState('');
+  const data = ['Devpulse', 'Linklinks', 'Centizu', 'Dynabox', 'Avaveo'];
+  
+  const filtered = data.filter(name => 
+    name.toLowerCase().includes(query.toLowerCase())
+  );
+
+  return (
+    <div className="p-4 border rounded-xl max-w-sm">
+      <SearchBar 
+        variant="default" 
+        shape="pill" 
+        value={query} 
+        onChange={(e) => setQuery(e.target.value)} 
+        placeholder="Search names..."
+        fullWidth
+      />
+      <ul className="mt-4">
+        {filtered.map(name => <li key={name} className="py-2 border-b">{name}</li>)}
+      </ul>
+    </div>
+  );
+};`
+      },
+      {
+        title: 'Basic Style Variants',
+        description: 'Control the structural appearance including borders and backgrounds.',
+        render: () => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+            <Stack spacing={2}><Text variant="caption">Default</Text><SearchBar variant="default" placeholder="Default style..." /></Stack>
+            <Stack spacing={2}><Text variant="caption">Outline</Text><SearchBar variant="outline" placeholder="Outline style..." /></Stack>
+            <Stack spacing={2}><Text variant="caption">Filled</Text><SearchBar variant="filled" placeholder="Filled style..." /></Stack>
+            <Stack spacing={2}><Text variant="caption">Ghost</Text><SearchBar variant="ghost" placeholder="Ghost style..." /></Stack>
+            <Stack spacing={2}><Text variant="caption">Underline</Text><SearchBar variant="underline" placeholder="Underline style..." /></Stack>
+            <Stack spacing={2}><Text variant="caption">Minimal</Text><SearchBar variant="minimal" placeholder="Minimal style..." /></Stack>
+            <Stack spacing={2}><Text variant="caption">Elevated</Text><SearchBar variant="elevated" placeholder="Elevated style..." /></Stack>
+            <Stack spacing={2}><Text variant="caption">Soft</Text><SearchBar variant="soft" placeholder="Soft style..." /></Stack>
+          </div>
+        ),
+        usageCode: `<SearchBar variant="glass" />\n<SearchBar variant="neumorphic" />\n<SearchBar variant="gradient" />`
+      },
+      {
+        title: 'Shape Variants',
+        description: 'Modify the corner radius to match your brands visual language.',
+        render: () => (
+          <Stack spacing={6} className="w-full">
+            <Stack spacing={2}><Text variant="caption">Rounded (Default)</Text><SearchBar shape="rounded" placeholder="Rounded corners..." /></Stack>
+            <Stack spacing={2}><Text variant="caption">Pill</Text><SearchBar shape="pill" placeholder="Pill shape..." /></Stack>
+            <Stack spacing={2}><Text variant="caption">Square</Text><SearchBar shape="square" placeholder="No radius..." /></Stack>
+          </Stack>
+        ),
+        usageCode: `<SearchBar shape="pill" />\n<SearchBar shape="square" />`
+      },
+      {
+        title: 'Modern UI Variants',
+        description: 'Advanced visual effects for premium, modern interfaces.',
+        render: () => (
+          <Stack spacing={8} className="w-full">
+            <div className="p-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl">
+              <Text variant="caption" className="text-white/70 mb-2">Glassmorphism</Text>
+              <SearchBar variant="glass" placeholder="Glass variant..." fullWidth />
+            </div>
+            <div className="p-12 bg-[#e0e5ec] rounded-2xl flex flex-col items-center">
+              <Text variant="caption" className="text-neutral-500 mb-4">Neumorphic</Text>
+              <SearchBar variant="neumorphic" placeholder="Neumorphic..." />
+            </div>
+            <Stack spacing={2}>
+              <Text variant="caption">Gradient Border</Text>
+              <SearchBar variant="gradient" placeholder="Animated Gradient..." fullWidth />
+            </Stack>
+            <div className="p-8 bg-neutral-900 rounded-2xl">
+              <Text variant="caption" className="text-neutral-500 mb-2">Dark Style</Text>
+              <SearchBar variant="dark" placeholder="Dark variant..." fullWidth />
+            </div>
+          </Stack>
+        ),
+        usageCode: `<SearchBar variant="glass" />\n<SearchBar variant="neumorphic" />\n<SearchBar variant="gradient" />\n<SearchBar variant="dark" />`
+      },
+      {
+        title: 'Interactive Props',
+        render: () => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+            <Stack spacing={2}><Text variant="caption">Loading State</Text><SearchBar loading placeholder="Searching..." /></Stack>
+            <Stack spacing={2}><Text variant="caption">Disabled State</Text><SearchBar disabled value="Locked input" /></Stack>
+            <Stack spacing={2}><Text variant="caption">Icon Right</Text><SearchBar iconPosition="right" placeholder="Right aligned icon" /></Stack>
+            <Stack spacing={2}><Text variant="caption">Small Size (36px)</Text><SearchBar size="sm" shape="pill" /></Stack>
+            <Stack spacing={2}><Text variant="caption">Medium Size (44px)</Text><SearchBar size="md" shape="pill" /></Stack>
+            <Stack spacing={2}><Text variant="caption">Large Size (52px)</Text><SearchBar size="lg" shape="pill" /></Stack>
+          </div>
+        ),
+        usageCode: `<SearchBar loading />\n<SearchBar disabled />\n<SearchBar size="sm" />`
+      }
+    ],
+    props: [
+      { name: 'variant', type: 'default | outline | filled | ghost | underline | minimal | elevated | soft | glass | neumorphic | gradient | dark', default: 'default', desc: 'Visual theme of the bar.' },
+      { name: 'shape', type: 'rounded | pill | square', default: 'rounded', desc: 'Corner rounding style.' },
+      { name: 'size', type: 'sm | md | lg', default: 'md', desc: 'Component height (36px, 44px, 52px).' },
+      { name: 'fullWidth', type: 'boolean', default: 'false', desc: 'Whether to span 100% of container.' },
+      { name: 'loading', type: 'boolean', default: 'false', desc: 'Shows a loading spinner.' },
+      { name: 'showClear', type: 'boolean', default: 'true', desc: 'Shows clear button when value exists.' },
+      { name: 'iconPosition', type: 'left | right', default: 'left', desc: 'Position of the search icon.' },
+      { name: 'placeholder', type: 'string', default: 'Search...', desc: 'Input placeholder text.' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disables all interactions.' }
+    ],
+    fullSource: snippetContent['search-bar']
   },
   'form-field': {
     id: 'form-field',
@@ -1983,7 +2259,11 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
       { name: 'isOpen', type: 'boolean', default: 'false' },
     ],
     tabs: [
-      { name: 'variant', type: 'select', default: 'line', options: ['line', 'pills', 'folder'] },
+      { name: 'variant', type: 'select', default: 'line', options: ['line', 'underline', 'pills', 'card', 'vertical', 'icon-label', 'segmented', 'contained', 'ghost', 'enclosed'] },
+      { name: 'size', type: 'select', default: 'md', options: ['sm', 'md', 'lg'] },
+      { name: 'animation', type: 'select', default: 'slide', options: ['slide', 'fade', 'none'] },
+      { name: 'showIndicator', type: 'boolean', default: 'true' },
+      { name: 'indicatorThickness', type: 'number', default: '2' },
     ],
     alert: [
       { name: 'variant', type: 'select', default: 'info', options: ['info', 'success', 'warning', 'danger'] },
@@ -2214,7 +2494,7 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                                               {activeProps.isOpen && <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center rounded"><Card className="p-4 w-64 shadow-xl"><Heading level={4}>{activeProps.title}</Heading><Text size="sm" className="mt-2">Modal content preview</Text></Card></div>}
                                             </div>
                                           );
-                                          if (componentId === 'tabs') return <Tabs variant={activeProps.variant} items={[{id: '1', label: 'Tab 1', content: 'Content 1'}, {id: '2', label: 'Tab 2', content: 'Content 2'}]} />;
+                                           if (componentId === 'tabs') return <Tabs {...activeProps} items={[{id: '1', label: 'Tab 1', content: 'Content 1'}, {id: '2', label: 'Tab 2', content: 'Content 2'}]} />;
                                           if (componentId === 'alert') return <Alert {...activeProps}>{activeProps.children}</Alert>;
                                           if (componentId === 'crud-management') return <UserManager {...activeProps} />;
                                           if (componentId === 'avatar') return <Avatar {...activeProps} />;
@@ -2348,6 +2628,7 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                                     <div className="bg-neutral-950 p-2">
                                        <Tabs 
                                          variant="pills"
+                                         listClassName="bg-transparent"
                                          items={[
                                              { id: 'usage', label: 'Usage Example', content: <CodeBlock code={example.usageCode} showLineNumbers={false} /> }
                                          ]}

@@ -25,6 +25,7 @@ import {
 } from '../components/ui/Patterns';
 import { AuthFlow } from '../components/ui/AuthFlow';
 import { UserManager } from '../components/ui/CRUDManager';
+import SearchBar from '../components/ui/SearchBar';
 import { Orbit } from '../components/ui/Orbit';
 import { PillNav } from '../components/ui/PillNav';
 import { EcommerceTemplate } from '../components/ui/Ecommerce';
@@ -300,37 +301,102 @@ export const components: ComponentItem[] = [
 
   // --- REUSABLE (Molecules) ---
   {
-    id: 'input-field',
-    name: 'InputField',
-    category: 'Reusable',
-    subCategory: 'Molecules',
-    variants: 5,
-    description: 'Input combined with label and error.',
-    preview: <div className="w-full max-w-sm"><Input label="Email Address" placeholder="alex@example.com" /></div>,
-    code: '<Input label="Email" placeholder="Enter email" />',
-    info: 'A complete form field with label support.'
-  },
-  {
     id: 'search-bar',
     name: 'SearchBar',
     category: 'Reusable',
     subCategory: 'Molecules',
-    variants: 3,
-    description: 'Enhanced input for searching.',
-    preview: <div className="w-full max-w-sm"><SearchInput placeholder="Search components..." onSearch={() => {}} /></div>,
-    code: '<SearchInput placeholder="Search..." />',
-    info: 'Includes search icon and clear functionality.'
+    variants: 24, // 12 styles * 2 positions of icon
+    description: 'A premium, standalone search bar with 12 visual styles (Glass, Neumorphic, etc.) and interactive filtering logic.',
+    preview: (
+      <div className="w-full flex justify-center p-4">
+        <SearchBar variant="default" shape="pill" placeholder="Quick search..." fullWidth />
+      </div>
+    ),
+    code: '<SearchBar variant="glass" shape="pill" fullWidth />',
+    info: 'Supports Basic (8), Shape (3), and Modern (4) variants. Includes built-in dark mode and interactive states.'
   },
   {
     id: 'tabs',
     name: 'Tabs',
     category: 'Reusable',
     subCategory: 'Molecules',
-    variants: 3,
-    description: 'Organize content into views.',
-    preview: <div className="flex gap-2 border-b w-full px-2"><div className="border-b-2 border-primary-500 px-2 py-1 text-xs font-bold">Tab 1</div><div className="px-2 py-1 text-xs text-neutral-400">Tab 2</div></div>,
-    code: '<Tabs items={items} />',
-    info: 'Switcher for tabbed content.'
+    variants: 10,
+    description: 'A premium, feature-rich tabs component with 8 professional variants, advanced animations, and intensive interactive props.',
+    preview: (
+      <div className="w-full space-y-12 p-6 max-h-[600px] overflow-y-auto no-scrollbar">
+        <div className="space-y-4">
+          <Text variant="label-md" tone="muted">Underline (Modern Default)</Text>
+          <Tabs 
+            variant="underline"
+            items={[
+              { id: 't1', label: 'Overview', content: <div className="p-4 bg-neutral-50 dark:bg-neutral-900 rounded-lg">Overview Content</div> },
+              { id: 't2', label: 'Analytics', content: <div className="p-4 bg-neutral-50 dark:bg-neutral-900 rounded-lg">Analytics Content</div> },
+              { id: 't3', label: 'Settings', content: <div className="p-4 bg-neutral-50 dark:bg-neutral-900 rounded-lg">Settings Content</div> },
+            ]} 
+          />
+        </div>
+
+        <div className="space-y-4">
+          <Text variant="label-md" tone="muted">Segmented (Premium Feel)</Text>
+          <Tabs 
+            variant="segmented"
+            fullWidth
+            items={[
+              { id: 's1', label: 'Monthly', content: <div className="text-center py-4 font-bold text-2xl">$19/mo</div> },
+              { id: 's2', label: 'Yearly', content: <div className="text-center py-4 font-bold text-2xl">$180/yr</div> },
+            ]} 
+          />
+        </div>
+
+        <div className="space-y-4">
+          <Text variant="label-md" tone="muted">Icon + Label Tabs</Text>
+          <Tabs 
+            variant="icon-label"
+            items={[
+              { id: 'i1', label: 'Home', icon: <Icon size="xs"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></Icon>, content: 'Home View', badge: 3 },
+              { id: 'i2', label: 'Messages', icon: <Icon size="xs"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></Icon>, content: 'Messages View', badge: 12 },
+              { id: 'i3', label: 'Profile', icon: <Icon size="xs"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></Icon>, content: 'Profile View' },
+            ]} 
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <Text variant="label-md" tone="muted">Vertical Sidebar</Text>
+            <div className="border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 min-h-[200px]">
+              <Tabs 
+                variant="vertical"
+                items={[
+                  { id: 'v1', label: 'General', description: 'Account settings and more', content: 'General Settings' },
+                  { id: 'v2', label: 'Security', description: 'MFA, passwords', content: 'Security Settings' },
+                  { id: 'v3', label: 'Billing', description: 'Invoices and plans', content: 'Billing Info' },
+                ]} 
+              />
+            </div>
+          </div>
+          <div className="space-y-4">
+            <Text variant="label-md" tone="muted">Pills (Professional)</Text>
+            <Tabs 
+              variant="pills"
+              items={[
+                { id: 'p1', label: 'Design', content: 'Design Assets' },
+                { id: 'p2', label: 'Code', content: 'Code Snippets' },
+                { id: 'p3', label: 'Docs', content: 'Documentation' },
+              ]} 
+            />
+          </div>
+        </div>
+      </div>
+    ),
+    code: `<Tabs 
+  variant="underline" 
+  size="md" 
+  items={[
+    { id: '1', label: 'Overview', content: <Overview /> },
+    { id: '2', label: 'Settings', content: <Settings /> }
+  ]} 
+/>`,
+    info: 'Professional multi-variant tabs with Framer Motion animations. Supports Underline, Pills, Card, Vertical, Segmented, and Contained styles. Features include lazy loading, badges, icon support, and fluid transitions.'
   },
   {
     id: 'card',
@@ -353,17 +419,6 @@ export const components: ComponentItem[] = [
     preview: <div className="border rounded-lg p-4 bg-white dark:bg-neutral-900 border-primary-500 shadow-lg scale-90 w-full"><Heading level={5}>Modal Title</Heading><div className="h-10 mt-2 bg-neutral-100 dark:bg-neutral-800 rounded" /></div>,
     code: '<Modal isOpen={true}>Content</Modal>',
     info: 'Focuses user attention on a specific task.'
-  },
-  {
-    id: 'alert',
-    name: 'Alert',
-    category: 'Reusable',
-    subCategory: 'Molecules',
-    variants: 4,
-    description: 'Feedback messages.',
-    preview: <div className="w-full px-4"><div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded p-2 text-xs">Note: Success notification.</div></div>,
-    code: '<Alert variant="info">Message</Alert>',
-    info: 'Shows status updates or warnings.'
   },
   {
     id: 'orbit',
