@@ -179,7 +179,23 @@ export interface ContainerProps extends BaseProps {
 }
 
 export interface CardProps extends BaseProps {
-  padding?: "none" | "sm" | "md" | "lg";
+  padding?: "none" | "sm" | "md" | "lg" | "xl";
+  variant?: "default" | "outlined" | "elevated" | "glass" | "gradient" | "minimal" | "interactive" | "dashboard" | "feature";
+  layout?: "vertical" | "horizontal" | "media-top" | "media-left";
+  size?: "sm" | "md" | "lg" | "xl";
+  hoverable?: boolean;
+  clickable?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  loading?: boolean;
+  disabled?: boolean;
+  expandable?: boolean;
+  defaultExpanded?: boolean;
+  badge?: ReactNode;
+  status?: "success" | "warning" | "error" | "info";
+  header?: ReactNode;
+  footer?: ReactNode;
+  media?: ReactNode;
   interactive?: boolean;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
@@ -289,11 +305,23 @@ export interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputEle
 
 // Composite
 export interface ModalProps extends BaseProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen?: boolean;
+  /** @deprecated use isOpen */
+  open?: boolean;
+  onClose?: () => void;
+  onOpenChange?: (open: boolean) => void;
   title?: string;
-  size?: "sm" | "md" | "lg" | "xl" | "full";
+  description?: string;
+  size?: "xs" | "sm" | "md" | "lg" | "xl" | "full";
+  variant?: "default" | "minimal" | "glass" | "fullscreen" | "drawer" | "centered" | "alert" | "confirmation";
   footer?: ReactNode;
+  closeOnOverlayClick?: boolean;
+  closeOnEscape?: boolean;
+  showCloseButton?: boolean;
+  preventScroll?: boolean;
+  overlayBlur?: boolean;
+  persistent?: boolean;
+  defaultOpen?: boolean;
 }
 
 export interface DrawerProps extends BaseProps {

@@ -36,6 +36,11 @@ import dividerSnippet from '../docs-snippets/divider.tsx?raw';
 import radioSnippet from '../docs-snippets/radio.tsx?raw';
 import searchBarSnippet from '../docs-snippets/search-bar.tsx?raw';
 import tabsSnippet from '../docs-snippets/tabs.tsx?raw';
+import orbitSnippet from '../docs-snippets/orbit.js?raw';
+import targetCursorSnippet from '../docs-snippets/target-cursor.js?raw';
+import pillNavSnippet from '../docs-snippets/pill-nav.js?raw';
+import cardSnippet from '../docs-snippets/card.js?raw';
+import modalSnippet from '../docs-snippets/modal.js?raw';
 
 const snippetContent: Record<string, string> = {
   button: buttonSnippet,
@@ -48,6 +53,11 @@ const snippetContent: Record<string, string> = {
   radio: radioSnippet,
   'search-bar': searchBarSnippet,
   tabs: tabsSnippet,
+  orbit: orbitSnippet,
+  'target-cursor': targetCursorSnippet,
+  'pill-nav': pillNavSnippet,
+  card: cardSnippet,
+  modal: modalSnippet,
 };
 
 
@@ -665,25 +675,87 @@ const docs: Record<string, ComponentDoc> = {
     name: 'Card',
     category: 'Reusable',
     subCategory: 'Molecules',
-    description: 'Container for grouped content.',
+    description: 'A premium, versatile card component with support for 8+ variants, multiple layouts, and interactive states. Built for modern SaaS and dashboard applications.',
     examples: [
       {
-        title: 'Basic',
+        title: 'Basic Variants',
+        description: 'Choose from multiple visual styles including glassmorphism and elevated shadows.',
         render: () => (
-          <Card>
-            <Heading level={4}>Card Title</Heading>
-            <Text className="mt-2 text-neutral-600 dark:text-neutral-400">This is a card component used to group related information.</Text>
-            <div className="mt-4 flex justify-end">
-              <Button size="sm">Action</Button>
-            </div>
-          </Card>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+            <Card variant="default" header={<Heading level={4} size="sm">Default</Heading>}>Standard card style.</Card>
+            <Card variant="elevated" header={<Heading level={4} size="sm">Elevated</Heading>}>Soft shadow effect.</Card>
+            <Card variant="outlined" header={<Heading level={4} size="sm">Outlined</Heading>}>Border-only variant.</Card>
+            <Card variant="glass" header={<Heading level={4} size="sm">Glass</Heading>}>Blurs the background.</Card>
+            <Card variant="gradient" header={<Heading level={4} size="sm">Gradient</Heading>}>Subtle color shift.</Card>
+            <Card variant="minimal" header={<Heading level={4} size="sm">Minimal</Heading>}>No border or shadow.</Card>
+          </div>
         ),
-        usageCode: `<Card>\n  <Heading level={4}>Card Title</Heading>\n  <Text>Card content...</Text>\n  <Button>Action</Button>\n</Card>`
+        usageCode: `<Card variant="default">...</Card>\n<Card variant="elevated">...</Card>\n<Card variant="glass">...</Card>`
+      },
+      {
+        title: 'Interactive Contexts',
+        description: 'Cards can be hoverable, clickable, selectable, and expandable.',
+        render: () => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+            <Card hoverable clickable header={<Heading level={4} size="sm">Interactive</Heading>}>
+              Hover or click me to see transitions.
+            </Card>
+            <Card selectable badge="PRO" header={<Heading level={4} size="sm">Selectable</Heading>}>
+              Perfect for pricing tables or selection lists.
+            </Card>
+            <Card expandable header={<Heading level={4} size="sm">Expandable</Heading>}>
+              Click the arrow to see more details about this item.
+            </Card>
+            <Card loading header={<Heading level={4} size="sm">Loading State</Heading>}>
+              This content is currently being fetched.
+            </Card>
+          </div>
+        ),
+        usageCode: `<Card hoverable clickable />\n<Card selectable selected={true} />\n<Card expandable />`
+      },
+      {
+        title: 'Layout & Media',
+        description: 'Position media at the top or left, or use horizontal orientation.',
+        render: () => (
+          <Stack spacing={8} className="w-full">
+            <Card 
+              layout="horizontal" 
+              media={<div className="h-full w-full bg-primary-100 flex items-center justify-center text-primary-500 font-bold">Image</div>}
+              header={<Heading level={4} size="sm">Horizontal Card</Heading>}
+              footer={<Button size="sm">View More</Button>}
+            >
+              Horizontal layouts are great for list items and articles.
+            </Card>
+            <Card 
+              layout="media-top" 
+              media={<div className="h-32 w-full bg-secondary-100 flex items-center justify-center text-secondary-500 font-bold">Banner</div>}
+              header={<Heading level={4} size="sm">Media Top</Heading>}
+            >
+              Standard blog post or product card layout.
+            </Card>
+          </Stack>
+        ),
+        usageCode: `<Card layout="horizontal" media={<img ... />} />\n<Card layout="media-top" media={<img ... />} />`
       }
     ],
     props: [
-      { name: 'padding', type: 'none | sm | md | lg', default: 'md', desc: 'Padding inside the card.' }
-    ]
+      { name: 'variant', type: 'default | outlined | elevated | glass | gradient | minimal | interactive | dashboard | feature', default: 'default', desc: 'Visual style of the card.' },
+      { name: 'layout', type: 'vertical | horizontal | media-top | media-left', default: 'vertical', desc: 'Internal layout structure.' },
+      { name: 'size', type: 'sm | md | lg | xl', default: 'md', desc: 'Padding and font size.' },
+      { name: 'hoverable', type: 'boolean', default: 'false', desc: 'Adds lift effects on hover.' },
+      { name: 'clickable', type: 'boolean', default: 'false', desc: 'Changes cursor to pointer.' },
+      { name: 'selectable', type: 'boolean', default: 'false', desc: 'Enables selection state logic.' },
+      { name: 'selected', type: 'boolean', default: 'false', desc: 'Visual indicator of selection.' },
+      { name: 'loading', type: 'boolean', default: 'false', desc: 'Shows a centered loading spinner.' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Applies grayscale and non-interactive styles.' },
+      { name: 'expandable', type: 'boolean', default: 'false', desc: 'Adds a toggle for hidden content.' },
+      { name: 'badge', type: 'string', default: '-', desc: 'Optional text badge in top right.' },
+      { name: 'status', type: 'success | warning | error | info', default: '-', desc: 'Adds a colored status top border.' },
+      { name: 'header', type: 'ReactNode', default: '-', desc: 'Top section content (title/actions).' },
+      { name: 'footer', type: 'ReactNode', default: '-', desc: 'Bottom section content (buttons/metadata).' },
+      { name: 'media', type: 'ReactNode', default: '-', desc: 'Content for the media section (img/video/icon).' }
+    ],
+    fullSource: snippetContent['card']
   },
   stack: {
     id: 'stack',
@@ -705,27 +777,59 @@ const docs: Record<string, ComponentDoc> = {
     name: 'Modal',
     category: 'Reusable',
     subCategory: 'Molecules',
-    description: 'Dialog window that requires user interaction.',
+    description: 'A production-grade dialog component with focus management, scroll locking, and 8+ sophisticated variants including Drawers and Fullscreen modes.',
     examples: [
       {
-        title: 'Example',
+        title: 'Interactive Demo',
+        description: 'See different variants and animations in action.',
         render: () => {
-          const [isOpen, setIsOpen] = useState(false);
-          return (
-            <>
-              <Button onClick={() => setIsOpen(true)}>Open Modal</Button>
-              <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Example Modal" footer={<Button onClick={() => setIsOpen(false)}>Close</Button>}>
-                <Text>This is the modal content. It overlays the page content.</Text>
-              </Modal>
-            </>
-          );
+           const [activeModal, setActiveModal] = useState(null);
+           return (
+             <div className="flex flex-wrap gap-4">
+               <Button onClick={() => setActiveModal('default')}>Standard Modal</Button>
+               <Button variant="secondary" onClick={() => setActiveModal('drawer')}>Side Drawer</Button>
+               <Button variant="outline" onClick={() => setActiveModal('glass')}>Glass Variant</Button>
+               <Button variant="danger" onClick={() => setActiveModal('alert')}>Alert Modal</Button>
+               <Button variant="ghost" onClick={() => setActiveModal('fullscreen')}>Fullscreen</Button>
+
+               <Modal 
+                 open={!!activeModal} 
+                 onOpenChange={(val) => !val && setActiveModal(null)}
+                 variant={activeModal || 'default'}
+                 title={activeModal ? activeModal.charAt(0).toUpperCase() + activeModal.slice(1) : ''}
+                 description="This is a description about the modal action."
+                 footer={
+                   <>
+                     <Button variant="ghost" onClick={() => setActiveModal(null)}>Cancel</Button>
+                     <Button onClick={() => setActiveModal(null)}>Continue</Button>
+                   </>
+                 }
+               >
+                 <Text>The modal is fully accessible, handles focus trapping, and blocks page scroll automatically when opened.</Text>
+               </Modal>
+             </div>
+           );
         },
-        usageCode: `const [isOpen, setIsOpen] = useState(false);\n<Modal \n  isOpen={isOpen} \n  onClose={() => setIsOpen(false)} \n  title="Example Modal"\n>\n  <Text>Modal content...</Text>\n</Modal>`
+        usageCode: `const [open, setOpen] = useState(false);\n\n<Modal \n  open={open} \n  onOpenChange={setOpen} \n  title="Title"\n>\n  Content\n</Modal>`
       }
     ],
     props: [
-      { name: 'isOpen', type: 'boolean', default: 'false', desc: 'Controls visibility.' }
-    ]
+      { name: 'open', type: 'boolean', default: 'false', desc: 'Controlled open state.' },
+      { name: 'defaultOpen', type: 'boolean', default: 'false', desc: 'Initial state for uncontrolled mode.' },
+      { name: 'onOpenChange', type: '(open: boolean) => void', default: '-', desc: 'Callback triggered on open/close.' },
+      { name: 'variant', type: 'default | minimal | glass | fullscreen | drawer | centered | alert | confirmation', default: 'default', desc: 'Visual style and positioning.' },
+      { name: 'size', type: 'xs | sm | md | lg | xl | full', default: 'md', desc: 'Physical width of the content.' },
+      { name: 'title', type: 'string', default: '-', desc: 'Modal title displayed in header.' },
+      { name: 'description', type: 'string', default: '-', desc: 'Subtext displayed below the title.' },
+      { name: 'closeOnOverlayClick', type: 'boolean', default: 'true', desc: 'Close when background is clicked.' },
+      { name: 'closeOnEscape', type: 'boolean', default: 'true', desc: 'Close when ESC key is pressed.' },
+      { name: 'showCloseButton', type: 'boolean', default: 'true', desc: 'Display a close "X" in header.' },
+      { name: 'preventScroll', type: 'boolean', default: 'true', desc: 'Lock body scroll when open.' },
+      { name: 'overlayBlur', type: 'boolean', default: 'true', desc: 'Add blur filter to background.' },
+      { name: 'persistent', type: 'boolean', default: 'false', desc: 'If true, clicks/keys cannot close it.' },
+      { name: 'footer', type: 'ReactNode', default: '-', desc: 'Optional footer with primary/secondary actions.' }
+    ],
+    fullSource: snippetContent['modal']
   },
   tabs: {
     id: 'tabs',
@@ -952,7 +1056,8 @@ const docs: Record<string, ComponentDoc> = {
       { name: 'keepUpright', type: 'boolean', default: 'true', desc: 'If true, items remain upright while revolving.' },
       { name: 'pauseOnHover', type: 'boolean', default: 'false', desc: 'Pauses animation when cursor enters the container.' },
       { name: 'borderRadius', type: 'number', default: '0', desc: 'Border radius of the item wrappers.' }
-    ]
+    ],
+    fullSource: snippetContent['orbit']
   },
   'target-cursor': {
     id: 'target-cursor',
@@ -999,7 +1104,8 @@ const docs: Record<string, ComponentDoc> = {
       { name: 'padding', type: 'number', default: '8', desc: 'Padding around the element when snapped.' },
       { name: 'stiffness', type: 'number', default: '400', desc: 'Spring stiffness for the cursor movement.' },
       { name: 'className', type: 'string', default: '""', desc: 'Container class.' }
-    ]
+    ],
+    fullSource: snippetContent['target-cursor']
   },
   'pill-nav': {
     id: 'pill-nav',
@@ -1084,7 +1190,8 @@ const docs: Record<string, ComponentDoc> = {
       { name: 'animationType', type: '"spring" | "smooth" | "elastic"', default: '"spring"', desc: 'The motion physics to use for the indicator.' },
       { name: 'fullWidth', type: 'boolean', default: 'false', desc: 'Whether the container should take up the full width.' },
       { name: 'disabled', type: 'boolean', default: 'false', desc: 'Whether the entire navigation is disabled.' }
-    ]
+    ],
+    fullSource: snippetContent['pill-nav']
   },
 
   // --- 3D Components ---
@@ -2170,11 +2277,11 @@ const InteractivePanel = ({ children, props, onChange }: {
     };
 
     return (
-        <div className="flex flex-col lg:flex-row gap-8 bg-neutral-50/50 dark:bg-neutral-900/50 p-6 rounded-lg min-h-[400px]">
-            <div className="flex-1 flex items-center justify-center p-8 border border-neutral-200 dark:border-neutral-800 rounded-lg bg-white dark:bg-neutral-950 shadow-inner">
+        <div className="flex flex-col lg:flex-row gap-8 bg-neutral-50/50 dark:bg-neutral-900/50 p-6 rounded-lg min-h-[400px] overflow-hidden">
+            <div className="flex-1 flex items-center justify-center p-8 border border-neutral-200 dark:border-neutral-800 rounded-lg bg-white dark:bg-neutral-950 shadow-inner overflow-auto">
                 {children(activeProps, handlePropChange)}
             </div>
-            <div className="w-full lg:w-72 space-y-6">
+            <div className="w-full lg:w-80 space-y-6 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                 <Heading level={4} className="text-sm uppercase tracking-wider text-neutral-500">Interactive Props</Heading>
                 <Stack spacing={4}>
                     {props.filter(p => p.options || p.type === 'boolean' || p.type === 'string' || p.type === 'number').map(prop => (
@@ -2195,7 +2302,7 @@ const InteractivePanel = ({ children, props, onChange }: {
                                 <Select 
                                     value={activeProps[prop.name]} 
                                     onChange={(e) => handlePropChange(prop.name, e.target.value)}
-                                    options={prop.options.map(o => ({ label: o, value: o }))}
+                                    options={prop.options.map(o => ({ label: o === '' ? 'None (Default)' : o, value: o }))}
                                 />
                             ) : (
                                 <Input 
@@ -2256,7 +2363,28 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
     ],
     modal: [
       { name: 'title', type: 'string', default: 'Interactive Modal' },
-      { name: 'isOpen', type: 'boolean', default: 'false' },
+      { name: 'description', type: 'string', default: 'A premium dialog component.' },
+      { name: 'isOpen', type: 'boolean', default: false },
+      { name: 'variant', type: 'select', default: 'default', options: ['default', 'minimal', 'glass', 'fullscreen', 'drawer', 'centered', 'alert', 'confirmation'] },
+      { name: 'size', type: 'select', default: 'md', options: ['xs', 'sm', 'md', 'lg', 'xl', 'full'] },
+      { name: 'closeOnOverlayClick', type: 'boolean', default: true },
+      { name: 'showCloseButton', type: 'boolean', default: true },
+      { name: 'overlayBlur', type: 'boolean', default: true },
+      { name: 'children', type: 'string', default: 'This is the modal content.' },
+    ],
+    card: [
+      { name: 'variant', type: 'select', default: 'default', options: ['default', 'outlined', 'elevated', 'glass', 'gradient', 'minimal', 'interactive', 'dashboard', 'feature'] },
+      { name: 'layout', type: 'select', default: 'vertical', options: ['vertical', 'horizontal', 'media-top', 'media-left'] },
+      { name: 'padding', type: 'select', default: 'md', options: ['none', 'sm', 'md', 'lg', 'xl'] },
+      { name: 'hoverable', type: 'boolean', default: false },
+      { name: 'clickable', type: 'boolean', default: false },
+      { name: 'selectable', type: 'boolean', default: false },
+      { name: 'selected', type: 'boolean', default: false },
+      { name: 'loading', type: 'boolean', default: false },
+      { name: 'expandable', type: 'boolean', default: false },
+      { name: 'badge', type: 'string', default: '' },
+      { name: 'status', type: 'select', default: '', options: ['', 'success', 'warning', 'error', 'info'] },
+      { name: 'children', type: 'string', default: 'Content inside the premium card component.' },
     ],
     tabs: [
       { name: 'variant', type: 'select', default: 'line', options: ['line', 'underline', 'pills', 'card', 'vertical', 'icon-label', 'segmented', 'contained', 'ghost', 'enclosed'] },
@@ -2326,85 +2454,74 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
     sidebar: [
       { name: 'variant', type: 'select', default: 'default', options: ['default', 'minimal', 'floating', 'glass'] },
       { name: 'theme', type: 'select', default: 'light', options: ['light', 'dark'] },
-      { name: 'collapsible', type: 'boolean', default: 'true' },
-      { name: 'showExpandOnHover', type: 'boolean', default: 'false' },
+      { name: 'collapsible', type: 'boolean', default: true },
+      { name: 'showExpandOnHover', type: 'boolean', default: false },
       { name: 'width', type: 'string', default: '260px' },
     ],
     checkbox: [
       { name: 'label', type: 'string', default: 'Accept Terms' },
       { name: 'variant', type: 'select', default: 'square', options: ['square', 'squircle', 'circle'] },
-      { name: 'disabled', type: 'boolean', default: 'false' },
-      { name: 'interactive', type: 'boolean', default: 'false' },
-      { name: 'hoverScale', type: 'number', default: '1.05' },
-      { name: 'tapScale', type: 'number', default: '0.95' },
+      { name: 'disabled', type: 'boolean', default: false },
+      { name: 'interactive', type: 'boolean', default: false },
+      { name: 'hoverScale', type: 'number', default: 1.05 },
+      { name: 'tapScale', type: 'number', default: 0.95 },
     ],
     radio: [
       { name: 'label', type: 'string', default: 'Radio Option' },
-      { name: 'disabled', type: 'boolean', default: 'false' },
-      { name: 'interactive', type: 'boolean', default: 'false' },
-      { name: 'hoverScale', type: 'number', default: '1.05' },
-      { name: 'tapScale', type: 'number', default: '0.95' },
+      { name: 'disabled', type: 'boolean', default: false },
+      { name: 'interactive', type: 'boolean', default: false },
+      { name: 'hoverScale', type: 'number', default: 1.05 },
+      { name: 'tapScale', type: 'number', default: 0.95 },
     ]
+  };
+
+  const isDefaultValue = (key: string, value: any, metadata: any) => {
+    if (!metadata) return false;
+    let defaultValue = metadata.default;
+    if (defaultValue === 'true') defaultValue = true;
+    if (defaultValue === 'false') defaultValue = false;
+    if (typeof defaultValue === 'string' && !isNaN(Number(defaultValue)) && defaultValue !== '' && defaultValue !== metadata.default) {
+        defaultValue = Number(defaultValue);
+    }
+    return value === defaultValue;
   };
 
   const interactiveProps = interactivePropsMetadata[componentId];
 
   const generateCode = (componentId: string, activeProps: any) => {
+    const activeEntries = Object.entries(activeProps).filter(([key, value]) => {
+      const metadata = interactiveProps?.find(p => p.name === key);
+      return !isDefaultValue(key, value, metadata) && key !== 'children';
+    });
+
+    const propsStr = activeEntries.map(([key, value]) => {
+      if (typeof value === 'boolean') return value ? key : '';
+      if (typeof value === 'string') return `${key}="${value}"`;
+      return `${key}={${JSON.stringify(value)}}`;
+    }).filter(Boolean).join(' ');
+
     if (componentId === 'sidebar') {
-      const activeEntries = Object.entries(activeProps).filter(([key, value]) => {
-        const metadata = (interactivePropsMetadata as any)[componentId]?.find((p: any) => p.name === key);
-        return value !== metadata?.default && key !== 'children';
-      });
-
-      const propsStr = activeEntries.map(([key, value]) => {
-        if (typeof value === 'boolean') return value ? key : '';
-        if (typeof value === 'string') return `${key}="${value}"`;
-        return `${key}={${JSON.stringify(value)}}`;
-      }).filter(Boolean).join(' ');
-
       return `import { Sidebar } from "nexus-ui";\n\nreturn (\n  <Sidebar ${propsStr}>\n    <Sidebar.Section title="Main">\n      <Sidebar.Item icon={<HomeIcon />} label="Home" active />\n      <Sidebar.Item icon={<ChartIcon />} label="Analytics" />\n    </Sidebar.Section>\n    <Sidebar.Section title="System" collapsible>\n      <Sidebar.Item icon={<SettingsIcon />} label="Settings" />\n    </Sidebar.Section>\n  </Sidebar>\n);`;
     }
 
     if (componentId === 'wizard') {
-      const activeEntries = Object.entries(activeProps).filter(([key, value]) => {
-        const metadata = interactiveProps.find(p => p.name === key);
-        return value !== metadata?.default && key !== 'children';
-      });
-
       const handlers = [];
       if (activeProps.showNavigation) {
         handlers.push('onNext={() => setCurrentStep(prev => prev + 1)}');
         handlers.push('onBack={() => setCurrentStep(prev => prev - 1)}');
       }
+      
+      const wizardProps = propsStr + (handlers.length > 0 ? '\n    ' + handlers.join('\n    ') : '');
 
-      const propsStr = activeEntries.map(([key, value]) => {
-        if (typeof value === 'boolean') return value ? key : '';
-        if (typeof value === 'string') return `${key}="${value}"`;
-        return `${key}={${JSON.stringify(value)}}`;
-      }).filter(Boolean).concat(handlers).join('\n    ');
-
-      return `const [currentStep, setCurrentStep] = useState(${activeProps.currentStep || 0});\nconst steps = [\n  { id: 1, title: 'Step 1' },\n  { id: 2, title: 'Step 2' },\n  { id: 3, title: 'Step 3' }\n];\n\nreturn (\n  <Wizard \n    steps={steps} \n    currentStep={currentStep} \n    ${propsStr}\n  />\n);`;
+      return `const [currentStep, setCurrentStep] = useState(${activeProps.currentStep || 0});\nconst steps = [\n  { id: 1, title: 'Step 1' },\n  { id: 2, title: 'Step 2' },\n  { id: 3, title: 'Step 3' }\n];\n\nreturn (\n  <Wizard \n    steps={steps} \n    currentStep={currentStep} \n    ${wizardProps}\n  />\n);`;
     }
-
-    const propsString = Object.entries(activeProps)
-      .filter(([key, value]) => {
-        const metadata = interactiveProps.find(p => p.name === key);
-        return value !== metadata?.default && key !== 'children';
-      })
-      .map(([key, value]) => {
-        if (typeof value === 'boolean') return value ? key : '';
-        if (typeof value === 'string') return `${key}="${value}"`;
-        return `${key}={${JSON.stringify(value)}}`;
-      })
-      .filter(Boolean)
-      .join(' ');
 
     const componentName = componentId.charAt(0).toUpperCase() + componentId.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
     
     if (activeProps.children) {
-      return `<${componentName}${propsString ? ' ' + propsString : ''}>\n  ${activeProps.children}\n</${componentName}>`;
+      return `<${componentName}${propsStr ? ' ' + propsStr : ''}>\n  ${activeProps.children}\n</${componentName}>`;
     }
-    return `<${componentName}${propsString ? ' ' + propsString : ''} />`;
+    return `<${componentName}${propsStr ? ' ' + propsStr : ''} />`;
   };
 
   return (
@@ -2488,10 +2605,32 @@ export const ComponentPage: React.FC<{ componentId: string }> = ({ componentId }
                                           if (componentId === 'input') return <div className="w-full max-w-sm"><Input {...activeProps} /></div>;
                                           if (componentId === 'checkbox') return <Checkbox {...activeProps} />;
                                           if (componentId === 'radio') return <Radio {...activeProps} />;
+                                          if (componentId === 'card') return (
+                                            <div className="w-full max-w-lg">
+                                              <Card 
+                                                {...activeProps} 
+                                                onClick={() => {
+                                                  if (activeProps.selectable) setProp('selected', !activeProps.selected);
+                                                }}
+                                                header={activeProps.variant === 'dashboard' ? <Heading level={4} size="sm">Revenue</Heading> : <Heading level={4} size="sm">Card Title</Heading>}
+                                                footer={activeProps.variant === 'interactive' ? <Button size="sm">View Details</Button> : null}
+                                                media={<div className="h-full w-full bg-primary-100 flex items-center justify-center text-primary-500 font-bold italic">Media Slot</div>}
+                                               >
+                                                {activeProps.children}
+                                              </Card>
+                                            </div>
+                                          );
                                           if (componentId === 'modal') return (
                                             <div className="relative h-64 w-full border border-dashed rounded flex items-center justify-center bg-neutral-50 dark:bg-neutral-900/50">
-                                              <Button onClick={() => alert('In doc preview, modal would open here.')}>Open Modal Overlay</Button>
-                                              {activeProps.isOpen && <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center rounded"><Card className="p-4 w-64 shadow-xl"><Heading level={4}>{activeProps.title}</Heading><Text size="sm" className="mt-2">Modal content preview</Text></Card></div>}
+                                              <Button onClick={() => setProp('isOpen', true)}>Open Modal Overlay</Button>
+                                              <Modal 
+                                                {...activeProps} 
+                                                open={activeProps.isOpen} 
+                                                onOpenChange={(val) => setProp('isOpen', val)}
+                                                footer={<Button onClick={() => setProp('isOpen', false)}>Close</Button>}
+                                              >
+                                                <Text>{activeProps.children || 'Modal content preview'}</Text>
+                                              </Modal>
                                             </div>
                                           );
                                            if (componentId === 'tabs') return <Tabs {...activeProps} items={[{id: '1', label: 'Tab 1', content: 'Content 1'}, {id: '2', label: 'Tab 2', content: 'Content 2'}]} />;

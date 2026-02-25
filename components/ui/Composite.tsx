@@ -9,11 +9,54 @@ import { Button, Heading, Text, Icon, Box } from './Primitives';
 
 // --- Modal ---
 export const Modal: React.FC<ModalProps> = ({ 
-  isOpen, onClose, title, size = 'md', children, footer, className = '' 
+  isOpen, 
+  open,
+  onClose, 
+  onOpenChange,
+  title, 
+  description,
+  size = 'md', 
+  variant = 'default',
+  children, 
+  footer, 
+  className = '',
+  closeOnOverlayClick = true,
+  closeOnEscape = true,
+  showCloseButton = true,
+  preventScroll = true,
+  overlayBlur = true,
+  persistent = false,
+  ...props 
 }) => {
-  if (!isOpen) return null;
+  const isCurrentlyOpen = open !== undefined ? open : isOpen;
+  const setOpen = (val: boolean) => {
+    if (persistent && !val) return;
+    onOpenChange?.(val);
+    if (!val) onClose?.();
+  };
+
+  useEffect(() => {
+    if (isCurrentlyOpen && preventScroll) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    const handleEsc = (e: KeyboardEvent) => {
+      if (closeOnEscape && e.key === 'Escape' && isCurrentlyOpen) setOpen(false);
+    };
+
+    if (isCurrentlyOpen) window.addEventListener('keydown', handleEsc);
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = '';
+    };
+  }, [isCurrentlyOpen, preventScroll, closeOnEscape]);
+
+  if (!isCurrentlyOpen) return null;
 
   const sizeClasses = {
+    xs: 'max-w-xs',
     sm: 'max-w-sm',
     md: 'max-w-md',
     lg: 'max-w-lg',
@@ -21,21 +64,56 @@ export const Modal: React.FC<ModalProps> = ({
     full: 'max-w-full m-4',
   };
 
+  const variants = {
+    default: 'items-center justify-center p-4',
+    minimal: 'items-center justify-center p-4',
+    glass: 'items-center justify-center p-4',
+    fullscreen: 'p-0',
+    drawer: 'justify-end p-0',
+    centered: 'items-center justify-center p-4',
+    alert: 'items-center justify-center p-4',
+    confirmation: 'items-center justify-center p-4',
+  };
+
+  const contentVariants = {
+    default: 'rounded-xl',
+    minimal: 'rounded-lg shadow-lg border-neutral-100',
+    glass: 'bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border-white/20',
+    fullscreen: 'w-screen h-screen max-w-none max-h-none rounded-none',
+    drawer: 'h-screen max-h-none rounded-none w-full max-w-md animate-in slide-in-from-right duration-300',
+    centered: 'rounded-2xl',
+    alert: 'border-t-4 border-t-red-500 rounded-xl max-w-md',
+    confirmation: 'rounded-xl max-w-md',
+  };
+
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className={`relative w-full ${sizeClasses[size]} bg-white dark:bg-neutral-900 rounded-xl shadow-2xl border border-neutral-200 dark:border-neutral-800 flex flex-col max-h-[90vh] ${className}`}>
-        <div className="flex items-center justify-between p-6 border-b border-neutral-100 dark:border-neutral-800">
-          <Heading level={4}>{title}</Heading>
-          <button onClick={onClose} className="p-2 -mr-2 text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition">
-            <Icon size="sm"><path d="M6 18L18 6M6 6l12 12" /></Icon>
-          </button>
-        </div>
-        <div className="p-6 overflow-y-auto">
+    <div className={`fixed inset-0 z-50 flex ${variants[variant]} ${className}`} {...props}>
+      <div 
+        className={`absolute inset-0 bg-black/50 ${overlayBlur ? 'backdrop-blur-sm' : ''} transition-opacity duration-300`} 
+        onClick={() => closeOnOverlayClick && setOpen(false)} 
+      />
+      <div className={`relative w-full ${variant !== 'fullscreen' && variant !== 'drawer' ? sizeClasses[size] : ''} bg-white dark:bg-neutral-900 shadow-2xl border border-neutral-200 dark:border-neutral-800 flex flex-col max-h-[90vh] ${contentVariants[variant]} overflow-hidden animate-in zoom-in-95 duration-200`}>
+        {(title || showCloseButton) && (
+          <div className="flex items-center justify-between p-6 border-b border-neutral-100 dark:border-neutral-800">
+            <div>
+              {title && <Heading level={4}>{title}</Heading>}
+              {description && <Text tone="muted" className="mt-1 text-sm">{description}</Text>}
+            </div>
+            {showCloseButton && (
+              <button 
+                onClick={() => setOpen(false)} 
+                className="p-2 -mr-2 text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+              >
+                <Icon size="sm"><path d="M6 18L18 6M6 6l12 12" /></Icon>
+              </button>
+            )}
+          </div>
+        )}
+        <div className="p-6 overflow-y-auto flex-1">
           {children}
         </div>
         {footer && (
-          <div className="p-6 border-t border-neutral-100 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-950/50 rounded-b-xl flex justify-end gap-3">
+          <div className="p-6 border-t border-neutral-100 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-950/50 flex justify-end gap-3">
             {footer}
           </div>
         )}
